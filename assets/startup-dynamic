@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+
+source /assets/lib.sh
+
+if [ -z "${RELEASE_ID}" ]; then
+    log "RELEASE_ID must be defined in the environment"
+    exit 1
+fi
+
+# ensure MemSQL is installed
+once /opt/.install-lock installRelease "${RELEASE_ID}"
+
+# defer to startup-node
+exec /assets/startup-node

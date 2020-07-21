@@ -1,0 +1,147 @@
+#!/usr/bin/env python2
+
+from __future__ import print_function
+
+import subprocess
+import signal
+import os
+import sys
+import json
+from datetime import datetime
+from textwrap import dedent
+
+stop_after_init = os.getenv("START_AFTER_INIT", default="") == ""
+
+
+def ctl(*args):
+    return json.loads(
+        subprocess.check_output(["memsqlctl", "-yj"] + list(args)))
+
+
+def log(msg):
+    print(str(datetime.now()) + " " + msg)
+
+
+def init_cluster():
+    log("Initializing MemSQL Cluster in a Box")
+
+    license_key = os.getenv("LICENSE_KEY", default="")
+    if license_key == "":
+        print("\n!!! ERROR !!!")
+        print("Must specify env variable LICENSE_KEY when creating the Docker container")
+        sys.exit(1)
+
+    log("Creating...")
+    MASTER_ID = ctl("create-node", "--no-start")["memsqlId"]
+    ctl("create-node", "--no-start", "--port", "3307")
+    log("Done.")
+
+    log("Configuring...")
+    ctl("update-config", "--all", "--key", "minimum_core_count", "--value", "0")
+    ctl("update-config", "--all", "--key", "minimum_memory_mb", "--value", "0")
+    log("Done.")
+
+    log("Bootstrapping...")
+    ctl("start-node", "--all")
+    ctl("set-license", "--memsql-id", MASTER_ID, "--license", license_key)
+    ctl("bootstrap-aggregator", "--memsql-id", MASTER_ID, "--host", "127.0.0.1")
+    ctl("add-leaf", "--host", "127.0.0.1", "--port", "3307")
+    log("Done.")
+
+    log("Configuring Toolbox...")
+    subprocess.check_output(["memsql-toolbox-config", "register-host", "--yes", "--localhost", "--host", "127.0.0.1"])
+    log("Done.")
+
+    if os.path.isfile("/init.sql"):
+        log("Running /init.sql...")
+        init_file = open("/init.sql", "r")
+        subprocess.check_output(["memsql"], stdin=init_file)
+        log("Done.")
+
+    if stop_after_init:
+        print(dedent("""
+            Successful initialization!
+
+            To start the cluster:
+                docker start (CONTAINER_NAME)
+
+            To stop the cluster (must be started):
+                docker stop (CONTAINER_NAME)
+
+            To remove the cluster (all data will be deleted):
+                docker rm (CONTAINER_NAME)
+        """))
+        sys.exit(0)
+
+
+def start_cluster():
+    log("Starting Cluster")
+    ctl("start-node", "--all")
+
+
+def cleanup(*args, **kwargs):
+    log("Stopping Cluster...")
+    ctl("stop-node", "--all")
+    studio.send_signal(signal.SIGTERM)
+    tail.send_signal(signal.SIGTERM)
+    log("Stopped.")
+
+
+if __name__ == "__main__":
+    if not os.path.exists("/var/lib/memsql/nodes.hcl"):
+        with open("/var/lib/memsql/nodes.hcl", "w") as f:
+            f.write("version = 1")
+
+    initialize_cluster = len(ctl("list-nodes")["nodes"]) == 0
+
+    if initialize_cluster:
+        try:
+            init_cluster()
+        except (Exception, SystemExit) as exc:
+            if isinstance(exc, SystemExit):
+                if exc.code == 0:
+                    raise
+
+            print(dedent("""
+                Initialization failed, please fix any issues and re-initialize the container.
+
+                You may need to remove this container before continuing:
+                    docker rm (CONTAINER_NAME)
+            """))
+            raise
+    else:
+        start_cluster()
+
+    nodes = ctl("list-nodes")["nodes"]
+    log_files = []
+    for node in nodes:
+        logdir = ctl(
+            "describe-node",
+            "--property", "tracelogsdir",
+            "--memsql-id", node["memsqlId"]
+        )["tracelogsdir"]
+
+        log_files.append(logdir + "/memsql.log")
+
+    devnull = open("/dev/null", "wb")
+    studio = subprocess.Popen(
+        ["memsql-studio", "--port", "8080"],
+        stdout=devnull, stderr=devnull)
+    log_files.append("/var/lib/memsql-studio/studio.log")
+
+    args_file = "/etc/memsql/memsql_exporter_ma.args"
+    if not os.path.exists("/etc/memsql/memsql_exporter_ma.args"):
+        install_path = os.path.dirname(os.path.realpath("/usr/bin/memsql_exporter"))
+        args_file = install_path + "/conf/memsql_exporter_ma.args"
+    explog = open("/var/lib/memsql/memsql_exporter.log", "wb")
+    exporter = subprocess.Popen(["memsql_exporter", "@"+args_file],
+                                stdout=explog, stderr=explog)
+    log_files.append("/var/lib/memsql/memsql_exporter.log")
+
+    tail = subprocess.Popen(["tail", "-F"] + log_files)
+
+    signal.signal(signal.SIGTERM, cleanup)
+    signal.signal(signal.SIGQUIT, cleanup)
+    signal.signal(signal.SIGINT, cleanup)
+
+    tail.wait()

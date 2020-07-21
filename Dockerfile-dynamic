@@ -1,0 +1,27 @@
+# vim: ft=dockerfile
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+ARG CLIENT_VERSION
+RUN yum install -y \
+    memsql-client-${CLIENT_VERSION} \
+ && yum clean all
+
+VOLUME ["/var/lib/memsql"]
+
+LABEL name="MemSQL Dynamic Node"
+LABEL vendor="MemSQL"
+LABEL version=1
+LABEL release=1
+LABEL summary="The official docker image for running any version of a single-node MemSQL server."
+LABEL description="The official docker image for running any version of a single-node MemSQL server."
+LABEL io.k8s.display-name="MemSQL Dynamic Node"
+LABEL io.k8s.description="The official docker image for running any version of a single-node MemSQL server."
+LABEL io.openshift.tags="database,db,sql,memsql"
+
+EXPOSE 3306/tcp
+
+ADD assets /assets
+RUN chmod 555 /assets/startup-exporter
+
+CMD ["/assets/startup-dynamic"]

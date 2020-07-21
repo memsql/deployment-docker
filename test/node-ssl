@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -e
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source "${DIR}/lib.sh"
+
+cat <<EOF
+---------------------------------------------------------
+Starting test: node-ssl
+IMAGE: ${IMAGE}
+---------------------------------------------------------
+EOF
+
+MASTER=memsql-node-ma
+LEAF=memsql-node-leaf
+
+create-node-ssl ${MASTER}
+create-node ${LEAF}
+wait-start ${MASTER}
+wait-start ${LEAF}
+
+assert-memsqld-running ${MASTER}
+assert-memsqld-running ${LEAF}
+
+bootstrap ${MASTER}
+add-leaf ${MASTER} ${LEAF}
+
+memsql-init-data ${MASTER}
+memsql-verify-data ${MASTER}
+
+# Require SSL (for at least the root user)
+query ${MASTER} "GRANT ALL ON *.* TO 'root'@'%' REQUIRE SSL"
+
+# This command is supposed to error because it doesn't use SSL.
+query ${MASTER} "SELECT 1" && echo "failure" && exit 1
+
+query-ssl ${MASTER} "SELECT 1"
+
+echo "success"

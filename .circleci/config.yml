@@ -1,0 +1,100 @@
+version: 2.1
+
+commands:
+  setup_environment:
+    description: "Setup the machine environment"
+    steps:
+        - run: |
+            sudo apt update
+            sudo apt install -y make bash git jq docker
+
+jobs:
+    test:
+        machine: true
+        steps:
+            - setup_environment
+            - checkout
+            - run: make test
+            - run: make test-destroy
+
+    redhat:
+        parameters:
+            package:
+                type: string
+        machine: true
+        steps:
+            - setup_environment
+            - checkout
+            - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_NODE} scan.connect.redhat.com
+            - run: make build-<<parameters.package>> redhat-verify-<<parameters.package>> VARIANT=redhat
+
+    redhat-ciab:
+        machine: true
+        steps:
+            - setup_environment
+            - checkout
+            - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_CIAB} scan.connect.redhat.com
+            - run: make build-ciab redhat-verify-ciab VARIANT=redhat
+
+    dockerhub:
+        parameters:
+            package:
+                type: string
+        machine: true
+        steps:
+            - setup_environment
+            - checkout
+            - run: docker login -u ${DOCKER_HUB_USER} --password ${DOCKER_HUB_KEY}
+            - run: make build-<<parameters.package>> publish-<<parameters.package>>
+
+workflows:
+    test_publish:
+        jobs:
+            - test
+            
+            - publish-dockerhub:
+                name: publish-dockerhub-<< matrix.package >>
+                type: approval
+                matrix:
+                    parameters:
+                        # Must match line 71.
+                        package: ["node", "node-preview", "node-6-5", "node-6-8", "node-7-0", "dynamic-node", "ciab", "tools"]
+                requires:
+                    - test
+
+            - publish-redhat:
+                name: publish-redhat-<< matrix.package >>
+                type: approval
+                matrix:
+                    parameters:
+                        # Must match line 93.
+                        package: ["node", "node-7-0"]
+                requires:
+                    - test
+
+            - publish-redhat-ciab:
+                name: publish-redhat-ciab
+                type: approval
+                requires:
+                    - test
+
+            - dockerhub:
+                name: dockerhub-<< matrix.package >>
+                matrix:
+                    parameters:
+                        package: ["node", "node-preview", "node-6-5", "node-6-8", "node-7-0", "dynamic-node", "ciab", "tools"]
+                requires: 
+                    - publish-dockerhub-<< matrix.package >>
+
+            - redhat:
+                name: redhat-<< matrix.package >>
+                matrix:
+                    parameters:
+                        package: ["node", "node-7-0"]
+                requires:
+                    - publish-redhat-<< matrix.package >>
+
+            - redhat-ciab:
+                name: redhat-ciab
+                requires:
+                    - publish-redhat-ciab

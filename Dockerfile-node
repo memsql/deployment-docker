@@ -1,0 +1,45 @@
+# vim: ft=dockerfile
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+# install MemSQL client and server packages
+ARG CLIENT_VERSION
+ARG SERVER_VERSION
+RUN yum install -y \
+    memsql-client-${CLIENT_VERSION} \
+    memsql-server${SERVER_VERSION} \
+ && yum clean all
+
+VOLUME ["/var/lib/memsql"]
+
+LABEL name="MemSQL Node"
+LABEL vendor="MemSQL"
+LABEL version=${SERVER_VERSION}
+LABEL release=1
+LABEL summary="The official docker image for running a single-node MemSQL server."
+LABEL description="The official docker image for running a single-node MemSQL server."
+LABEL io.k8s.display-name="MemSQL Node"
+LABEL io.k8s.description="The official docker image for running a single-node MemSQL server."
+LABEL io.openshift.tags="database,db,sql,memsql"
+
+ADD assets /assets
+RUN chmod -R 444 /assets \
+ && chmod 555 /assets \
+ && chmod 555 /assets/startup-node /assets/init-node-container
+
+# The init-container script is called by the MemSQL Operator in a separate
+# init-container.  This is used to setup things like volume permissions.
+RUN ln -s /assets/init-node-container /init-container
+
+# Do not lock the user to `memsql` so that the container will work with
+# arbitrary securityContexts.
+#
+# Note:  This will return exit code 1 if no match is found.  That means
+# something upstream has changed, please investigate before updating things
+# here.
+RUN sed -i '${/user = "memsql"/d;q1;}' /etc/memsql/memsqlctl.hcl
+
+EXPOSE 3306/tcp
+USER memsql
+
+CMD ["/assets/startup-node"]

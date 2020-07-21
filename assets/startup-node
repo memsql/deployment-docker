@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -e
+
+source /assets/lib.sh
+
+if [ -z "${MAXIMUM_MEMORY}" ]; then
+    log "WARNING: define MAXIMUM_MEMORY to set the maximum_memory setting in the MemSQL node"
+fi
+if [ -z "${ROOT_PASSWORD}" ]; then
+    log "WARNING: define ROOT_PASSWORD to set a root password"
+fi
+
+# ensure that the nodes db exists
+touch /var/lib/memsql/nodes.hcl
+touch /var/lib/memsql/nodes.hcl.lock
+
+# ensure a node is created
+once /var/lib/memsql/.node-lock createNode
+
+if [ -n "${ENABLE_SSL}" ]; then
+    enableSSL
+fi
+
+# set the nodes' maximum memory if needed
+setMaximumMemory "${MAXIMUM_MEMORY}"
+
+# if a pre-start script is defined in the environment, and the file exists + is
+# executable, run the file before starting MemSQL
+if [ -n "${PRE_START_SCRIPT}" ]; then
+    if [ -x "${PRE_START_SCRIPT}" ]; then
+        echo "Running pre-start script: ${PRE_START_SCRIPT}"
+        ${PRE_START_SCRIPT}
+    else
+        log "WARNING: PRE_START_SCRIPT is set to non-executable file"
+    fi
+fi
+
+# start MemSQL in the background
+startMemsql
+
+# ensure the root password is configured correctly
+updateRootPassword "${ROOT_PASSWORD}"
+
+# block on MemSQL
+wait

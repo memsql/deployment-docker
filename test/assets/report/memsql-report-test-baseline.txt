@@ -1,0 +1,41 @@
+START REPORT TEST
+POD_COUNT=4
+TEST_PARALLELISM=2
+TEST_PARALLELISM=2
+~/src/deployment-docker/assets/report ~/src/deployment-docker/test/assets/report
+./memsql-report-main.sh  starting at Fri 10 Apr 2020 10:08:48 AM PDT
+S3_REPORT_BUCKET=VAR_S3_REPORT_BUCKET_4635
+S3_REPORT_PATH=VAR_S3_REPORT_PATH_23868
+AWS_REGION=VAR_AWS_REGION_13808
+getAWS_command () 
+    echo "echo AWS support disabled for test "
+CLUSTER_NAME=VAR_CLUSTER_NAME_1671
+S3_REPORT_BUCKET=VAR_S3_REPORT_BUCKET_4635
+S3_REPORT_PATH=VAR_S3_REPORT_PATH_23868
+AWS_REGION=VAR_AWS_REGION_13808
+CLUSTER_NAME=VAR_CLUSTER_NAME_1671
+S3_REPORT_BUCKET=VAR_S3_REPORT_BUCKET_4635
+S3_REPORT_PATH=VAR_S3_REPORT_PATH_23868
+AWS_REGION=VAR_AWS_REGION_13808
+PARALLELISM=2
+PODS=test-pod-1,test-pod-2,test-pod-3,test-pod-4
+LOCAL_COLLECTION_SCRIPT=/home/tshea/src/deployment-docker/test/assets/report/memsql-report-test-local.sh
+CLUSTER_COLLECTION_SCRIPT=/home/tshea/src/deployment-docker/test/assets/report/memsql-report-test-cluster.sh
+TB_CONFIG=/tmp/tb_config FAILED_PODS_LIST=/tmp/tmp.OGmXOFMIsg REPORT_DIR=/tmp/tmp.KNDbIgsN7y RESULT_DIR=/tmp/tmp.60O6OkwOmz CMD=/home/tshea/src/deployment-docker/test/assets/report/memsql-report-test-local.sh _POD_ /tmp/tmp.KNDbIgsN7y /tmp/tb_config
+Running parallel command at PARALLELISM=2
+I Am /home/tshea/src/deployment-docker/test/assets/report/memsql-report-test-local.sh test-pod-1 /tmp/tmp.KNDbIgsN7y /tmp/tb_config
+Hi from pod test-pod-1. My report dir is /tmp/tmp.KNDbIgsN7y and my tb_config is /tmp/tb_config
+I Am /home/tshea/src/deployment-docker/test/assets/report/memsql-report-test-local.sh test-pod-2 /tmp/tmp.KNDbIgsN7y /tmp/tb_config
+Hi from pod test-pod-2. My report dir is /tmp/tmp.KNDbIgsN7y and my tb_config is /tmp/tb_config
+Bye from pod test-pod-1
+Bye from pod test-pod-2
+I Am /home/tshea/src/deployment-docker/test/assets/report/memsql-report-test-local.sh test-pod-3 /tmp/tmp.KNDbIgsN7y /tmp/tb_config
+Hi from pod test-pod-3. My report dir is /tmp/tmp.KNDbIgsN7y and my tb_config is /tmp/tb_config
+I Am /home/tshea/src/deployment-docker/test/assets/report/memsql-report-test-local.sh test-pod-4 /tmp/tmp.KNDbIgsN7y /tmp/tb_config
+Hi from pod test-pod-4. My report dir is /tmp/tmp.KNDbIgsN7y and my tb_config is /tmp/tb_config
+Bye from pod test-pod-3
+Bye from pod test-pod-4
+TEST MODE: Failed pods: 
+~/src/deployment-docker/test/assets/report
+END REPORT TEST
+PASS

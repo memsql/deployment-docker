@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+set -e
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source "${DIR}/lib.sh"
+
+if [[ -z "${LICENSE_KEY}" ]]; then
+    echo "Must specify env variable LICENSE_KEY"
+    exit 1
+fi
+if [[ -z "${IMAGE}" ]]; then
+    echo "Must specify env variable IMAGE"
+    exit 1
+fi
+
+cat <<EOF
+---------------------------------------------------------
+Starting test: ciab
+IMAGE: ${IMAGE}
+---------------------------------------------------------
+EOF
+
+run() {
+    docker exec memsql-ciab "${@}"
+}
+memsqlctl() {
+    run memsqlctl -y "${@}"
+}
+
+wait-start() {
+    echo "waiting for 2 nodes to start"
+    while true; do
+        mapfile -t IDS < <( memsqlctl list-nodes -q )
+        if [[ ${#IDS[@]} -ne 2 ]]; then
+            continue
+        fi
+
+        local numready=0
+        local nummasters=0
+        local numleaves=0
+
+        for MEMSQLID in "${IDS[@]}"; do
+            local CONNECTABLE=$(memsqlctl describe-node --property IsConnectable --memsql-id ${MEMSQLID} || echo false)
+            local RECOVERY=$(memsqlctl describe-node --property RecoveryState --memsql-id ${MEMSQLID} || echo Offline)
+            local ROLE=$(memsqlctl describe-node --property role --memsql-id ${MEMSQLID} || echo Offline)
+
+            if [[ ${ROLE} == "Master" ]]; then
+                nummasters=$((nummasters+1))
+            fi
+            if [[ ${ROLE} == "Leaf" ]]; then
+                numleaves=$((numleaves+1))
+            fi
+            if [[ ${CONNECTABLE} == "true" && ${RECOVERY} == "Online" ]]; then
+                numready=$((numready+1))
+            fi
+        done
+
+        if [[ ${numready} -eq 2 && ${nummasters} -eq 1 && ${numleaves} -eq 1 ]]; then
+            break
+        fi
+    done
+}
+
+docker rm -f memsql-ciab || ( echo "no container to cleanup before test" )
+docker run -i --init \
+    --name memsql-ciab \
+    -e LICENSE_KEY=${LICENSE_KEY} \
+    -v memsql-ciab:/var/lib/memsql \
+    ${IMAGE}
+
+docker start memsql-ciab
+
+wait-start
+
+echo "verifying process shows up in process table"
+[[ $(run ps aux | grep memsqld_safe | grep -v grep | wc -l) -eq 2 ]] || ( run ps aux; exit 1 )
+
+echo "verifying studio is running"
+[[ $(run ps aux | grep memsql-studio | grep -v grep | wc -l) -eq 2 ]] || ( run ps aux; exit 1 )
+
+MASTER_ID=$(memsqlctl list-nodes --role master -q)
+[[ -n ${MASTER_ID} ]] || ( echo "no master found"; exit 1 )
+
+echo "verifying queries & creating test data"
+memsqlctl query --memsql-id ${MASTER_ID} -e "create database test"
+run memsql -e "create table test.foo (id int)"
+run memsql -e "insert into test.foo (id) values (1)"
+run memsql -e "insert into test.foo select * from test.foo"
+run memsql -e "insert into test.foo select * from test.foo"
+run memsql -e "insert into test.foo select * from test.foo"
+run memsql -e "insert into test.foo select * from test.foo"
+
+COUNT=$(run memsql -e "select count(*) as c from test.foo" --batch)
+
+echo "restarting container"
+docker restart memsql-ciab
+
+wait-start
+
+COUNT_AFTER_RESTART=$(run memsql -e "select count(*) as c from test.foo" --batch)
+
+if [[ "${COUNT}" != "${COUNT_AFTER_RESTART}" ]]; then
+    echo "Count differs after restart"
+    echo ${COUNT}
+    echo ${COUNT_AFTER_RESTART}
+    exit 1
+fi
+
+echo "recreating nodes"
+docker rm -f memsql-ciab
+
+docker run -d --init \
+    --name memsql-ciab \
+    -e LICENSE_KEY=${LICENSE_KEY} \
+    -v memsql-ciab:/var/lib/memsql \
+    ${IMAGE}
+
+wait-start
+
+COUNT_AFTER_RECREATE=$(run memsql -e "select count(*) as c from test.foo" --batch)
+
+if [[ "${COUNT}" != "${COUNT_AFTER_RECREATE}" ]]; then
+    echo "Count differs after recreate"
+    echo ${COUNT}
+    echo ${COUNT_AFTER_RECREATE}
+    exit 1
+fi
+
+echo "success"
