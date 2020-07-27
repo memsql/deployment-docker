@@ -25,3 +25,4 @@ RUN pip3 install pymysql
 ADD assets/report /report
 ADD assets/snapshot /snapshot
 ADD assets/scripts /scripts
+ADD assets/backup /backup
