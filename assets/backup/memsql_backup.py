@@ -93,7 +93,7 @@ def FullPathForBackup(cursor, db, is_incremental, full_backup_only, backup_bucke
         return BackupInfo(backup_location, False)
 
 
-if __name__ == "__main__":
+def main():
     logging.basicConfig(level=logging.INFO, format="%(asctime)-15s: %(levelname)-8s: %(message)s")
 
     # Get the AWS credentials from the environment
@@ -175,3 +175,6 @@ if __name__ == "__main__":
                 logging.info("Finished {} backup of database `{}` at {}".format(query_options["mode"], db, backup_info.path))
 
     logging.info("Done")
+
+if __name__ == "__main__":
+    main()

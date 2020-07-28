@@ -1,19 +1,22 @@
 # Common utilities
 
+import logging
 import pymysql
 import os
 
-def must_get_env(var):
+def must_get_env(var, redact_log=False):
     val = os.getenv(var)
     if val is None:
-        raise Exception("Environment variable {} is required".format(val))
+        logging.error("Missing required environment variable {}".format(var))
+        raise Exception("Environment variable {} is required".format(var))
+    logging.info("Got {} = {}".format(var, val if not redact_log else "<redacted>"))
     return val
 
 def connect_memsql():
     return pymysql.connect(
         host=must_get_env("MEMSQL_HOSTNAME"),
         user=os.getenv("MEMSQL_USERNAME", "root"),
-        password=must_get_env("MEMSQL_PASSWORD"),
+        password=must_get_env("MEMSQL_PASSWORD", True),
     )
 
 def create_user(conn, username, password):
