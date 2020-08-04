@@ -76,6 +76,12 @@ be built by RedHat's auto-builder.
 Program requirements are dictated by RedHat, and are available at:
 https://connect.redhat.com/zones/containers/container-certification-policy-guide
 
+# Accessing CI/CD Pipeline on CircleCI
+There are two ways:
+1. Go to the [CircleCI page](https://app.circleci.com/pipelines/github/memsql/deployment-docker) directly, and sign in with your GitHub account to find the pipeline for your commit.
+2. Go to [GitHub](https://github.com) to find your [commit](https://github.com/memsql/deployment-docker/commits/master).
+   There is a single yellow dot next to your commit. Click on the yellow dot and it will show you various jobs you can run on CircleCI.
+
 # Publishing Images
 
 These instructions assume that this the image is being updated as part of a MemSQL product release.  This project relies on publicly-available versions of memsql-server, memsql-studio, and memsql-toolbox, so make sure that your target versions have already been released in Freya.
