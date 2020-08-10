@@ -24,7 +24,7 @@ def main():
     backup_region = getenv("MEMSQL_BACKUP_REGION")
     if backup_region is not None:
         backup_config["region"] = backup_region
-    
+
     compatibility_mode = getenv("COMPATIBILITY_MODE")
     if compatibility_mode is not None:
         # we only accept "true" or "false" as the env value for compatibility mode
@@ -37,24 +37,26 @@ def main():
             exit(1)
 
     # Get the backup name details
-    backup_path = util.must_get_env("MEMSQL_BACKUP_PATH_NAME")
+    backup_path = util.must_get_env("MEMSQL_BACKUP_PATH")
     backup_bucket = util.must_get_env("MEMSQL_BACKUP_BUCKET")
-    db_names = util.must_get_env("MEMSQL_BACKUP_DATABASE_NAMES").split(",")
+    logging.info("backup_path: {}".format(backup_path))
 
-    # Connect to the target cluster
+    dbs = util.must_get_env("MEMSQL_RESTORE_DBLIST")
+
+    # Connect to the cluster we want to restore to
     logging.info("Connecting to target cluster")
     db = util.connect_memsql()
     logging.info("Connected to target cluster")
     c = db.cursor()
 
     # Run the restore
-    logging.info("Attempting to restore these databases: {}".format(db_names))
+    logging.info("Attempting to restore these databases: {}".format(dbs))
     query_template = "RESTORE DATABASE `{db}` FROM S3 \"{bucket}/{path}\" CONFIG '{config}' CREDENTIALS '{credentials}'"
     query_options = {}
     query_options["bucket"] = backup_bucket
     query_options["path"] = backup_path
     query_options["config"] = json.dumps(backup_config)
-    for db in db_names:
+    for db in dbs.split(","):
         query_options["db"] = db
         logging.info(query_template.format(credentials="<redacted>", **query_options))
         c.execute(query_template.format(credentials=json.dumps(backup_creds), **query_options))
