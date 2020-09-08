@@ -121,3 +121,17 @@ updateRootPassword() {
         memsqlctl -y change-root-password --password "${password}"
     fi
 }
+
+enableServiceUser() {
+    local password="${1}"
+    local version=$(memsqlctl version | grep Version | cut -d" " -f2)
+
+    # SERVICE_USER is only enabled on >= 7.1.2
+    if [[ ${version} == $(printf '%s\n%s' $version "7.1.2" | sort -V -r | head -n 1) ]]; then
+        local ret=$(memsqlctl query -e "GRANT SERVICE_USER ON *.* TO root@'%' IDENTIFIED BY '${password}'" 2>&1)
+        if [[ ${ret} == *"Error"* ]]; then
+            log "error granting SERVICE_USER to root ${ret}"
+            exit 1
+        fi
+    fi
+}

@@ -1,6 +1,7 @@
 export MAXIMUM_MEMORY=2048
 export ROOT_PASSWORD=testing
 export RELEASE_ID=latest
+export ENABLE_SERVICE_USER=1
 
 if [[ -z "${LICENSE_KEY}" ]]; then
     echo "Must specify env variable LICENSE_KEY"
@@ -25,6 +26,7 @@ create-node() {
         -e RELEASE_ID=${RELEASE_ID} \
         -e MAXIMUM_MEMORY=${MAXIMUM_MEMORY} \
         -e ROOT_PASSWORD=${ROOT_PASSWORD} \
+        -e ENABLE_SERVICE_USER=${ENABLE_SERVICE_USER} \
         -e PRE_START_SCRIPT=/test-assets/pre-start \
         ${IMAGE}
     docker cp "${DIR}/assets" "${name}":/test-assets
@@ -39,6 +41,7 @@ create-node-ssl() {
         -e ENABLE_SSL=1 \
         -e RELEASE_ID=${RELEASE_ID} \
         -e MAXIMUM_MEMORY=${MAXIMUM_MEMORY} \
+        -e ENABLE_SERVICE_USER=${ENABLE_SERVICE_USER} \
         -e ROOT_PASSWORD=${ROOT_PASSWORD} \
         ${IMAGE}
     docker cp "${DIR}/certs" "${name}":/etc/memsql/ssl
