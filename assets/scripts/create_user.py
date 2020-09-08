@@ -18,7 +18,6 @@ def main():
     logging.info("Creating User {}".format(username_to_create))
     conn = util.connect_memsql()
     util.create_user(conn, username_to_create, password_to_create)
-    util.grant_user_service_user(conn, username_to_create)
     util.grant_user_super(conn, username_to_create)
 
     logging.info("Done!")

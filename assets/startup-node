@@ -41,10 +41,5 @@ startMemsql
 # ensure the root password is configured correctly
 updateRootPassword "${ROOT_PASSWORD}"
 
-# grant root SERVICE_USER permission
-if [ -z "${ENABLE_SERVICE_USER}" ]; then
-    enableServiceUser "${ROOT_PASSWORD}"
-fi
-
 # block on MemSQL
 wait
