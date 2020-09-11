@@ -28,5 +28,28 @@ if [[ -z $PARALLELISM || -z $PODS || -z LOCAL_COLLECTION_SCRIPT || -z CLUSTER_CO
     exit 1
 fi
 
+# default to providing a full admin report if not specified
+REPORT_TYPE=${REPORT_TYPE:-"Admin"}
+
+COLLECTOR_SUBSET=${COLLECTOR_SUBSET:-""}
+
+# only look at the COLLECTOR_SUBSET flag if REPORT_TYPE != "Admin"
+if [[ "${REPORT_TYPE}" = "Admin" ]] || [[ "${COLLECTOR_SUBSET}" = "" ]]; then
+    # all collectors
+    export COLLECTOR_FLAGS=""
+else
+    export COLLECTOR_FLAGS="--only ${COLLECTOR_SUBSET}"
+fi
+
+# default no endpoint
+S3_REPORT_ENDPOINT=${S3_REPORT_ENDPOINT:-""}
+
+# the endpoint flag is set when we are given a report endpoint
+if [[ "${S3_REPORT_ENDPOINT}" != "" ]]; then
+    export ENDPOINT_FLAG="--endpoint-url ${S3_REPORT_ENDPOINT}"
+else 
+    export ENDPOINT_FLAG=""
+fi
+
 ./memsql-report-distributed.sh
 
