@@ -28,15 +28,18 @@ if [[ -z $PARALLELISM || -z $PODS || -z LOCAL_COLLECTION_SCRIPT || -z CLUSTER_CO
     exit 1
 fi
 
-# default to providing a full admin report if not specified
-REPORT_TYPE=${REPORT_TYPE:-"Admin"}
-
+# command line users do not have to provide these args
+REPORT_TYPE=${REPORT_TYPE:-""}
 COLLECTOR_SUBSET=${COLLECTOR_SUBSET:-""}
 
-# only look at the COLLECTOR_SUBSET flag if REPORT_TYPE != "Admin"
-if [[ "${REPORT_TYPE}" = "Admin" ]] || [[ "${COLLECTOR_SUBSET}" = "" ]]; then
-    # all collectors
+# if REPORT_TYPE is not set (command line users), then we provide a full report
+# or if no collectors are specified
+if [[ "${REPORT_TYPE}" = "" ]] || [[ "${COLLECTOR_SUBSET}" = "" ]]; then
     export COLLECTOR_FLAGS=""
+# if REPORT_TYPE=Admin, we provide a full report plus all specified collectors
+elif [[ "${REPORT_TYPE}" = "Admin" ]]; then
+    export COLLECTOR_FLAGS="--include ${COLLECTOR_SUBSET}"
+# if REPORT_TYPE=CUSTOMER, we provide only all specified collectors
 else
     export COLLECTOR_FLAGS="--only ${COLLECTOR_SUBSET}"
 fi

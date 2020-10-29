@@ -22,8 +22,8 @@ created_at: "$(date)"
 EOF
 ${AWS_CMD} s3 ${ENDPOINT_FLAG} cp "${RESULT_DIR}/metadata.txt" "s3://${S3_REPORT_BUCKET}/${S3_REPORT_PATH}/metadata.txt"
 
-# We only want to collect operator logs and perform checks for Admin reports
-if [[ "${REPORT_TYPE}" = "Admin" ]]; then
+# only collect operator logs and perform checks for Admin reports and command line users who do not specify REPORT_TYPE
+if [[ "${REPORT_TYPE}" = "Admin" ]] || [[ "$REPORT_TYPE" = "" ]]; then
 # Collect operator logs
     if [[ -n "${OPERATOR_POD}" ]]; then
         OPERATOR_LOG="${RESULT_DIR}/operator.log"
