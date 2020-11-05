@@ -91,6 +91,8 @@ if __name__ == "__main__":
     if not os.path.exists("/var/lib/memsql/nodes.hcl"):
         with open("/var/lib/memsql/nodes.hcl", "w") as f:
             f.write("version = 1")
+    if not os.path.exists("/var/lib/memsql/nodes.hcl.lock"):
+        open("/var/lib/memsql/nodes.hcl.lock", "w").close()
 
     initialize_cluster = len(ctl("list-nodes")["nodes"]) == 0
 
