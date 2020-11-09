@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
+export ROOT_PASSWORD=testing
 set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "${DIR}/lib.sh"
 
 if [[ -z "${LICENSE_KEY}" ]]; then
-    echo "Must specify env variable LICENSE_KEY"
+    echo "The LICENSE_KEY environment variable must be specified"
     exit 1
 fi
 if [[ -z "${IMAGE}" ]]; then
-    echo "Must specify env variable IMAGE"
+    echo "The IMAGE environment variable must be specified"
     exit 1
 fi
 
@@ -64,6 +65,7 @@ docker rm -f memsql-ciab || ( echo "no container to cleanup before test" )
 docker run -i --init \
     --name memsql-ciab \
     -e LICENSE_KEY=${LICENSE_KEY} \
+    -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -v memsql-ciab:/var/lib/memsql \
     ${IMAGE}
 
@@ -81,22 +83,22 @@ MASTER_ID=$(memsqlctl list-nodes --role master -q)
 [[ -n ${MASTER_ID} ]] || ( echo "no master found"; exit 1 )
 
 echo "verifying queries & creating test data"
-memsqlctl query --memsql-id ${MASTER_ID} -e "create database test"
-run memsql -e "create table test.foo (id int)"
-run memsql -e "insert into test.foo (id) values (1)"
-run memsql -e "insert into test.foo select * from test.foo"
-run memsql -e "insert into test.foo select * from test.foo"
-run memsql -e "insert into test.foo select * from test.foo"
-run memsql -e "insert into test.foo select * from test.foo"
+memsqlctl query --memsql-id ${MASTER_ID} -e "create database test" -p ${ROOT_PASSWORD}
+run memsql -e "create table test.foo (id int)" --password=${ROOT_PASSWORD}
+run memsql -e "insert into test.foo (id) values (1)" --password=${ROOT_PASSWORD}
+run memsql -e "insert into test.foo select * from test.foo" --password=${ROOT_PASSWORD}
+run memsql -e "insert into test.foo select * from test.foo" --password=${ROOT_PASSWORD}
+run memsql -e "insert into test.foo select * from test.foo" --password=${ROOT_PASSWORD}
+run memsql -e "insert into test.foo select * from test.foo" --password=${ROOT_PASSWORD}
 
-COUNT=$(run memsql -e "select count(*) as c from test.foo" --batch)
+COUNT=$(run memsql -e "select count(*) as c from test.foo" --batch --password=${ROOT_PASSWORD})
 
 echo "restarting container"
 docker restart memsql-ciab
 
 wait-start
 
-COUNT_AFTER_RESTART=$(run memsql -e "select count(*) as c from test.foo" --batch)
+COUNT_AFTER_RESTART=$(run memsql -e "select count(*) as c from test.foo" --batch --password=${ROOT_PASSWORD})
 
 if [[ "${COUNT}" != "${COUNT_AFTER_RESTART}" ]]; then
     echo "Count differs after restart"
@@ -111,12 +113,13 @@ docker rm -f memsql-ciab
 docker run -d --init \
     --name memsql-ciab \
     -e LICENSE_KEY=${LICENSE_KEY} \
+    -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -v memsql-ciab:/var/lib/memsql \
     ${IMAGE}
 
 wait-start
 
-COUNT_AFTER_RECREATE=$(run memsql -e "select count(*) as c from test.foo" --batch)
+COUNT_AFTER_RECREATE=$(run memsql -e "select count(*) as c from test.foo" --batch --password=${ROOT_PASSWORD})
 
 if [[ "${COUNT}" != "${COUNT_AFTER_RECREATE}" ]]; then
     echo "Count differs after recreate"

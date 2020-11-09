@@ -28,7 +28,13 @@ def init_cluster():
     license_key = os.getenv("LICENSE_KEY", default="")
     if license_key == "":
         print("\n!!! ERROR !!!")
-        print("Must specify env variable LICENSE_KEY when creating the Docker container")
+        print("The LICENSE_KEY environment variable must be specified when creating the Docker container")
+        sys.exit(1)
+
+    root_password = os.getenv("ROOT_PASSWORD", default="")
+    if license_key == "":
+        print("\n!!! ERROR !!!")
+        print("The ROOT_PASSWORD environment variable must be specified when creating the Docker container")
         sys.exit(1)
 
     log("Creating...")
@@ -46,6 +52,7 @@ def init_cluster():
     ctl("set-license", "--memsql-id", MASTER_ID, "--license", license_key)
     ctl("bootstrap-aggregator", "--memsql-id", MASTER_ID, "--host", "127.0.0.1")
     ctl("add-leaf", "--host", "127.0.0.1", "--port", "3307")
+    ctl("change-root-password", "--all", "--password", root_password)
     log("Done.")
 
     log("Configuring Toolbox...")
