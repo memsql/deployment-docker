@@ -32,7 +32,7 @@ def init_cluster():
         sys.exit(1)
 
     root_password = os.getenv("ROOT_PASSWORD", default="")
-    if license_key == "":
+    if root_password  == "":
         print("\n!!! ERROR !!!")
         print("The ROOT_PASSWORD environment variable must be specified when creating the Docker container")
         sys.exit(1)
