@@ -20,7 +20,7 @@ To initialize a new cluster in a box:
 docker run -i --init \
     --name memsql-ciab \
     -e LICENSE_KEY=${LICENSE_KEY} \
-    -e ROOT_PASSWORD=${ROOT_PASSWORD}
+    -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -p 3306:3306 -p 8080:8080 \
     memsql/cluster-in-a-box
 ```
@@ -53,7 +53,7 @@ container, you can mount a SQL file into the Docker container like so:
 docker run -i --init \
     --name memsql-ciab \
     -e LICENSE_KEY=${LICENSE_KEY} \
-    -e ROOT_PASSWORD=${ROOT_PASSWORD}
+    -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -v /PATH/TO/INIT.SQL:/init.sql \
     -p 3306:3306 -p 8080:8080 \
     memsql/cluster-in-a-box
