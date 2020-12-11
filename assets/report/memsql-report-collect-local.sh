@@ -21,11 +21,11 @@ trap cleanup EXIT
 kubectl exec ${POD} -- bash -c 'rm -rf /tmp/report'
 kubectl exec ${POD} -- bash -c 'mkdir /tmp/report'
 
-kubectl cp $(which memsql-report) ${POD}:tmp/report/memsql-report
+kubectl cp $(which sdb-report) ${POD}:tmp/report/sdb-report
 # support running reports for root and non-root users
 kubectl exec ${POD} -- bash -c 'export USER=$(whoami) && echo user=\"${USER}\" > /tmp/report/tb_config';
 # we set XDG_DATA_HOME because reports tries to create a directory there and
 # it defaults to $HOME/.local/... which non-root users do not have write permission
-kubectl exec ${POD} -- bash -c 'export XDG_DATA_HOME=/tmp/report && /tmp/report/memsql-report collect-local '"${COLLECTOR_FLAGS}"' -c /tmp/report/tb_config -o /tmp/report/report.tar.gz --opt memsqlTracelogs.tracelogSize=100mb --hostname '${POD}''
+kubectl exec ${POD} -- bash -c 'export XDG_DATA_HOME=/tmp/report && /tmp/report/sdb-report collect-local '"${COLLECTOR_FLAGS}"' -c /tmp/report/tb_config -o /tmp/report/report.tar.gz --opt memsqlTracelogs.tracelogSize=100mb --hostname '${POD}''
 # remove leading slash from temp_dir for kubectl cp
 kubectl cp ${POD}:tmp/report/report.tar.gz ${REPORT_DIR}/${POD}
