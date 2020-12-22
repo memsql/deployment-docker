@@ -67,7 +67,7 @@ docker run -i --init \
     -e LICENSE_KEY=${LICENSE_KEY} \
     -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -v memsql-ciab:/var/lib/memsql \
-    -v ./init.sql:/init.sql \
+    -v init.sql:/init.sql \
     ${IMAGE}
 
 docker start memsql-ciab
