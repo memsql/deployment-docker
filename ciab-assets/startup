@@ -62,7 +62,7 @@ def init_cluster():
     if os.path.isfile("/init.sql"):
         log("Running /init.sql...")
         init_file = open("/init.sql", "r")
-        subprocess.check_output(["memsql"], stdin=init_file)
+        subprocess.check_output(["memsql", "-p{}".format(root_password)], stdin=init_file)
         log("Done.")
 
     if stop_after_init:
