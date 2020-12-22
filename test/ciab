@@ -84,7 +84,7 @@ MASTER_ID=$(memsqlctl list-nodes --role master -q)
 [[ -n ${MASTER_ID} ]] || ( echo "no master found"; exit 1 )
 
 echo "verifying that init.sql ran and created a database called db1"
-DB1_COUNT=$(run memsql -e "select count(*) from information_schema.schemata where schema_name="db1";" --batch --password=${ROOT_PASSWORD})
+DB1_COUNT=$(run memsql -e "select count(*) from information_schema.schemata where schema_name='db1';" --batch --password=${ROOT_PASSWORD})
 
 if [[ "${DB1_COUNT}" != "1" ]]; then
     echo "Database 'db1' was not found in the cluster which means that init.sql did not run as expected"
