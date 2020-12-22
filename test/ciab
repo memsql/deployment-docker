@@ -68,7 +68,7 @@ docker run -i --init \
     -e LICENSE_KEY=${LICENSE_KEY} \
     -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -v memsql-ciab:/var/lib/memsql \
-    --mount type=bind,source=${PWD}/init.sql,target=/init.sql \
+    -v ${PWD}/init.sql:/init.sql \
     ${IMAGE}
 
 docker start memsql-ciab
@@ -126,7 +126,7 @@ docker run -d --init \
     -e LICENSE_KEY=${LICENSE_KEY} \
     -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -v memsql-ciab:/var/lib/memsql \
-    --mount type=bind,source=${PWD}/init.sql,target=/init.sql \
+    -v ${PWD}/init.sql:/init.sql \
     ${IMAGE}
 
 wait-start
