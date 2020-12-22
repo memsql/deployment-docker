@@ -52,6 +52,7 @@ def init_cluster():
     ctl("set-license", "--memsql-id", MASTER_ID, "--license", license_key)
     ctl("bootstrap-aggregator", "--memsql-id", MASTER_ID, "--host", "127.0.0.1")
     ctl("add-leaf", "--host", "127.0.0.1", "--port", "3307")
+    log("Done.")
 
     # It's important that we run `init.sql` _before_ setting a password,
     # otherwise it wouldn't work. See
@@ -62,6 +63,7 @@ def init_cluster():
         subprocess.check_output(["memsql"], stdin=init_file)
         log("Done.")
 
+    log("Changing root password.")
     ctl("change-root-password", "--all", "--password", root_password)
     log("Done.")
 

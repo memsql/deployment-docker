@@ -62,12 +62,13 @@ wait-start() {
 }
 
 docker rm -f memsql-ciab || ( echo "no container to cleanup before test" )
+echo "CREATE DATABASE IF NOT EXISTS db1;" > init.sql
 docker run -i --init \
     --name memsql-ciab \
     -e LICENSE_KEY=${LICENSE_KEY} \
     -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -v memsql-ciab:/var/lib/memsql \
-    -v init.sql:/init.sql \
+    --mount type=bind,source=${PWD}/init.sql,target=/init.sql \
     ${IMAGE}
 
 docker start memsql-ciab
@@ -84,9 +85,10 @@ MASTER_ID=$(memsqlctl list-nodes --role master -q)
 [[ -n ${MASTER_ID} ]] || ( echo "no master found"; exit 1 )
 
 echo "verifying that init.sql ran and created a database called db1"
-DB1_COUNT=$(run memsql -e "select count(*) from information_schema.schemata where schema_name='db1';" --batch --password=${ROOT_PASSWORD})
+DB_LIST=$(run memsql -e "select schema_name from information_schema.schemata;" --batch --password=${ROOT_PASSWORD})
 
-if [[ "${DB1_COUNT}" != "1" ]]; then
+# We expect `db1` to be a substring of `DB_LIST`
+if [[ "${DB_LIST}" != *"db1"* ]]; then
     echo "Database 'db1' was not found in the cluster which means that init.sql did not run as expected"
     exit 1
 fi
@@ -124,6 +126,7 @@ docker run -d --init \
     -e LICENSE_KEY=${LICENSE_KEY} \
     -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -v memsql-ciab:/var/lib/memsql \
+    --mount type=bind,source=${PWD}/init.sql,target=/init.sql \
     ${IMAGE}
 
 wait-start
@@ -138,3 +141,4 @@ if [[ "${COUNT}" != "${COUNT_AFTER_RECREATE}" ]]; then
 fi
 
 echo "success"
+rm init.sql
