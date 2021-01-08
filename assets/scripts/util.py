@@ -38,7 +38,39 @@ def grant_user_super(conn, username):
     with conn.cursor() as cursor:
         cursor.execute("GRANT ALL ON *.* TO %s", (username,))
 
+def grant_user_permissions(conn, username, permissions, scope):
+    with conn.cursor() as cursor:
+        cursor.execute("GRANT {} ON {} TO %s".format(permissions, scope), (username,))
+
 def drop_user(conn, username):
     with conn.cursor() as cursor:
         cursor.execute("DROP USER %s", (username,))
+
+def create_jwt_user_ssl(conn, username):
+    with conn.cursor() as cursor:
+        cursor.execute("CREATE USER %s IDENTIFIED WITH authentication_jwt REQUIRE SSL", (username,))
+
+def create_jwt_user(conn, username):
+    with conn.cursor() as cursor:
+        cursor.execute("CREATE USER %s IDENTIFIED WITH authentication_jwt", (username,))
+
+def list_jwt_users(conn):
+    users = set()
+    # DB-47423, use WHERE clause
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT * FROM INFORMATION_SCHEMA.USERS")
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[2] == 'JWT':
+                users.add(row[0])
+    return users
+
+def get_variable(conn, variable_name):
+   with conn.cursor() as cursor:
+        cursor.execute("SHOW VARIABLES LIKE %s", (variable_name))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == variable_name:
+                return row[1]
+   raise Exception("Engine variable `%s` cannot be found".format(variable_name))
 
