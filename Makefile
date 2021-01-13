@@ -3,6 +3,7 @@ SERVER_VERSION_PREVIEW=7.0.5-6b319cdd26
 SERVER_VERSION_6_5=6.5.27-53746e2b5a
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
 SERVER_VERSION_7_0=7.0.23-fb3626fb91
+SERVER_VERSION_7_1=7.1.15-3506af2d8e
 CLIENT_VERSION=1.0.2
 TOOLBOX_VERSION=1.9.5
 STUDIO_VERSION=3.2.0
@@ -22,6 +23,7 @@ NODE_TAG_PREVIEW=${VARIANT}-${SERVER_VERSION_PREVIEW}-preview
 NODE_TAG_6_5=${VARIANT}-${SERVER_VERSION_6_5}
 NODE_TAG_6_8=${VARIANT}-${SERVER_VERSION_6_8}
 NODE_TAG_7_0=${VARIANT}-${SERVER_VERSION_7_0}
+NODE_TAG_7_1=${VARIANT}-${SERVER_VERSION_7_1}
 DYNAMIC_TAG=${VARIANT}-${REVISION}
 CIAB_TAG=${VARIANT}-${SERVER_VERSION}-${STUDIO_VERSION}-${TOOLBOX_VERSION}
 TOOLS_TAG=${VARIANT}-${KUBE_CLIENT_VERSION}-${TOOLBOX_VERSION}-${REVISION}
@@ -54,12 +56,18 @@ test:
 	# node-7-0
 	${MAKE} build-node-7-0
 	${MAKE} test-node-7-0
+	# node-7-1
+	${MAKE} build-node-7-1
+	${MAKE} test-node-7-1
 	# node-redhat
 	${MAKE} build-node VARIANT=redhat
 	${MAKE} test-node VARIANT=redhat
 	# node-7-0-redhat
 	${MAKE} build-node-7-0 VARIANT=redhat
 	${MAKE} test-node-7-0 VARIANT=redhat
+	# node-7-1-redhat
+	${MAKE} build-node-7-1 VARIANT=redhat
+	${MAKE} test-node-7-1 VARIANT=redhat
 	# dynamic node
 	${MAKE} build-dynamic-node
 	${MAKE} test-dynamic-node
@@ -141,6 +149,15 @@ build-node-7-0: build-base
 		-t memsql/node:${NODE_TAG_7_0} \
 		-f Dockerfile-node .
 
+.PHONY: build-node-7-1
+build-node-7-1: build-base
+	docker build \
+		--build-arg BASE_IMAGE=memsql-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_7_1} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		-t memsql/node:${NODE_TAG_7_1} \
+		-f Dockerfile-node .
+
 .PHONY: test-node
 test-node: test-destroy
 	IMAGE=memsql/node:${NODE_TAG} ./test/node
@@ -160,6 +177,10 @@ test-node-6-8: test-destroy
 .PHONY: test-node-7-0
 test-node-7-0: test-destroy
 	IMAGE=memsql/node:${NODE_TAG_7_0} ./test/node
+
+.PHONY: test-node-7-1
+test-node-7-1: test-destroy
+	IMAGE=memsql/node:${NODE_TAG_7_1} ./test/node
 
 .PHONY: test-node-ssl
 test-node-ssl: test-destroy
@@ -201,6 +222,10 @@ publish-node-6-8:
 publish-node-7-0:
 	docker push memsql/node:${NODE_TAG_7_0}
 
+.PHONY: publish-node-7-1
+publish-node-7-1:
+	docker push memsql/node:${NODE_TAG_7_1}
+
 .PHONY: redhat-verify-node
 redhat-verify-node:
 	docker tag memsql/node:${NODE_TAG} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG}
@@ -211,6 +236,12 @@ redhat-verify-node:
 redhat-verify-node-7-0:
 	docker tag memsql/node:${NODE_TAG_7_0} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_0}
 	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_0}
+	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
+
+.PHONY: redhat-verify-node-7-1
+redhat-verify-node-7-1:
+	docker tag memsql/node:${NODE_TAG_7_1} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_1}
+	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_1}
 	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
 
 .PHONY: build-dynamic-node
