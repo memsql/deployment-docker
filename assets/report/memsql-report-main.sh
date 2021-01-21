@@ -69,5 +69,7 @@ else
     export ENDPOINT_FLAG=""
 fi
 
+export REPORT_TIMEOUT=${REPORT_TIMEOUT:-"60"}
+
 ./memsql-report-distributed.sh
 

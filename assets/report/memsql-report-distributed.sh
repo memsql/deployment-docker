@@ -15,11 +15,13 @@ echo PVCS=${PVCS}
 echo LOCAL_COLLECTION_SCRIPT=${LOCAL_COLLECTION_SCRIPT}
 echo CLUSTER_COLLECTION_SCRIPT=${CLUSTER_COLLECTION_SCRIPT}
 
+REPORT_TIMEOUT=${REPORT_TIMEOUT:-"60"}
+
 function run_parallel() {
     echo "Running parallel command at PARALLELISM=${PARALLELISM}"
     if [ -f $FAILED_PODS_LIST ]; then rm -f "${FAILED_PODS_LIST}"; fi
     touch "$FAILED_PODS_LIST"
-	echo -n "$PODS" | xargs -d"," -t -n 1 -P ${PARALLELISM} -I _POD_ bash -c "timeout -k 5 60 $CMD || echo _POD_ >> ${FAILED_PODS_LIST}"
+	echo -n "$PODS" | xargs -d"," -t -n 1 -P ${PARALLELISM} -I _POD_ bash -c "timeout -k 5 ${REPORT_TIMEOUT} $CMD || echo _POD_ >> ${FAILED_PODS_LIST}"
 }
 
 # Local variables init
