@@ -79,7 +79,7 @@ echo "verifying process shows up in process table"
 [[ $(run ps aux | grep memsqld_safe | grep -v grep | wc -l) -eq 2 ]] || ( run ps aux; exit 1 )
 
 echo "verifying studio is running"
-[[ $(run ps aux | grep memsql-studio | grep -v grep | wc -l) -eq 2 ]] || ( run ps aux; exit 1 )
+[[ $(run ps aux | grep singlestoredb-studio | grep -v grep | wc -l) -eq 2 ]] || ( run ps aux; exit 1 )
 
 MASTER_ID=$(memsqlctl list-nodes --role master -q)
 [[ -n ${MASTER_ID} ]] || ( echo "no master found"; exit 1 )
