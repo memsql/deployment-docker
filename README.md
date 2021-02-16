@@ -3,14 +3,14 @@
 This repository contains our official deployment Docker images for various products.
 If you are interested in contributing, please read `CONTRIBUTING.md`.
 
-| Image        | MemSQL Packages Installed                    |
-| ------------ | -------------------------------------------- |
-| ciab         | memsql-server, memsql-studio, memsql-toolbox |
-| ciab-redhat  | memsql-server, memsql-studio, memsql-toolbox |
-| dynamic-node | (none)                                       |
-| node         | memsql-server                                |
-| node-redhat  | memsql-server                                |
-| tools        | memsql-toolbox                               |
+| Image        | MemSQL Packages Installed                           |
+|--------------|-----------------------------------------------------|
+| ciab         | memsql-server, singlestoredb-studio, memsql-toolbox |
+| ciab-redhat  | memsql-server, singlestoredb-studio, memsql-toolbox |
+| dynamic-node | (none)                                              |
+| node         | memsql-server                                       |
+| node-redhat  | memsql-server                                       |
+| tools        | memsql-toolbox                                      |
 
 # Running the Cluster in a Box image
 

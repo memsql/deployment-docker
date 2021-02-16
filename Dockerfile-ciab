@@ -10,13 +10,13 @@ ARG TOOLBOX_VERSION
 RUN yum install -y \
     memsql-client-${CLIENT_VERSION} \
     memsql-server${SERVER_VERSION} \
-    memsql-studio-${STUDIO_VERSION} \
+    singlestoredb-studio-${STUDIO_VERSION} \
     memsql-toolbox-${TOOLBOX_VERSION} \
  && yum clean all
 
 RUN mkdir /home/memsql && chown memsql:memsql /home/memsql
-ADD ciab-assets/studio.hcl /var/lib/memsql-studio/studio.hcl
-RUN chown memsql:memsql /var/lib/memsql-studio/studio.hcl
+ADD ciab-assets/studio.hcl /var/lib/singlestoredb-studio/studio.hcl
+RUN chown memsql:memsql /var/lib/singlestoredb-studio/studio.hcl
 
 VOLUME ["/var/lib/memsql"]
 
