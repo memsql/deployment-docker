@@ -6,7 +6,7 @@ FROM ${BASE_IMAGE}
 ARG CLIENT_VERSION
 ARG SERVER_VERSION
 RUN yum install -y \
-    memsql-client-${CLIENT_VERSION} \
+    singlestore-client-${CLIENT_VERSION} \
     memsql-server${SERVER_VERSION} \
  && yum clean all
 

@@ -11,7 +11,7 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBE_CL
 
 RUN yum install -y \
     which \
-    memsql-toolbox-${TOOLBOX_VERSION} \
+    singlestoredb-toolbox-${TOOLBOX_VERSION} \
     epel-release \
  && yum clean all
 

@@ -56,7 +56,7 @@ def init_cluster():
     log("Done.")
 
     log("Configuring Toolbox...")
-    subprocess.check_output(["memsql-toolbox-config", "register-host", "--yes", "--localhost", "--host", "127.0.0.1"])
+    subprocess.check_output(["sdb-toolbox-config", "register-host", "--yes", "--localhost", "--host", "127.0.0.1"])
     log("Done.")
 
     if os.path.isfile("/init.sql"):

@@ -4,7 +4,7 @@ FROM ${BASE_IMAGE}
 
 ARG CLIENT_VERSION
 RUN yum install -y \
-    memsql-client-${CLIENT_VERSION} \
+    singlestore-client-${CLIENT_VERSION} \
  && yum clean all
 
 VOLUME ["/var/lib/memsql"]

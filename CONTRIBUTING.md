@@ -5,7 +5,7 @@ publishing these images in Docker Hub and the Red Hat Container Registry.
 
 These instructions assume that this the image is being updated as part of a
 MemSQL product release. This project relies on publicly-available versions of
-memsql-server, singlestoredb-studio, and memsql-toolbox, so make sure that your target
+memsql-server, singlestoredb-studio, and singlestoredb-toolbox, so make sure that your target
 versions have already been released.
 
 1. Update the `Makefile` in the root of this repository to refer to the new version of the product you're releasing.
