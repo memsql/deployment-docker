@@ -12,20 +12,20 @@ REPORT_DIR=$2
 kubectl annotate pod ${POD} memsql-report-lock-owner=${S3_REPORT_PATH}
 
 function cleanup {
-    kubectl exec ${POD} -- bash -c 'rm -rf /tmp/report' || true
+    kubectl exec ${POD} -c node -- bash -c 'rm -rf /tmp/report' || true
     # adding - to the annotation key will make this delete that annotation
     kubectl annotate pod ${POD} memsql-report-lock-owner-
 }
 trap cleanup EXIT
 
-kubectl exec ${POD} -- bash -c 'rm -rf /tmp/report'
-kubectl exec ${POD} -- bash -c 'mkdir /tmp/report'
+kubectl exec ${POD} -c node -- bash -c 'rm -rf /tmp/report'
+kubectl exec ${POD} -c node -- bash -c 'mkdir /tmp/report'
 
-kubectl cp $(which sdb-report) ${POD}:tmp/report/sdb-report
+kubectl cp  -c node $(which sdb-report) ${POD}:tmp/report/sdb-report
 # support running reports for root and non-root users
-kubectl exec ${POD} -- bash -c 'export USER=$(whoami) && echo user=\"${USER}\" > /tmp/report/tb_config';
+kubectl exec ${POD} -c node -- bash -c 'export USER=$(whoami) && echo user=\"${USER}\" > /tmp/report/tb_config';
 # we set XDG_DATA_HOME because reports tries to create a directory there and
 # it defaults to $HOME/.local/... which non-root users do not have write permission
-kubectl exec ${POD} -- bash -c 'export XDG_DATA_HOME=/tmp/report && /tmp/report/sdb-report collect-local '"${COLLECTOR_FLAGS}"' -c /tmp/report/tb_config -o /tmp/report/report.tar.gz --opt memsqlTracelogs.tracelogSize=100mb --hostname '${POD}''
+kubectl exec ${POD} -c node -- bash -c 'export XDG_DATA_HOME=/tmp/report && /tmp/report/sdb-report collect-local '"${COLLECTOR_FLAGS}"' -c /tmp/report/tb_config -o /tmp/report/report.tar.gz --opt memsqlTracelogs.tracelogSize=100mb --hostname '${POD}''
 # remove leading slash from temp_dir for kubectl cp
-kubectl cp ${POD}:tmp/report/report.tar.gz ${REPORT_DIR}/${POD}
+kubectl cp -c node ${POD}:tmp/report/report.tar.gz ${REPORT_DIR}/${POD}
