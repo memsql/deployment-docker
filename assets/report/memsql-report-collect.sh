@@ -10,12 +10,10 @@ if [[ -z ${AWS_CMD} ]]; then
     exit 1
 fi
 
-KCONFIG_PATH="${RESULT_DIR}/kubeconfig.yaml"
-echo "${KUBECONFIG_DATA}" > "${KCONFIG_PATH}"
-sdb-report collect-kube -c "${TB_CONFIG}" --config-file "${KCONFIG_PATH}" -o "${RESULT_DIR}/${CLUSTER_NAME}.tar.gz"
+sdb-report collect-kube -c "${TB_CONFIG}" -o "${RESULT_DIR}/${CLUSTER_NAME}.tar.gz"
 
 # copy out before checking because to support a failed check we need to see the report
-${AWS_CMD} s3 ${ENDPOINT_FLAG} cp "${RESULT_DIR}/${CLUSTER_NAME}.tar.gz" "s3://${S3_REPORT_BUCKET}/${S3_REPORT_PATH}/report.tar.gz"
+${AWS_CMD} s3 ${ENDPOINT_FLAG} cp "${RESULT_DIR}/${CLUSTER_NAME}.tar.gz" "s3://${S3_REPORT_BUCKET}/${S3_REPORT_PATH}/${CLUSTER_NAME}.tar.gz"
 
 cat <<EOF > "${RESULT_DIR}/metadata.txt"
 cluster_name: "${CLUSTER_NAME}"
