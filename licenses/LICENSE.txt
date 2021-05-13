@@ -1,5 +1,5 @@
-By using this software, you agree to the License Agreement detailed in www.memsql.com/legal.
-From time to time, MemSQL may modify this Agreement per the terms defined in the Agreement.
+By using this software, you agree to the License Agreement detailed in www.singlestore.com/legal.
+From time to time, SingleStore may modify this Agreement per the terms defined in the Agreement.
 
-MemSQL includes third-party software, redistributed in source and/or binary form, subject to
+SingleStore includes third-party software, redistributed in source and/or binary form, subject to
 the licenses in "redist_licenses.txt" in this same folder.

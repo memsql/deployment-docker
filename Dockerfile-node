@@ -12,15 +12,15 @@ RUN yum install -y \
 
 VOLUME ["/var/lib/memsql"]
 
-LABEL name="MemSQL Node"
-LABEL vendor="MemSQL"
+LABEL name="SingleStore Node"
+LABEL vendor="SingleStore"
 LABEL version=${SERVER_VERSION}
 LABEL release=1
-LABEL summary="The official docker image for running a single-node MemSQL server."
-LABEL description="The official docker image for running a single-node MemSQL server."
-LABEL io.k8s.display-name="MemSQL Node"
-LABEL io.k8s.description="The official docker image for running a single-node MemSQL server."
-LABEL io.openshift.tags="database,db,sql,memsql"
+LABEL summary="The official Docker image for running a single-node SingleStore DB server."
+LABEL description="The official Docker image for running a single-node SingleStore DB server."
+LABEL io.k8s.display-name="SingleStore Node"
+LABEL io.k8s.description="The official Docker image for running a single-node SingleStore DB server."
+LABEL io.openshift.tags="database,db,sql,memsql,singlestore"
 
 ADD assets /assets
 RUN chmod -R 444 /assets \

@@ -20,15 +20,15 @@ RUN chown memsql:memsql /var/lib/singlestoredb-studio/studio.hcl
 
 VOLUME ["/var/lib/memsql"]
 
-LABEL name="MemSQL Cluster in a Box"
-LABEL vendor="MemSQL"
+LABEL name="SingleStore DB Cluster in a Box"
+LABEL vendor="SingleStore"
 LABEL version=${SERVER_VERSION}
 LABEL release=1
-LABEL summary="The official docker image for testing MemSQL + Studio (cluster-in-a-box)."
-LABEL description="The official docker image for testing MemSQL + Studio.  Check out the tutorial: http://docs.memsql.com/docs/quick-start-with-docker/"
-LABEL io.k8s.display-name="MemSQL Cluster in a Box"
-LABEL io.k8s.description="The official docker image for testing MemSQL + Studio.  Check out the tutorial: http://docs.memsql.com/docs/quick-start-with-docker/"
-LABEL io.openshift.tags="database,db,sql,memsql,testing,studio,dashboard"
+LABEL summary="The official docker image for testing SingleStore DB + Studio (cluster-in-a-box)."
+LABEL description="The official Docker image for testing SingleStore DB + Studio. Check out the tutorial: http://docs.singlestore.com/docs/quick-start-with-docker/"
+LABEL io.k8s.display-name="SingleStore DB Cluster in a Box"
+LABEL io.k8s.description="The official Docker image for testing SingleStore DB + Studio. Check out the tutorial: http://docs.singlestore.com/docs/quick-start-with-docker/"
+LABEL io.openshift.tags="database,db,sql,memsql,singlestore,testing,studio,dashboard"
 
 EXPOSE 3306/tcp
 EXPOSE 3307/tcp
