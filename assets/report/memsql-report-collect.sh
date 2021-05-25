@@ -21,22 +21,10 @@ created_at: "$(date)"
 EOF
 ${AWS_CMD} s3 ${ENDPOINT_FLAG} cp "${RESULT_DIR}/metadata.txt" "s3://${S3_REPORT_BUCKET}/${S3_REPORT_PATH}/metadata.txt"
 
-# Set up noCollect log
-NOCOLLECT="${RESULT_DIR}/noCollect.txt"
-
 # only perform checks for Admin reports and command line users who do not specify REPORT_TYPE
 if [[ "${REPORT_TYPE}" = "Admin" ]] || [[ "$REPORT_TYPE" = "" ]]; then
     CHECK_REPORT_FILE="${RESULT_DIR}/${CLUSTER_NAME}.txt"
     echo "Internal: Will write check report to ${CHECK_REPORT_FILE}"
     sdb-report check -c "${TB_CONFIG}" -i "${RESULT_DIR}/${CLUSTER_NAME}.tar.gz" | tee "${CHECK_REPORT_FILE}" || echo "WARNING: CHECKS FAILED"
     ${AWS_CMD} s3 ${ENDPOINT_FLAG} cp "${RESULT_DIR}/${CLUSTER_NAME}.txt" "s3://${S3_REPORT_BUCKET}/${S3_REPORT_PATH}/check.txt"
-
-    if [[ -v FAILED_PODS && -n "${FAILED_PODS}" ]]
-    then
-        echo "Failed to collect reports from the following pods: ${FAILED_PODS}" >> "${NOCOLLECT}"
-    fi
-fi
-
-if [[ -s "${NOCOLLECT}" ]]; then
-    ${AWS_CMD} s3 ${ENDPOINT_FLAG} cp "${NOCOLLECT}" "s3://${S3_REPORT_BUCKET}/${S3_REPORT_PATH}/noCollect.txt"
 fi

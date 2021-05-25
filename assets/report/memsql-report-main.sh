@@ -15,13 +15,12 @@ echo S3_REPORT_PATH=${S3_REPORT_PATH}
 echo AWS_REGION=${AWS_REGION}
 
 # Local variables init
-unset FAILED_PODS_LIST CLUSTER_COLLECTION_SCRIPT
+unset CLUSTER_COLLECTION_SCRIPT
 
-export PODS=$(getPods)
 export CLUSTER_COLLECTION_SCRIPT=$(getCluster_collection_script)
 
 # Validate these are not null
-if [[ -z $PODS || -z CLUSTER_COLLECTION_SCRIPT ]]; then
+if [[ -z CLUSTER_COLLECTION_SCRIPT ]]; then
     echo ERROR - required values missing. please check environment.
     exit 1
 fi

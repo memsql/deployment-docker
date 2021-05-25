@@ -2,11 +2,14 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then echo "MUST BE SOURCED!"; exit 1; fi
 
 # Define functions to control how reports are run on the cluster
 
-# getPods returns comma-separated values
-function getPods() {
-    PODS="$(kubectl get POD -l app.kubernetes.io/name=memsql-cluster,app.kubernetes.io/instance=${CLUSTER_NAME} -o custom-columns=NAME:.metadata.name --no-headers)"
-    echo $(echo -n $PODS | sed -e's/\s\+/,/g');
-}
+# function getParallelism() {
+#     # Max parallelism of 4x CPU, or reduce if fewer pods.
+#     ((_PARALLELISM=$(nproc)*4))
+#     TMP=($(cut -d"," --output-delimiter=" " -f1- <<< "$(getPods)"))
+#     POD_COUNT=${#TMP[@]}
+#     if [[ POD_COUNT -lt _PARALLELISM ]]; then _PARALLELISM=${POD_COUNT}; fi
+#     echo "${_PARALLELISM}"
+# }
 
 function getCluster_collection_script() { echo "./memsql-report-collect.sh"; }
 
@@ -20,6 +23,5 @@ function getAWS_command() {
     fi
 }
 
-export -f getPods
 export -f getCluster_collection_script
 export -f getAWS_command
