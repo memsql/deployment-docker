@@ -23,7 +23,7 @@ def log(msg):
 
 
 def init_cluster():
-    log("Initializing MemSQL Cluster in a Box")
+    log("Initializing SingleStore Cluster in a Box")
 
     license_key = os.getenv("LICENSE_KEY", default="")
     if license_key == "":

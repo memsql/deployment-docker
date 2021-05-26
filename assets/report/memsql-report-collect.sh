@@ -49,7 +49,7 @@ if [[ "${REPORT_TYPE}" = "Admin" ]] || [[ "$REPORT_TYPE" = "" ]]; then
         echo "ERROR CANNOT FIND OPERATOR DEPLOYMENT" >> "${NOCOLLECT}"
     fi
 
-    # Get Memsql Cluster CR Config
+    # Get SingleStore Cluster CR Config
     if [[ -n "${CLUSTER_NAME}" ]]; then
         MEMSQL_CLUSTER_CONFIG="${RESULT_DIR}/memsql-cluster-config.yaml"
         if [[ -f "${MEMSQL_CLUSTER_CONFIG}" ]]; then rm -f "${MEMSQL_CLUSTER_CONFIG}"; fi

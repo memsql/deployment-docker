@@ -8,7 +8,7 @@ if [ -z "${RELEASE_ID}" ]; then
     exit 1
 fi
 
-# ensure MemSQL is installed
+# ensure SingleStore DB is installed
 once /opt/.install-lock installRelease "${RELEASE_ID}"
 
 if [ -z "${EXPORTER_STARTUP_SCRIPT}" ]; then
