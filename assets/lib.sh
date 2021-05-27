@@ -22,7 +22,7 @@ getReleaseInfo() {
 
 installRelease() {
     local releaseid="${1}"
-    log "Installing MemSQL release ${releaseid}"
+    log "Installing SingleStore DB release ${releaseid}"
     for channel in ${CHANNELS[@]}; do
         local info=$(getReleaseInfo ${channel} ${releaseid})
         if [ -n "${info}" ]; then
@@ -39,7 +39,7 @@ installRelease() {
 }
 
 createNode() {
-    log "Initializing MemSQL node"
+    log "Initializing SingleStore DB node"
     memsqlctl -y create-node --no-start --base-install-dir /var/lib/memsql/instance
     memsqlctl -y update-config --key minimum_core_count --value 0
     memsqlctl -y update-config --key minimum_memory_mb --value 0
@@ -86,7 +86,7 @@ waitStart() {
     done
 }
 
-startMemsql() {
+startSingleStore() {
     local installDir=$(dirname $(readlink -f /usr/bin/memsqlctl))
     local memsqldPath=${installDir}/memsqld
     local memsqldSafePath=${installDir}/memsqld_safe

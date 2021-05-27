@@ -159,7 +159,7 @@ memsql-verify-data() {
     )
     local expected_count="16"
     if [[ "${count}" != "${expected_count}" ]]; then
-        echo "Amount of data in MemSQL differs from what is expected"
+        echo "Amount of data in SingleStore DB differs from what is expected"
         echo ${count}
         echo ${expected_count}
         exit 1

@@ -2,7 +2,7 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-# install MemSQL client and server packages
+# install SingleStore client and server packages
 ARG CLIENT_VERSION
 ARG SERVER_VERSION
 RUN yum install -y \
@@ -12,7 +12,7 @@ RUN yum install -y \
 
 VOLUME ["/var/lib/memsql"]
 
-LABEL name="SingleStore Node"
+LABEL name="SingleStore DB Node"
 LABEL vendor="SingleStore"
 LABEL version=${SERVER_VERSION}
 LABEL release=1
@@ -27,7 +27,7 @@ RUN chmod -R 444 /assets \
  && chmod 555 /assets \
  && chmod 555 /assets/startup-node /assets/init-node-container
 
-# The init-container script is called by the MemSQL Operator in a separate
+# The init-container script is called by the SingleStore Operator in a separate
 # init-container.  This is used to setup things like volume permissions.
 RUN ln -s /assets/init-node-container /init-container
 

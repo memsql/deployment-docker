@@ -10,7 +10,7 @@ if [[ -e /var/lib/memsql && "$(stat -c '%U:%G' /var/lib/memsql)" != "memsql:mems
     echo "Changing permissions of /var/lib/memsql to memsql:memsql"
 
     # Note: For performance reasons - we only adjust the top of the directory tree.
-    # For a properly configured MemSQL node, all files created after this point will
+    # For a properly configured SingleStore DB node, all files created after this point will
     # be owned by the memsql user and group so there is no need to manage
     # permissions below the top level.
     chown memsql:memsql /var/lib/memsql
