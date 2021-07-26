@@ -289,8 +289,8 @@ redhat-verify-node-7-1:
 	docker tag singlestore/node:${NODE_TAG_7_1} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_1}
 	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_1}
 	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
-.PHONY: redhat-verify-node-7-1
 
+.PHONY: redhat-verify-node-7-3
 redhat-verify-node-7-3:
 	docker tag singlestore/node:${NODE_TAG_7_3} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_3}
 	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_3}
