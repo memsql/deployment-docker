@@ -58,8 +58,8 @@ workflows:
         jobs:
             - test
 
-            - deploy:
-                name: publish-dockerhub-<< matrix.package >>
+            - dockerhub:
+                name: dockerhub-<< matrix.package >>
                 matrix:
                     parameters:
                     # Must match line 71.
