@@ -58,7 +58,6 @@ workflows:
 
             - publish-dockerhub:
                   name: publish-dockerhub-<< matrix.package >>
-                #   type: approval
                   matrix:
                       parameters:
                           # Must match line 71.
@@ -80,7 +79,6 @@ workflows:
 
             - publish-redhat:
                   name: publish-redhat-<< matrix.package >>
-                #   type: approval
                   matrix:
                       parameters:
                           # Must match line 93.
@@ -90,7 +88,6 @@ workflows:
 
             - publish-redhat-ciab:
                   name: publish-redhat-ciab
-                #   type: approval
                   requires:
                       - test
 
