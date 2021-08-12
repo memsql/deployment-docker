@@ -58,27 +58,24 @@ workflows:
         jobs:
             - test
 
-            - publish-dockerhub:
+            - deploy:
                 name: publish-dockerhub-<< matrix.package >>
                 matrix:
                     parameters:
                     # Must match line 71.
-                    package:
-                        [
-                            "node",
-                            "node-preview",
-                            "node-6-5",
-                            "node-6-8",
-                            "node-7-0",
-                            "node-7-1",
-                            "node-7-3",
-                            "dynamic-node",
-                            "ciab",
-                            "tools",
-                        ]
-                requires:
-                    - test
-
+                        package:
+                            [
+                                "node",
+                                "node-preview",
+                                "node-6-5",
+                                "node-6-8",
+                                "node-7-0",
+                                "node-7-1",
+                                "node-7-3",
+                                "dynamic-node",
+                                "ciab",
+                                "tools",
+                            ]
 
             # - publish-dockerhub:
             #       name: publish-dockerhub-<< matrix.package >>
