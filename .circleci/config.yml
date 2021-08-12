@@ -60,6 +60,7 @@ workflows:
 
             - dockerhub:
                 name: dockerhub-<< matrix.package >>
+                reqiores: test
                 matrix:
                     parameters:
                     # Must match line 71.
