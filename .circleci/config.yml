@@ -52,74 +52,98 @@ jobs:
             - run: make build-<<parameters.package>> publish-<<parameters.package>>
 
 workflows:
+    version: 2
+
     test_publish:
         jobs:
             - test
 
             - publish-dockerhub:
-                  name: publish-dockerhub-<< matrix.package >>
-                  matrix:
-                      parameters:
-                          # Must match line 71.
-                          package:
-                              [
-                                  "node",
-                                  "node-preview",
-                                  "node-6-5",
-                                  "node-6-8",
-                                  "node-7-0",
-                                  "node-7-1",
-                                  "node-7-3",
-                                  "dynamic-node",
-                                  "ciab",
-                                  "tools",
-                              ]
-                  requires:
-                      - test
+                name: publish-dockerhub-<< matrix.package >>
+                matrix:
+                    parameters:
+                    # Must match line 71.
+                    package:
+                        [
+                            "node",
+                            "node-preview",
+                            "node-6-5",
+                            "node-6-8",
+                            "node-7-0",
+                            "node-7-1",
+                            "node-7-3",
+                            "dynamic-node",
+                            "ciab",
+                            "tools",
+                        ]
+                requires:
+                    - test
 
-            - publish-redhat:
-                  name: publish-redhat-<< matrix.package >>
-                  matrix:
-                      parameters:
-                          # Must match line 93.
-                          package: ["node", "node-7-0", "node-7-1", "node-7-3"]
-                  requires:
-                      - test
 
-            - publish-redhat-ciab:
-                  name: publish-redhat-ciab
-                  requires:
-                      - test
+            # - publish-dockerhub:
+            #       name: publish-dockerhub-<< matrix.package >>
+            #       matrix:
+            #           parameters:
+            #               # Must match line 71.
+            #               package:
+            #                   [
+            #                       "node",
+            #                       "node-preview",
+            #                       "node-6-5",
+            #                       "node-6-8",
+            #                       "node-7-0",
+            #                       "node-7-1",
+            #                       "node-7-3",
+            #                       "dynamic-node",
+            #                       "ciab",
+            #                       "tools",
+            #                   ]
+            #       requires:
+            #           - test
 
-            - dockerhub:
-                  name: dockerhub-<< matrix.package >>
-                  matrix:
-                      parameters:
-                          package:
-                              [
-                                  "node",
-                                  "node-preview",
-                                  "node-6-5",
-                                  "node-6-8",
-                                  "node-7-0",
-                                  "node-7-1",
-                                  "node-7-3",
-                                  "dynamic-node",
-                                  "ciab",
-                                  "tools",
-                              ]
-                  requires:
-                      - publish-dockerhub-<< matrix.package >>
+            # - publish-redhat:
+            #       name: publish-redhat-<< matrix.package >>
+            #       matrix:
+            #           parameters:
+            #               # Must match line 93.
+            #               package: ["node", "node-7-0", "node-7-1", "node-7-3"]
+            #       requires:
+            #           - test
 
-            - redhat:
-                  name: redhat-<< matrix.package >>
-                  matrix:
-                      parameters:
-                          package: ["node", "node-7-0", "node-7-1", "node-7-3"]
-                  requires:
-                      - publish-redhat-<< matrix.package >>
+            # - publish-redhat-ciab:
+            #       name: publish-redhat-ciab
+            #       requires:
+            #           - test
 
-            - redhat-ciab:
-                  name: redhat-ciab
-                  requires:
-                      - publish-redhat-ciab
+            # - dockerhub:
+            #       name: dockerhub-<< matrix.package >>
+            #       matrix:
+            #           parameters:
+            #               package:
+            #                   [
+            #                       "node",
+            #                       "node-preview",
+            #                       "node-6-5",
+            #                       "node-6-8",
+            #                       "node-7-0",
+            #                       "node-7-1",
+            #                       "node-7-3",
+            #                       "dynamic-node",
+            #                       "ciab",
+            #                       "tools",
+            #                   ]
+            #       requires:
+            #           - publish-dockerhub-<< matrix.package >>
+
+            # - redhat:
+            #       name: redhat-<< matrix.package >>
+            #       matrix:
+            #           parameters:
+            #               package: ["node", "node-7-0", "node-7-1", "node-7-3"]
+            #       requires:
+            #           - publish-redhat-<< matrix.package >>
+
+            # - redhat-ciab:
+            #       name: redhat-ciab
+            #       requires:
+            #           - publish-redhat-ciab
