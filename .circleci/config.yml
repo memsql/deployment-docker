@@ -60,14 +60,14 @@ workflows:
 
             - dockerhub:
                 name: dockerhub-<< matrix.package >>
-                requires: test
+                requires:
+                    - test
                 matrix:
                     parameters:
                     # Must match line 71.
                         package:
                             [
                                 "node",
-                                "node-preview",
                                 "node-6-5",
                                 "node-6-8",
                                 "node-7-0",
@@ -86,7 +86,6 @@ workflows:
             #               package:
             #                   [
             #                       "node",
-            #                       "node-preview",
             #                       "node-6-5",
             #                       "node-6-8",
             #                       "node-7-0",
@@ -120,7 +119,6 @@ workflows:
             #               package:
             #                   [
             #                       "node",
-            #                       "node-preview",
             #                       "node-6-5",
             #                       "node-6-8",
             #                       "node-7-0",
