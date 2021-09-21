@@ -7,7 +7,7 @@ SERVER_VERSION_7_1=7.1.22-6aafa0cd7a
 SERVER_VERSION_7_3=7.3.17-3e9c4aa9dd
 CLIENT_VERSION=1.0.3
 TOOLBOX_VERSION=1.12.1
-STUDIO_VERSION=3.2.11
+STUDIO_VERSION=4.0.0
 KUBE_CLIENT_VERSION=v1.11.6
 REVISION=$(shell git describe --dirty=-dirty --always --long --abbrev=40 --match='')
 
