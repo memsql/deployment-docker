@@ -25,7 +25,7 @@ jobs:
         steps:
             - setup_environment
             - checkout
-            - run: cat ${REDHAT_REGISTRY_KEY_NODE} | docker login -u unused --password-stdin scan.connect.redhat.com
+            - run: echo ${REDHAT_REGISTRY_KEY_NODE} | docker login -u unused --password-stdin scan.connect.redhat.com
             - run: make build-<<parameters.package>> redhat-verify-<<parameters.package>> VARIANT=redhat
 
     redhat-ciab:
@@ -33,7 +33,7 @@ jobs:
         steps:
             - setup_environment
             - checkout
-            - run: cat ${REDHAT_REGISTRY_KEY_CIAB} | docker login -u unused --password-stdin scan.connect.redhat.com
+            - run: echo ${REDHAT_REGISTRY_KEY_CIAB} | docker login -u unused --password-stdin scan.connect.redhat.com
             - run: make build-ciab redhat-verify-ciab VARIANT=redhat
 
     dockerhub:
@@ -44,7 +44,7 @@ jobs:
         steps:
             - setup_environment
             - checkout
-            - run: cat ${DOCKER_HUB_KEY} | docker login -u ${DOCKER_HUB_USER} --password-stdin
+            - run: echo ${DOCKER_HUB_KEY} | docker login -u ${DOCKER_HUB_USER} --password-stdin
             - run: make build-<<parameters.package>> publish-<<parameters.package>>
 
 workflows:
