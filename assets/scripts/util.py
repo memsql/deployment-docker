@@ -4,6 +4,13 @@ import logging
 import pymysql
 import os
 
+def get_env(var, default, redact_log=False):
+    val = os.getenv(var)
+    if val is None:
+        val = default
+    logging.info("Got {} = {}".format(var, val if not redact_log else "<redacted>"))
+    return val
+
 def must_get_env(var, redact_log=False):
     val = os.getenv(var)
     if val is None:
@@ -34,7 +41,27 @@ def grant_user_service_user(conn, username):
             cursor.execute("GRANT SERVICE_USER ON *.* TO %s", (username,))
             logging.info("GRANT SERVICE_USER ON *.* TO {}".format(username))
 
+def grant_user_show_metadata(conn, username):
+    with conn.cursor() as cursor:
+        cursor.execute("GRANT SHOW METADATA ON *.* TO %s", (username,))
+
+def grant_user_show_pipeline(conn, username):
+    with conn.cursor() as cursor:
+        cursor.execute("GRANT SHOW PIPELINE ON *.* TO %s", (username,))
+
+def grant_user_process(conn, username):
+    with conn.cursor() as cursor:
+        cursor.execute("GRANT PROCESS ON *.* TO %s", (username,))
+
 def grant_user_super(conn, username):
+    with conn.cursor() as cursor:
+        cursor.execute("GRANT SUPER ON *.* TO %s", (username,))
+
+def grant_user_cluster(conn, username):
+    with conn.cursor() as cursor:
+        cursor.execute("GRANT CLUSTER ON *.* TO %s", (username,))
+
+def grant_user_all(conn, username):
     with conn.cursor() as cursor:
         cursor.execute("GRANT ALL ON *.* TO %s", (username,))
 
