@@ -133,11 +133,8 @@ if __name__ == "__main__":
         log_files.append(logdir + "/memsql.log")
 
     devnull = open("/dev/null", "wb")
-    # We need to set the default config in the container images back to 0.0.0.0
-    # since it is, by default, 127.0.0.1. Otherwise we can't access Studio 
-    # when running in the container.
     studio = subprocess.Popen(
-        ["singlestoredb-studio", "--port", "8080", "--host", "0.0.0.0"],
+        ["singlestoredb-studio", "--port", "8080"],
         stdout=devnull, stderr=devnull)
     log_files.append("/var/lib/singlestoredb-studio/studio.log")
 
