@@ -5,6 +5,7 @@ SERVER_VERSION_6_8=6.8.24-8e110b7bed
 SERVER_VERSION_7_0=7.0.26-8999f1390b
 SERVER_VERSION_7_1=7.1.24-e0d1868535
 SERVER_VERSION_7_3=7.3.20-cb77f93f87
+SERVER_VERSION_7_5=7.5.13-e607aa2a67
 CLIENT_VERSION=1.0.5
 TOOLBOX_VERSION=1.12.5
 STUDIO_VERSION=4.0.1
@@ -26,6 +27,7 @@ NODE_TAG_6_8=${VARIANT}-${SERVER_VERSION_6_8}
 NODE_TAG_7_0=${VARIANT}-${SERVER_VERSION_7_0}
 NODE_TAG_7_1=${VARIANT}-${SERVER_VERSION_7_1}
 NODE_TAG_7_3=${VARIANT}-${SERVER_VERSION_7_3}
+NODE_TAG_7_5=${VARIANT}-${SERVER_VERSION_7_5}
 DYNAMIC_TAG=${VARIANT}-${REVISION}
 CIAB_TAG=${VARIANT}-${SERVER_VERSION}-${STUDIO_VERSION}-${TOOLBOX_VERSION}
 TOOLS_TAG=${VARIANT}-${KUBE_CLIENT_VERSION}-${TOOLBOX_VERSION}-${REVISION}
@@ -64,6 +66,9 @@ test:
 	# node-7-3
 	${MAKE} build-node-7-3
 	${MAKE} test-node-7-3
+	# node-7-5
+	${MAKE} build-node-7-5
+	${MAKE} test-node-7-5
 	# node-redhat
 	${MAKE} build-node VARIANT=redhat
 	${MAKE} test-node VARIANT=redhat
@@ -76,6 +81,9 @@ test:
 	# node-7-3-redhat
 	${MAKE} build-node-7-3 VARIANT=redhat
 	${MAKE} test-node-7-3 VARIANT=redhat
+	# node-7-5-redhat
+	${MAKE} build-node-7-5 VARIANT=redhat
+	${MAKE} test-node-7-5 VARIANT=redhat
 	# dynamic node
 	${MAKE} build-dynamic-node
 	${MAKE} test-dynamic-node
@@ -185,6 +193,16 @@ build-node-7-3: build-base
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_7_3} memsql/node:${NODE_TAG_7_3}
 
+.PHONY: build-node-7-5
+build-node-7-5: build-base
+	docker build \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_7_5} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		-t singlestore/node:${NODE_TAG_7_5} \
+		-f Dockerfile-node .
+	docker tag singlestore/node:${NODE_TAG_7_5} memsql/node:${NODE_TAG_7_5}
+
 .PHONY: test-node
 test-node: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG} ./test/node
@@ -212,6 +230,10 @@ test-node-7-1: test-destroy
 .PHONY: test-node-7-3
 test-node-7-3: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_7_3} ./test/node
+
+.PHONY: test-node-7-5
+test-node-7-3: test-destroy
+	IMAGE=singlestore/node:${NODE_TAG_7_5} ./test/node
 
 .PHONY: test-node-ssl
 test-node-ssl: test-destroy
@@ -272,6 +294,11 @@ publish-node-7-3:
 	docker push singlestore/node:${NODE_TAG_7_3}
 	docker push memsql/node:${NODE_TAG_7_3}
 
+.PHONY: publish-node-7-5
+publish-node-7-5:
+	docker push singlestore/node:${NODE_TAG_7_5}
+	docker push memsql/node:${NODE_TAG_7_5}
+
 .PHONY: redhat-verify-node
 redhat-verify-node:
 	docker tag singlestore/node:${NODE_TAG} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG}
@@ -294,6 +321,12 @@ redhat-verify-node-7-1:
 redhat-verify-node-7-3:
 	docker tag singlestore/node:${NODE_TAG_7_3} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_3}
 	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_3}
+	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
+
+.PHONY: redhat-verify-node-7-3
+redhat-verify-node-7-3:
+	docker tag singlestore/node:${NODE_TAG_7_5} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_5}
+	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_5}
 	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
 
 .PHONY: build-dynamic-node
