@@ -232,7 +232,7 @@ test-node-7-3: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_7_3} ./test/node
 
 .PHONY: test-node-7-5
-test-node-7-3: test-destroy
+test-node-7-5: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_7_5} ./test/node
 
 .PHONY: test-node-ssl
