@@ -61,3 +61,31 @@ docker run -i --init \
 
 **Replace `/PATH/TO/INIT.SQL` with a valid path on your machine to the SQL file
 you want to run when initializing Cluster in a Box.**
+
+# Enable the HTTP API or External Functions
+
+The [HTTP API][httpapi] and [External Functions][extfunc] features can be enabled when you create the container via passing environment variables.
+
+**HTTP API:**
+
+Add the following flags to your `docker run` command:
+
+```bash
+  -e HTTP_API=ON -p 9000:9000
+```
+
+By default, the HTTP API runs on port 9000. If you want to use a different port you can instead run:
+
+```bash
+  -e HTTP_API=ON -e HTTP_API_PORT=$PORT -p $PORT:$PORT
+```
+
+**External Functions:**
+
+Add the following flag to your `docker run` command:
+```
+    -e EXTERNAL_FUNCTIONS=ON
+```
+
+[httpapi]: https://docs.singlestore.com/db/latest/en/reference/http-api.html
+[extfunc]: https://docs.singlestore.com/db/latest/en/reference/sql-reference/procedural-sql-reference/create--or-replace--external-function.html
