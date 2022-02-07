@@ -62,11 +62,18 @@ wait-start() {
 }
 
 docker rm -f memsql-ciab || ( echo "no container to cleanup before test" )
+
 echo "CREATE DATABASE IF NOT EXISTS db1;" > init.sql
+echo "USE db1;" >> init.sql
+echo "create link api as http credentials '{\"headers\": {\"Authorization\": \"Basic cm9vdDp0ZXN0aW5n\"}}';" >> init.sql
+echo "create external function check_api() returns text as remote service 'localhost:9000/api/v1/query/tuples' format json link api;" >> init.sql
+
 docker run -i --init \
     --name memsql-ciab \
     -e LICENSE_KEY=${LICENSE_KEY} \
     -e ROOT_PASSWORD=${ROOT_PASSWORD} \
+    -e EXTERNAL_FUNCTIONS=ON \
+    -e HTTP_API=ON \
     -v memsql-ciab:/var/lib/memsql \
     -v ${PWD}/init.sql:/init.sql \
     ${IMAGE}
@@ -103,6 +110,21 @@ run memsql -e "insert into test.foo select * from test.foo" --password=${ROOT_PA
 run memsql -e "insert into test.foo select * from test.foo" --password=${ROOT_PASSWORD}
 
 COUNT=$(run memsql -e "select count(*) as c from test.foo" --batch --password=${ROOT_PASSWORD})
+
+echo "verifying external functions"
+OUTPUT=$(memsqlctl query --memsql-id ${MASTER_ID} -e "select db1.check_api()" -p ${ROOT_PASSWORD} 2>&1 || true)
+if [[ $OUTPUT != *Query\ was\ empty ]]; then
+    echo "external functions failed: $OUTPUT"
+    exit 1
+fi
+
+echo "verifying http api"
+run curl -s localhost:9000/ping >/dev/null
+OUTPUT=$(run curl -s -H "content-type: application/json" -d '{"sql": "select 1 as num"}' root:${ROOT_PASSWORD}@localhost:9000/api/v1/query/rows | jq '.results[0].rows[0].num')
+if [[ $OUTPUT != "1" ]]; then
+    echo "http api failed: $OUTPUT"
+    exit 1
+fi
 
 echo "restarting container"
 docker restart memsql-ciab
