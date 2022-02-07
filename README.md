@@ -71,19 +71,20 @@ The [HTTP API][httpapi] and [External Functions][extfunc] features can be enable
 Add the following flags to your `docker run` command:
 
 ```bash
-  -e HTTP_API=ON -p 9000:9000
+    -e HTTP_API=ON -p 9000:9000
 ```
 
 By default, the HTTP API runs on port 9000. If you want to use a different port you can instead run:
 
 ```bash
-  -e HTTP_API=ON -e HTTP_API_PORT=$PORT -p $PORT:$PORT
+    -e HTTP_API=ON -e HTTP_API_PORT=$PORT -p $PORT:$PORT
 ```
 
 **External Functions:**
 
 Add the following flag to your `docker run` command:
-```
+
+```bash
     -e EXTERNAL_FUNCTIONS=ON
 ```
 
