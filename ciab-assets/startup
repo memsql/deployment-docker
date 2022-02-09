@@ -45,6 +45,14 @@ def init_cluster():
     log("Configuring...")
     ctl("update-config", "--all", "--key", "minimum_core_count", "--value", "0")
     ctl("update-config", "--all", "--key", "minimum_memory_mb", "--value", "0")
+
+    http_api = os.getenv("HTTP_API", default=None)
+    http_api_port = os.getenv("HTTP_API_PORT", default="9000")
+    if http_api:
+        log("Enabling HTTP API on port {}".format(http_api_port))
+        ctl("update-config", "--memsql-id", MASTER_ID, "--key", "http_proxy_port", "--value", http_api_port)
+        ctl("update-config", "--memsql-id", MASTER_ID, "--key", "http_api", "--value", "on")
+
     log("Done.")
 
     log("Bootstrapping...")
@@ -53,6 +61,12 @@ def init_cluster():
     ctl("bootstrap-aggregator", "--memsql-id", MASTER_ID, "--host", "127.0.0.1")
     ctl("add-leaf", "--host", "127.0.0.1", "--port", "3307")
     ctl("change-root-password", "--all", "--password", root_password)
+
+    external_functions = os.getenv("EXTERNAL_FUNCTIONS", default=None)
+    if external_functions:
+        log("Enabling external functions")
+        ctl("update-config", "--set-global", "--all", "--key", "enable_external_functions", "--value", "on")
+
     log("Done.")
 
     log("Configuring Toolbox...")
