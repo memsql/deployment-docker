@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3
 #
 # Optional arguments
 #
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     c.execute("SELECT DATABASE_NAME FROM INFORMATION_SCHEMA.DISTRIBUTED_DATABASES")
     dbs = map(lambda x: x[0], c.fetchall())
 
-    logging.info("Found {} databases".format(len(dbs)))
+    logging.info("Found {} databases".format(len(list(dbs))))
 
     def run_sql_command(query_template):
         for db in dbs:

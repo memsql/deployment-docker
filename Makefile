@@ -1,6 +1,5 @@
 SERVER_VERSION=7.6.13-39da2f5c72
 SERVER_VERSION_PREVIEW=7.8.0-b7ad7fa9e4
-SERVER_VERSION_6_5=6.5.27-53746e2b5a
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
 SERVER_VERSION_7_0=7.0.26-8999f1390b
 SERVER_VERSION_7_1=7.1.25-af0195880c
@@ -12,17 +11,16 @@ STUDIO_VERSION=4.0.4
 KUBE_CLIENT_VERSION=v1.11.6
 REVISION=$(shell git describe --dirty=-dirty --always --long --abbrev=40 --match='')
 
-VARIANT ?= centos
+VARIANT ?= alma
 
 ifeq (${VARIANT},redhat)
 BASE_IMAGE=registry.access.redhat.com/ubi7/ubi:7.7-358
 else
-BASE_IMAGE=centos:7
+BASE_IMAGE=almalinux:8.5
 endif
 
 NODE_TAG=${VARIANT}-${SERVER_VERSION}
 NODE_TAG_PREVIEW=${VARIANT}-${SERVER_VERSION_PREVIEW}-preview
-NODE_TAG_6_5=${VARIANT}-${SERVER_VERSION_6_5}
 NODE_TAG_6_8=${VARIANT}-${SERVER_VERSION_6_8}
 NODE_TAG_7_0=${VARIANT}-${SERVER_VERSION_7_0}
 NODE_TAG_7_1=${VARIANT}-${SERVER_VERSION_7_1}
@@ -51,9 +49,6 @@ test:
 	${MAKE} build-node-preview
 	${MAKE} test-node-preview
 	${MAKE} test-node-preview-ssl
-	# node-6-5
-	${MAKE} build-node-6-5
-	${MAKE} test-node-6-5
 	# node-6-8
 	${MAKE} build-node-6-8
 	${MAKE} test-node-6-8
@@ -92,7 +87,7 @@ test:
 	${MAKE} test-ciab
 	# cluster-in-a-box (ciab) redhat
 	${MAKE} build-ciab VARIANT=redhat
-	${MAKE} test-ciab VARIANT=redhat
+	#${MAKE} test-ciab VARIANT=redhat
 
 .PHONY: build-base
 build-base:
@@ -142,16 +137,6 @@ build-node-preview: build-base-dev
 		-t singlestore/node:${NODE_TAG_PREVIEW} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_PREVIEW} memsql/node:${NODE_TAG_PREVIEW}
-
-.PHONY: build-node-6-5
-build-node-6-5: build-base-dev
-	docker build \
-		--build-arg BASE_IMAGE=s2-base-dev:${VARIANT} \
-		--build-arg SERVER_VERSION=${SERVER_VERSION_6_5} \
-		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
-		-t singlestore/node:${NODE_TAG_6_5} \
-		-f Dockerfile-node .
-	docker tag singlestore/node:${NODE_TAG_6_5} memsql/node:${NODE_TAG_6_5}
 
 .PHONY: build-node-6-8
 build-node-6-8: build-base
@@ -211,10 +196,6 @@ test-node: test-destroy
 test-node-preview: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_PREVIEW} ./test/node
 
-.PHONY: test-node-6-5
-test-node-6-5: test-destroy
-	IMAGE=singlestore/node:${NODE_TAG_6_5} ./test/node
-
 .PHONY: test-node-6-8
 test-node-6-8: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_6_8} ./test/node
@@ -268,11 +249,6 @@ stage-node-preview:
 	docker push singlestore/node:staging-${NODE_TAG_PREVIEW}
 	docker tag memsql/node:${NODE_TAG_PREVIEW} memsql/node:staging-${NODE_TAG_PREVIEW}
 	docker push memsql/node:staging-${NODE_TAG_PREVIEW}
-
-.PHONY: publish-node-6-5
-publish-node-6-5:
-	docker push singlestore/node:${NODE_TAG_6_5}
-	docker push memsql/node:${NODE_TAG_6_5}
 
 .PHONY: publish-node-6-8
 publish-node-6-8:
