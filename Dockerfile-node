@@ -39,6 +39,10 @@ RUN ln -s /assets/init-node-container /init-container
 # here.
 RUN sed -i '${/user = "memsql"/d;q1;}' /etc/memsql/memsqlctl.hcl
 
+# Make sure python has a default alternative to python3.
+#
+RUN update-alternatives --set python /usr/bin/python3
+
 EXPOSE 3306/tcp
 USER memsql
 
