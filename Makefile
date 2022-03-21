@@ -87,7 +87,7 @@ test:
 	${MAKE} test-ciab
 	# cluster-in-a-box (ciab) redhat
 	${MAKE} build-ciab VARIANT=redhat
-	#${MAKE} test-ciab VARIANT=redhat
+	${MAKE} test-ciab VARIANT=redhat
 
 .PHONY: build-base
 build-base:
