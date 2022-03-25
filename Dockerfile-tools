@@ -30,6 +30,3 @@ RUN pip3 install pymysql boto3; if [ $? -ne 0 ]; then \
 fi
 
 ADD assets/report /report
-ADD assets/snapshot /snapshot
-ADD assets/scripts /scripts
-ADD assets/backup /backup
