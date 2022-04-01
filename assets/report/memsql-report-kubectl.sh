@@ -26,16 +26,22 @@ OTHER_FLAGS=${OTHER_FLAGS:-""}
 REPORT_TIMEOUT=${REPORT_TIMEOUT:-"60"}
 S3_REPORT_ENDPOINT=${S3_REPORT_ENDPOINT:-""}
 
-# if REPORT_TYPE is not set (command line users), then we provide a full report
-# or if no collectors are specified
-if [[ "${REPORT_TYPE}" = "" ]] || [[ "${COLLECTOR_SUBSET}" = "" ]]; then
-    COLLECTOR_FLAGS=""
-# if REPORT_TYPE=Admin, we provide a full report plus all specified collectors
-elif [[ "${REPORT_TYPE}" = "Admin" ]]; then
-    COLLECTOR_FLAGS="--include ${COLLECTOR_SUBSET}"
-# if REPORT_TYPE=CUSTOMER, we provide only all specified collectors
+COLLECT_ONLY=${COLLECT_ONLY:-""}
+
+if [[ "${COLLECT_ONLY}" != "" ]]; then
+    COLLECTOR_FLAGS="--only ${COLLECT_ONLY}"
 else
-    COLLECTOR_FLAGS="--only ${COLLECTOR_SUBSET}"
+    # if REPORT_TYPE is not set (command line users), then we provide a full report
+    # or if no collectors are specified
+    if [[ "${REPORT_TYPE}" = "" ]] || [[ "${COLLECTOR_SUBSET}" = "" ]]; then
+        COLLECTOR_FLAGS=""
+    # if REPORT_TYPE=Admin, we provide a full report plus all specified collectors
+    elif [[ "${REPORT_TYPE}" = "Admin" ]]; then
+        COLLECTOR_FLAGS="--include ${COLLECTOR_SUBSET}"
+    # if REPORT_TYPE=CUSTOMER, we provide only all specified collectors
+    else
+        COLLECTOR_FLAGS="--only ${COLLECTOR_SUBSET}"
+    fi
 fi
 
 # the endpoint flag is set when we are given a report endpoint
