@@ -1,10 +1,11 @@
-SERVER_VERSION=7.6.14-6f67cb4355
+SERVER_VERSION=7.8.1-f81d4b03e1
 SERVER_VERSION_PREVIEW=7.8.0-b7ad7fa9e4
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
 SERVER_VERSION_7_0=7.0.26-8999f1390b
 SERVER_VERSION_7_1=7.1.25-af0195880c
 SERVER_VERSION_7_3=7.3.24-39737ee27b
 SERVER_VERSION_7_5=7.5.18-02b9fe2427
+SERVER_VERSION_7_6=7.6.14-6f67cb4355
 CLIENT_VERSION=1.0.5
 TOOLBOX_VERSION=1.13.6
 STUDIO_VERSION=4.0.4
@@ -26,6 +27,7 @@ NODE_TAG_7_0=${VARIANT}-${SERVER_VERSION_7_0}
 NODE_TAG_7_1=${VARIANT}-${SERVER_VERSION_7_1}
 NODE_TAG_7_3=${VARIANT}-${SERVER_VERSION_7_3}
 NODE_TAG_7_5=${VARIANT}-${SERVER_VERSION_7_5}
+NODE_TAG_7_6=${VARIANT}-${SERVER_VERSION_7_6}
 DYNAMIC_TAG=${VARIANT}-${REVISION}
 CIAB_TAG=${VARIANT}-${SERVER_VERSION}-${STUDIO_VERSION}-${TOOLBOX_VERSION}
 TOOLS_TAG=${VARIANT}-${KUBE_CLIENT_VERSION}-${TOOLBOX_VERSION}-${REVISION}
@@ -64,6 +66,9 @@ test:
 	# node-7-5
 	${MAKE} build-node-7-5
 	${MAKE} test-node-7-5
+	# node-7-6
+	${MAKE} build-node-7-6
+	${MAKE} test-node-7-6
 	# node-redhat
 	${MAKE} build-node VARIANT=redhat
 	${MAKE} test-node VARIANT=redhat
@@ -79,6 +84,9 @@ test:
 	# node-7-5-redhat
 	${MAKE} build-node-7-5 VARIANT=redhat
 	${MAKE} test-node-7-5 VARIANT=redhat
+	# node-7-6-redhat
+	${MAKE} build-node-7-6 VARIANT=redhat
+	${MAKE} test-node-7-6 VARIANT=redhat
 	# dynamic node
 	${MAKE} build-dynamic-node
 	${MAKE} test-dynamic-node
@@ -187,6 +195,16 @@ build-node-7-5: build-base
 		-t singlestore/node:${NODE_TAG_7_5} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_7_5} memsql/node:${NODE_TAG_7_5}
+
+.PHONY: build-node-7-6
+build-node-7-6: build-base
+	docker build \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_7_6} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		-t singlestore/node:${NODE_TAG_7_6} \
+		-f Dockerfile-node .
+	docker tag singlestore/node:${NODE_TAG_7_6} memsql/node:${NODE_TAG_7_6}
 
 .PHONY: test-node
 test-node: test-destroy
@@ -299,10 +317,16 @@ redhat-verify-node-7-3:
 	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_3}
 	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
 
-.PHONY: redhat-verify-node-7-3
-redhat-verify-node-7-3:
+.PHONY: redhat-verify-node-7-5
+redhat-verify-node-7-5:
 	docker tag singlestore/node:${NODE_TAG_7_5} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_5}
 	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_5}
+	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
+
+.PHONY: redhat-verify-node-7-6
+redhat-verify-node-7-6:
+	docker tag singlestore/node:${NODE_TAG_7_6} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_6}
+	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_6}
 	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
 
 .PHONY: build-dynamic-node
