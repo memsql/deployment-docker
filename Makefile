@@ -234,6 +234,10 @@ test-node-7-3: test-destroy
 test-node-7-5: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_7_5} ./test/node
 
+.PHONY: test-node-7-6
+test-node-7-6: test-destroy
+	IMAGE=singlestore/node:${NODE_TAG_7_6} ./test/node
+
 .PHONY: test-node-ssl
 test-node-ssl: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG} ./test/node-ssl
@@ -292,6 +296,11 @@ publish-node-7-3:
 publish-node-7-5:
 	docker push singlestore/node:${NODE_TAG_7_5}
 	docker push memsql/node:${NODE_TAG_7_5}
+
+.PHONY: publish-node-7-6
+publish-node-7-6:
+	docker push singlestore/node:${NODE_TAG_7_6}
+	docker push memsql/node:${NODE_TAG_7_6}
 
 .PHONY: redhat-verify-node
 redhat-verify-node:
