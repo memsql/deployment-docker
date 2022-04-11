@@ -67,6 +67,7 @@ workflows:
                                   "node-7-1",
                                   "node-7-3",
                                   "node-7-5",
+                                  "node-7-6",
                                   "dynamic-node",
                                   "ciab",
                                   "tools",
@@ -80,7 +81,15 @@ workflows:
                   matrix:
                       parameters:
                           # Must match line 93.
-                          package: ["node", "node-7-0", "node-7-1", "node-7-3", "node-7-5"]
+                          package:
+                              [
+                                  "node",
+                                  "node-7-0",
+                                  "node-7-1",
+                                  "node-7-3",
+                                  "node-7-5",
+                                  "node-7-6"
+                              ]
                   requires:
                       - test
 
@@ -103,6 +112,7 @@ workflows:
                                   "node-7-1",
                                   "node-7-3",
                                   "node-7-5",
+                                  "node-7-6",
                                   "dynamic-node",
                                   "ciab",
                                   "tools",
@@ -114,7 +124,15 @@ workflows:
                   name: redhat-<< matrix.package >>
                   matrix:
                       parameters:
-                          package: ["node", "node-7-0", "node-7-1", "node-7-3", "node-7-5"]
+                          package:
+                              [
+                                  "node",
+                                  "node-7-0",
+                                  "node-7-1",
+                                  "node-7-3",
+                                  "node-7-5",
+                                  "node-7-6"
+                              ]
                   requires:
                       - publish-redhat-<< matrix.package >>
 
