@@ -124,23 +124,23 @@ workflows:
                   requires:
                       - publish-dockerhub-<< matrix.package >>
 
-            - redhat:
-                  name: redhat-<< matrix.package >>
-                  matrix:
-                      parameters:
-                          package:
-                              [
-                                  "node",
-                                  "node-7-0",
-                                  "node-7-1",
-                                  "node-7-3",
-                                  "node-7-5",
-                                  "node-7-6"
-                              ]
-                  requires:
-                      - publish-redhat-<< matrix.package >>
+            # - redhat:
+            #       name: redhat-<< matrix.package >>
+            #       matrix:
+            #           parameters:
+            #               package:
+            #                   [
+            #                       "node",
+            #                       "node-7-0",
+            #                       "node-7-1",
+            #                       "node-7-3",
+            #                       "node-7-5",
+            #                       "node-7-6"
+            #                   ]
+            #       requires:
+            #           - publish-redhat-<< matrix.package >>
 
-            - redhat-ciab:
-                  name: redhat-ciab
-                  requires:
-                      - publish-redhat-ciab
+            # - redhat-ciab:
+            #       name: redhat-ciab
+            #       requires:
+            #           - publish-redhat-ciab
