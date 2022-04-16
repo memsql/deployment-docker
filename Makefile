@@ -248,10 +248,15 @@ test-node-preview-ssl: test-destroy
 
 .PHONY: publish-node
 publish-node:
-	docker push singlestore/node:${NODE_TAG}
-	docker push memsql/node:${NODE_TAG}
-	docker push singlestore/node:latest
-	docker push memsql/node:latest
+	@if docker manifest inspect singlestore/node:${NODE_TAG} ; then \
+		echo "Image not found in registry, publishing." ; \
+		# docker push singlestore/node:${NODE_TAG} \
+		# docker push memsql/node:${NODE_TAG} \
+		# docker push singlestore/node:latest \
+		# docker push memsql/node:latest \
+	else \
+		echo "Image already present in registry." ;\
+	fi
 
 .PHONY: stage-node
 stage-node:
@@ -394,10 +399,15 @@ test-ciab: test-destroy
 
 .PHONY: publish-ciab
 publish-ciab:
-	docker push singlestore/cluster-in-a-box:${CIAB_TAG}
-	docker push singlestore/cluster-in-a-box:latest
-	docker push memsql/cluster-in-a-box:${CIAB_TAG}
-	docker push memsql/cluster-in-a-box:latest
+	@if docker manifest inspect singlestore/cluster-in-a-box:${CIAB_TAG} ; then \
+		echo "Image not found in registry, publishing." ; \
+		# docker push singlestore/cluster-in-a-box:${CIAB_TAG} \
+		# docker push singlestore/cluster-in-a-box:latest \
+		# docker push memsql/cluster-in-a-box:${CIAB_TAG} \
+		# docker push memsql/cluster-in-a-box:latest \
+	else \
+		echo "Image already present in registry." ; \
+	fi
 
 .PHONY: redhat-verify-ciab
 redhat-verify-ciab:
