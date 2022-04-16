@@ -52,56 +52,6 @@ workflows:
         jobs:
             - test
 
-            - publish-dockerhub:
-                  name: publish-dockerhub-<< matrix.package >>
-                  matrix:
-                      parameters:
-                          # Must match line 71.
-                          package:
-                              [
-                                  "node",
-                                  "node-preview",
-                                  "node-6-8",
-                                  "node-7-0",
-                                  "node-7-1",
-                                  "node-7-3",
-                                  "node-7-5",
-                                  "node-7-6",
-                                  "dynamic-node",
-                                  "ciab",
-                                  "tools",
-                              ]
-                  requires:
-                      - test
-
-            # The following code is commented beacuse publishing to Red Hat
-            # is not working at the moment. See https://memsql.atlassian.net/browse/GIT-3178
-            # for more details.
-            # 
-            # - publish-redhat:
-            #       name: publish-redhat-<< matrix.package >>
-            #       type: approval
-            #       matrix:
-            #           parameters:
-            #               # Must match line 93.
-            #               package:
-            #                   [
-            #                       "node",
-            #                       "node-7-0",
-            #                       "node-7-1",
-            #                       "node-7-3",
-            #                       "node-7-5",
-            #                       "node-7-6"
-            #                   ]
-            #       requires:
-            #           - test
-
-            # - publish-redhat-ciab:
-            #       name: publish-redhat-ciab
-            #       type: approval
-            #       requires:
-            #           - test
-
             - dockerhub:
                   name: dockerhub-<< matrix.package >>
                   matrix:
@@ -122,6 +72,10 @@ workflows:
                               ]
                   requires:
                       - test
+
+            # The following code is commented beacuse publishing to Red Hat
+            # is not working at the moment. See https://memsql.atlassian.net/browse/GIT-3178
+            # for more details.
 
             # - redhat:
             #       name: redhat-<< matrix.package >>
