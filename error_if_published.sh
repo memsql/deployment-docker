@@ -11,7 +11,7 @@ set -euxo pipefail
 # This allows the rest of the code to be skipped. It's a bit hacky.
 
 # This is needed for `docker manifest` to work.
-export DOCKER_CLI_EXPERIMENTAL=enabled
+# export DOCKER_CLI_EXPERIMENTAL=enabled
 
 docker version
 
