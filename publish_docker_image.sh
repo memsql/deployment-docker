@@ -10,6 +10,8 @@ set -euxo pipefail
 # This script will only publish each image if it isn't already
 # present in remote.
 
+export DOCKER_CLI_EXPERIMENTAL=enabled
+
 for var in "$@"
 do
     if docker manifest inspect ${var} ; then
