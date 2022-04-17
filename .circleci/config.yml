@@ -48,7 +48,8 @@ jobs:
         parameters:
             package:
                 type: string
-        machine: true
+        machine:
+            image: ubuntu-2004:202201-02
         steps:
             - setup_environment
             - checkout
