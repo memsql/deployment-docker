@@ -419,7 +419,7 @@ test-ciab: test-destroy
 
 .PHONY: publish-ciab
 publish-ciab:
-	./exit_if_published.sh \
+	./error_if_published.sh \
 		singlestore/cluster-in-a-box:${CIAB_TAG} \
 		singlestore/cluster-in-a-box:latest \
 		memsql/cluster-in-a-box:${CIAB_TAG} \
