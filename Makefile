@@ -248,15 +248,21 @@ test-node-preview-ssl: test-destroy
 
 .PHONY: publish-node
 publish-node:
-	@if docker manifest inspect singlestore/node:${NODE_TAG} ; then \
-		echo "Image not found in registry, publishing." ; \
-		# docker push singlestore/node:${NODE_TAG} \
-		# docker push memsql/node:${NODE_TAG} \
-		# docker push singlestore/node:latest \
-		# docker push memsql/node:latest \
-	else \
-		echo "Image already present in registry." ;\
-	fi
+	./publish_docker_image.sh \
+		singlestore/node:${NODE_TAG} \
+		memsql/node:${NODE_TAG} \
+		singlestore/node:latest \
+		memsql/node:latest
+
+	# @if docker manifest inspect singlestore/node:${NODE_TAG} ; then \
+	# 	echo "Image not found in registry, publishing." ; \
+	# 	# docker push
+	# 	# docker push
+	# 	# docker push
+	# 	# docker push
+	# else \
+	# 	echo "Image already present in registry." ;\
+	# fi
 
 .PHONY: stage-node
 stage-node:
@@ -279,33 +285,49 @@ stage-node-preview:
 
 .PHONY: publish-node-6-8
 publish-node-6-8:
-	docker push singlestore/node:${NODE_TAG_6_8}
-	docker push memsql/node:${NODE_TAG_6_8}
+	echo "publish node 6-8"
+	# docker push singlestore/node:${NODE_TAG_6_8}
+	# docker push memsql/node:${NODE_TAG_6_8}
 
 .PHONY: publish-node-7-0
 publish-node-7-0:
-	docker push singlestore/node:${NODE_TAG_7_0}
-	docker push memsql/node:${NODE_TAG_7_0}
+	echo "publish node 7-0"
+	# @if docker manifest inspect singlestore/node:${NODE_TAG_7_0} ; then \
+	# 	echo "Image not found in registry, publishing." ; \
+	# 	# docker push singlestore/node:${NODE_TAG_7_0}
+	# 	# docker push memsql/node:${NODE_TAG_7_0}
+	# else \
+	# 	echo "Image already present in registry." ;\
+	# fi
 
 .PHONY: publish-node-7-1
 publish-node-7-1:
-	docker push singlestore/node:${NODE_TAG_7_1}
-	docker push memsql/node:${NODE_TAG_7_1}
+	echo "publish node 7-1"
+	# @if docker manifest inspect singlestore/node:${NODE_TAG_7_0} ; then \
+	# 	echo "Image not found in registry, publishing." ; \
+	# 	# docker push singlestore/node:${NODE_TAG_7_1}
+	# 	# docker push memsql/node:${NODE_TAG_7_1}
+	# else \
+	# 	echo "Image already present in registry." ;\
+	# fi
 
 .PHONY: publish-node-7-3
 publish-node-7-3:
-	docker push singlestore/node:${NODE_TAG_7_3}
-	docker push memsql/node:${NODE_TAG_7_3}
+	echo "publish node 7-3"
+	# docker push singlestore/node:${NODE_TAG_7_3}
+	# docker push memsql/node:${NODE_TAG_7_3}
 
 .PHONY: publish-node-7-5
 publish-node-7-5:
-	docker push singlestore/node:${NODE_TAG_7_5}
-	docker push memsql/node:${NODE_TAG_7_5}
+	echo "publish node 7-5"
+	# docker push singlestore/node:${NODE_TAG_7_5}
+	# docker push memsql/node:${NODE_TAG_7_5}
 
 .PHONY: publish-node-7-6
 publish-node-7-6:
-	docker push singlestore/node:${NODE_TAG_7_6}
-	docker push memsql/node:${NODE_TAG_7_6}
+	echo "publish node 7-6"
+	# docker push singlestore/node:${NODE_TAG_7_6}
+	# docker push memsql/node:${NODE_TAG_7_6}
 
 .PHONY: redhat-verify-node
 redhat-verify-node:
@@ -360,10 +382,11 @@ test-dynamic-node: test-destroy
 
 .PHONY: publish-dynamic-node
 publish-dynamic-node:
-	docker push singlestore/dynamic-node:${DYNAMIC_TAG}
-	docker push singlestore/dynamic-node:latest
-	docker push memsql/dynamic-node:${DYNAMIC_TAG}
-	docker push memsql/dynamic-node:latest
+	echo "publish dynamic-node"
+	# docker push singlestore/dynamic-node:${DYNAMIC_TAG}
+	# docker push singlestore/dynamic-node:latest
+	# docker push memsql/dynamic-node:${DYNAMIC_TAG}
+	# docker push memsql/dynamic-node:latest
 
 .PHONY: build-ciab
 build-ciab: build-base
@@ -399,15 +422,11 @@ test-ciab: test-destroy
 
 .PHONY: publish-ciab
 publish-ciab:
-	@if docker manifest inspect singlestore/cluster-in-a-box:${CIAB_TAG} ; then \
-		echo "Image not found in registry, publishing." ; \
-		# docker push singlestore/cluster-in-a-box:${CIAB_TAG} \
-		# docker push singlestore/cluster-in-a-box:latest \
-		# docker push memsql/cluster-in-a-box:${CIAB_TAG} \
-		# docker push memsql/cluster-in-a-box:latest \
-	else \
-		echo "Image already present in registry." ; \
-	fi
+	./publish_docker_image.sh \
+		singlestore/cluster-in-a-box:${CIAB_TAG} \
+		singlestore/cluster-in-a-box:latest \
+		memsql/cluster-in-a-box:${CIAB_TAG} \
+		memsql/cluster-in-a-box:latest
 
 .PHONY: redhat-verify-ciab
 redhat-verify-ciab:
@@ -422,10 +441,11 @@ test-destroy:
 
 .PHONY: publish-tools
 publish-tools:
-	docker push singlestore/tools:${TOOLS_TAG}
-	docker push singlestore/tools:latest
-	docker push memsql/tools:${TOOLS_TAG}
-	docker push memsql/tools:latest
+	echo "publish-tools"
+	# docker push singlestore/tools:${TOOLS_TAG}
+	# docker push singlestore/tools:latest
+	# docker push memsql/tools:${TOOLS_TAG}
+	# docker push memsql/tools:latest
 
 .PHONY: stage-tools
 stage-tools:
