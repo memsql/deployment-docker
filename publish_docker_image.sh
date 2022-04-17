@@ -11,7 +11,7 @@ set -euxo pipefail
 # present in remote.
 
 # This is needed for `docker manifest` to work.
-export DOCKER_CLI_EXPERIMENTAL=enabled
+# export DOCKER_CLI_EXPERIMENTAL=enabled
 
 for var in "$@"
 do
