@@ -21,7 +21,7 @@ jobs:
             # - run: make test
             # - run: make test-destroy
 
-    # All the redhat-related code is commented beacuse publishing to Red Hat's Registry
+    # All the redhat-related code is commented because publishing to Red Hat's Registry
     # is not working at the moment. See https://memsql.atlassian.net/browse/GIT-3178
     # for more details.
 
@@ -53,7 +53,7 @@ jobs:
             - setup_environment
             - checkout
             - run: docker login -u ${DOCKER_HUB_USER} --password ${DOCKER_HUB_KEY}
-            - run: make build-<<parameters.package>> publish-<<parameters.package>>
+            - run: make publish-<<parameters.package>>
 
 workflows:
     test_publish:

@@ -248,11 +248,18 @@ test-node-preview-ssl: test-destroy
 
 .PHONY: publish-node
 publish-node:
-	./publish_docker_image.sh \
+	./error_if_published.sh \
 		singlestore/node:${NODE_TAG} \
 		memsql/node:${NODE_TAG} \
 		singlestore/node:latest \
 		memsql/node:latest
+
+	${MAKE} build-node
+
+	# docker push singlestore/node:${NODE_TAG}
+	# docker push memsql/node:${NODE_TAG}
+	# docker push singlestore/node:latest
+	# docker push memsql/node:latest
 
 .PHONY: stage-node
 stage-node:
@@ -412,11 +419,18 @@ test-ciab: test-destroy
 
 .PHONY: publish-ciab
 publish-ciab:
-	./publish_docker_image.sh \
+	./exit_if_published.sh \
 		singlestore/cluster-in-a-box:${CIAB_TAG} \
 		singlestore/cluster-in-a-box:latest \
 		memsql/cluster-in-a-box:${CIAB_TAG} \
 		memsql/cluster-in-a-box:latest
+
+	${MAKE} build-ciab
+
+	# docker push singlestore/cluster-in-a-box:${CIAB_TAG}
+	# docker push singlestore/cluster-in-a-box:latest
+	# docker push memsql/cluster-in-a-box:${CIAB_TAG}
+	# docker push memsql/cluster-in-a-box:latest
 
 .PHONY: redhat-verify-ciab
 redhat-verify-ciab:
