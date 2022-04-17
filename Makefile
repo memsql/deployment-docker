@@ -254,16 +254,6 @@ publish-node:
 		singlestore/node:latest \
 		memsql/node:latest
 
-	# @if docker manifest inspect singlestore/node:${NODE_TAG} ; then \
-	# 	echo "Image not found in registry, publishing." ; \
-	# 	# docker push
-	# 	# docker push
-	# 	# docker push
-	# 	# docker push
-	# else \
-	# 	echo "Image already present in registry." ;\
-	# fi
-
 .PHONY: stage-node
 stage-node:
 	docker tag singlestore/node:${NODE_TAG} singlestore/node:staging-${NODE_TAG}

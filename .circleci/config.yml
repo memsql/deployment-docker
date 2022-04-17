@@ -18,24 +18,28 @@ jobs:
             # - run: make test
             # - run: make test-destroy
 
-    redhat:
-        parameters:
-            package:
-                type: string
-        machine: true
-        steps:
-            - setup_environment
-            - checkout
-            - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_NODE} scan.connect.redhat.com
-            - run: make build-<<parameters.package>> redhat-verify-<<parameters.package>> VARIANT=redhat
+    # All the redhat-related code is commented beacuse publishing to Red Hat's Registry
+    # is not working at the moment. See https://memsql.atlassian.net/browse/GIT-3178
+    # for more details.
 
-    redhat-ciab:
-        machine: true
-        steps:
-            - setup_environment
-            - checkout
-            - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_CIAB} scan.connect.redhat.com
-            - run: make build-ciab redhat-verify-ciab VARIANT=redhat
+    # redhat:
+    #     parameters:
+    #         package:
+    #             type: string
+    #     machine: true
+    #     steps:
+    #         - setup_environment
+    #         - checkout
+    #         - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_NODE} scan.connect.redhat.com
+    #         - run: make build-<<parameters.package>> redhat-verify-<<parameters.package>> VARIANT=redhat
+
+    # redhat-ciab:
+    #     machine: true
+    #     steps:
+    #         - setup_environment
+    #         - checkout
+    #         - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_CIAB} scan.connect.redhat.com
+    #         - run: make build-ciab redhat-verify-ciab VARIANT=redhat
 
     dockerhub:
         parameters:
@@ -73,10 +77,6 @@ workflows:
                               ]
                   requires:
                       - test
-
-            # The following code is commented beacuse publishing to Red Hat
-            # is not working at the moment. See https://memsql.atlassian.net/browse/GIT-3178
-            # for more details.
 
             # - redhat:
             #       name: redhat-<< matrix.package >>

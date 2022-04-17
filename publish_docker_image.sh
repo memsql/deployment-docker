@@ -5,11 +5,12 @@ set -euxo pipefail
 # The arguments to this script are a list of list image names
 # to be published. e.g.:
 #
-# ./publish_docker_image.sh singlestore/node:${NODE_TAG} memsql/node:${NODE_TAG}
+# ./publish_docker_image.sh singlestore/node:${NODE_TAG} memsql/node:${NODE_TAG} ...
 #
 # This script will only publish each image if it isn't already
 # present in remote.
 
+# This is needed for `docker manifest` to work.
 export DOCKER_CLI_EXPERIMENTAL=enabled
 
 for var in "$@"
@@ -21,4 +22,3 @@ do
         # docker push $var
     fi
 done
-
