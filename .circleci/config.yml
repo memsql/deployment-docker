@@ -72,8 +72,6 @@ workflows:
                                   "ciab",
                                   "tools",
                               ]
-                  requires:
-                      - test
 
             - publish-redhat:
                   name: publish-redhat-<< matrix.package >>
