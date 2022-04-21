@@ -24,6 +24,12 @@ assert-memsqld-running ${LEAF}
 echo "testing that pre-start-success exists"
 run ${MASTER} test -f /tmp/pre-start-success
 
+echo "testing that SIGTERM terminates node"
+terminate-node ${LEAF}
+wait-terminated ${LEAF}
+start-node ${LEAF}
+wait-start ${LEAF}
+
 bootstrap ${MASTER}
 add-leaf ${MASTER} ${LEAF}
 

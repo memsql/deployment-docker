@@ -35,12 +35,16 @@ if [ -n "${PRE_START_SCRIPT}" ]; then
     fi
 fi
 
+trap 'log "Stopping singlestore ($PID)..."; kill $PID; exit 0' SIGTERM
+
 # start SingleStore DB in the background
-startSingleStore
+startSingleStore; PID=$!
+waitStart
+log "Started singlestore ($PID)"
 
 
 # ensure the root password is configured correctly
 updateRootPassword "${ROOT_PASSWORD}"
 
 # block on SingleStore DB
-wait
+wait $PID

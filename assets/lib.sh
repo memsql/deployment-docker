@@ -96,8 +96,6 @@ startSingleStore() {
         --defaults-file $(memsqlctl describe-node --property MemsqlConfig) \
         --memsqld ${memsqldPath} \
         --user ${UID} &
-
-    waitStart
 }
 
 updateRootPassword() {

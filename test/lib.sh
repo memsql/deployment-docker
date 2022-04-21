@@ -45,6 +45,34 @@ create-node-ssl() {
     docker start ${name}
 }
 
+start-node() {
+   docker start ${1}
+}
+
+terminate-node() {
+   docker kill --signal=SIGTERM ${1}
+}
+
+wait-terminated() {
+   local name=${1}
+   local iterations=0
+   local max_iterations=60
+   echo "waiting for node ${name} to terminate"
+   while true; do
+      sleep 0.5
+      ((++iterations))
+      local container=$(docker ps -qf name=${name})
+      if [[ -z "${container}" ]]; then
+         echo "node ${name} terminated"
+         break
+      fi
+      if [[ "${iterations}" -ge "${max_iterations}" ]]; then
+         echo "node ${name} failed to terminate after $((max_iterations / 2)) seconds"
+         exit 1
+      fi
+   done
+}
+
 wait-start() {
     local name=${1}
     local iterations=0
