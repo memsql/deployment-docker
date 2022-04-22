@@ -143,6 +143,17 @@ build-node: build-base
 	docker tag singlestore/node:${NODE_TAG} memsql/node:${NODE_TAG}
 	docker tag singlestore/node:${NODE_TAG} memsql/node:latest
 
+.PHONY: build-node-custom
+build-node-custom: build-base
+	docker build \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_CUSTOM} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		--build-arg LOCAL_SERVER_RPM=${LOCAL_SERVER_RPM_CUSTOM} \
+		-t ${REGISTRY_CUSTOM}/singlestore/node:${NODE_TAG_CUSTOM} \
+		-t ${REGISTRY_CUSTOM}/memsql/node:${NODE_TAG_CUSTOM} \
+		-f Dockerfile-node .
+
 .PHONY: build-node-preview
 build-node-preview: build-base-dev
 	docker build \
@@ -259,6 +270,11 @@ publish-node:
 	docker push memsql/node:${NODE_TAG}
 	docker push singlestore/node:latest
 	docker push memsql/node:latest
+
+.PHONY: publish-node-custom
+publish-node-custom:
+	docker push ${REGISTRY_CUSTOM}/singlestore/node:${NODE_TAG_CUSTOM}
+	docker push ${REGISTRY_CUSTOM}/memsql/node:${NODE_TAG_CUSTOM}
 
 .PHONY: stage-node
 stage-node:

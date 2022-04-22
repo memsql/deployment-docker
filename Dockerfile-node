@@ -5,9 +5,15 @@ FROM ${BASE_IMAGE}
 # install SingleStore client and server packages
 ARG CLIENT_VERSION
 ARG SERVER_VERSION
-RUN yum install -y \
-    singlestore-client-${CLIENT_VERSION} \
-    memsql-server${SERVER_VERSION} \
+ARG LOCAL_SERVER_RPM
+ADD assets /assets
+
+RUN if [[ -z "${LOCAL_SERVER_RPM}" ]] ; then \
+      yum install -y memsql-server${SERVER_VERSION}; \
+    else \
+      rpm -i /assets/${LOCAL_SERVER_RPM}; \
+    fi \
+ && yum install -y singlestore-client-${CLIENT_VERSION} \
  && yum clean all
 
 VOLUME ["/var/lib/memsql"]
@@ -22,7 +28,6 @@ LABEL io.k8s.display-name="SingleStore Node"
 LABEL io.k8s.description="The official Docker image for running a single-node SingleStore DB server."
 LABEL io.openshift.tags="database,db,sql,memsql,singlestore"
 
-ADD assets /assets
 RUN chmod -R 444 /assets \
  && chmod 555 /assets \
  && chmod 555 /assets/startup-node /assets/init-node-container
