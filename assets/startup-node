@@ -35,7 +35,7 @@ if [ -n "${PRE_START_SCRIPT}" ]; then
     fi
 fi
 
-trap 'log "Stopping singlestore ($PID)..."; kill $PID; exit 0' SIGTERM
+trap 'log "Stopping singlestore ($PID)..."; kill $PID; wait $PID; exit 0' SIGTERM
 
 # start SingleStore DB in the background
 startSingleStore; PID=$!
