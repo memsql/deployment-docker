@@ -13,7 +13,7 @@ RUN yum-config-manager --save --setopt=skip_missing_names_on_install=0
 ARG RELEASE_CHANNEL=production
 RUN yum -y update-minimal --setopt=tsflags=nodocs \
       --security --sec-severity=Important --sec-severity=Critical \
- && yum install -y yum-utils wget procps  mysql-devel gcc
+ && yum install -y yum-utils wget procps mysql-devel gcc
 
 #install python39 where it is supported
 RUN yum install python39 python3-devel -y && pip3 install --upgrade pip && pip3 install mysqlclient && update-alternatives --set python /usr/bin/python3; if [ $? -ne 0 ]; then \
@@ -32,6 +32,10 @@ fi
 
 RUN yum-config-manager --add-repo https://release.memsql.com/${RELEASE_CHANNEL}/rpm/x86_64/repodata/memsql.repo \
  && yum clean all
+
+RUN dnf --enablerepo=* clean all && dnf update -y; exit 0
+
+RUN yum remove vim-minimal platform-python-pip.noarch -y
 
 # jq 1.6
 ENV JQ_VERSION='1.6'
