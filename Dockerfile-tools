@@ -18,15 +18,15 @@ RUN yum install -y \
 RUN yum update -y \
  && yum clean all
 
-RUN pip3 install awscli; if [ $? -ne 0 ]; then \
+RUN /usr/bin/pip3 install awscli; if [ $? -ne 0 ]; then \
     yum install -y unzip scl-utils && \
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install; \
 fi
 
-RUN pip3 install pymysql boto3; if [ $? -ne 0 ]; then \
-/opt/rh/rh-python35/root/usr/bin/python3 -m pip install boto3;\
+RUN /usr/bin/pip3 install pymysql boto3; if [ $? -ne 0 ]; then \
+ /usr/bin/python3 -m pip install boto3;\
 fi
 
 ADD assets/report /report
