@@ -21,6 +21,8 @@ wait-start ${LEAF}
 assert-memsqld-running ${MASTER}
 assert-memsqld-running ${LEAF}
 
+verify-memsql-user ${MASTER}
+
 echo "testing that pre-start-success exists"
 run ${MASTER} test -f /tmp/pre-start-success
 

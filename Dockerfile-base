@@ -4,6 +4,12 @@ FROM ${BASE_IMAGE}
 
 COPY licenses /licenses
 
+# we need to create the memsql user with uid 999 and gid 998 to be compatible with previous centos images
+# user-change.sh does this
+COPY setup/user-change.sh /
+RUN /user-change.sh
+RUN rm /user-change.sh
+
 # Tell yum to yell on missing packages.
 # https://serverfault.com/a/923357
 RUN yum install yum-utils -y

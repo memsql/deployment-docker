@@ -193,3 +193,19 @@ memsql-verify-data() {
         exit 1
     fi
 }
+
+verify-memsql-user() {
+    local name=${1}
+    local uid=$(run $name id -u)
+    local gid=$(run $name id -g)
+
+    if [[ "${uid}" -ne "999" ]]; then
+        echo "docker uid of memsql is  ${uid} and not 999"
+        exit 1
+    fi
+
+    if [[ "${gid}" -ne "998" ]]; then
+        echo "docker gid of memsql is  ${uid} and not 999"
+        exit 1
+    fi
+}

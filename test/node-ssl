@@ -21,6 +21,8 @@ wait-start ${LEAF}
 assert-memsqld-running ${MASTER}
 assert-memsqld-running ${LEAF}
 
+verify-memsql-user ${MASTER}
+
 bootstrap ${MASTER}
 add-leaf ${MASTER} ${LEAF}
 
