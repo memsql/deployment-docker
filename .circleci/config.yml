@@ -9,15 +9,15 @@ commands:
                   sudo apt install -y make bash git jq docker
 
 jobs:
-    test:
-        machine:
-            # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/
-            image: ubuntu-2004:202201-02
-        steps:
-            - setup_environment
-            - checkout
-            - run: make test
-            - run: make test-destroy
+    # test:
+    #     machine:
+    #         # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/
+    #         image: ubuntu-2004:202201-02
+    #     steps:
+    #         - setup_environment
+    #         - checkout
+    #         - run: make test
+    #         - run: make test-destroy
 
     redhat:
         parameters:
@@ -27,7 +27,7 @@ jobs:
         steps:
             - setup_environment
             - checkout
-            - run: docker login -u singlestore-ci --password ${REDHAT_REGISTRY_KEY_NODE} registry.access.redhat.com
+            - run: docker login -u redhat-s2 --password ${REDHAT_REGISTRY_KEY_NODE} registry.access.redhat.com
             - run: make build-<<parameters.package>> redhat-verify-<<parameters.package>> VARIANT=redhat
 
     redhat-ciab:
@@ -35,7 +35,7 @@ jobs:
         steps:
             - setup_environment
             - checkout
-            - run: docker login -u singlestore-ci --password ${REDHAT_REGISTRY_KEY_CIAB} registry.access.redhat.com
+            - run: docker login -u redhat-s2 --password ${REDHAT_REGISTRY_KEY_CIAB} registry.access.redhat.com
             - run: make build-ciab redhat-verify-ciab VARIANT=redhat
 
     dockerhub:
@@ -54,7 +54,7 @@ jobs:
 workflows:
     test_publish:
         jobs:
-            - test
+            # - test
 
             - publish-dockerhub:
                   name: publish-dockerhub-<< matrix.package >>
@@ -76,8 +76,8 @@ workflows:
                                   "ciab",
                                   "tools",
                               ]
-                  requires:
-                      - test
+                #   requires:
+                #   - test
 
             - publish-redhat:
                   name: publish-redhat-<< matrix.package >>
@@ -100,8 +100,8 @@ workflows:
             - publish-redhat-ciab:
                   name: publish-redhat-ciab
                   type: approval
-                  requires:
-                      - test
+                  #   requires:
+                  #   - test
 
             - dockerhub:
                   name: dockerhub-<< matrix.package >>
