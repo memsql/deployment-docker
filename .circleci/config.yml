@@ -27,7 +27,7 @@ jobs:
         steps:
             - setup_environment
             - checkout
-            - run: docker login -u redhat-s2 --password ${REDHAT_REGISTRY_KEY_NODE} scan.connect.redhat.com
+            - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_NODE} scan.connect.redhat.com
             - run: make build-<<parameters.package>> redhat-verify-<<parameters.package>> VARIANT=redhat
 
     redhat-ciab:
@@ -35,7 +35,7 @@ jobs:
         steps:
             - setup_environment
             - checkout
-            - run: docker login -u redhat-s2 --password ${REDHAT_REGISTRY_KEY_CIAB} scan.connect.redhat.com
+            - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_CIAB} scan.connect.redhat.com
             - run: make build-ciab redhat-verify-ciab VARIANT=redhat
 
     dockerhub:
