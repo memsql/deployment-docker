@@ -94,8 +94,8 @@ workflows:
                                   "node-7-5",
                                   "node-7-6"
                               ]
-                  requires:
-                      - test
+                #   requires:
+                    #   - test
 
             - publish-redhat-ciab:
                   name: publish-redhat-ciab
