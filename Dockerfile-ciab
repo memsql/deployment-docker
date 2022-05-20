@@ -14,7 +14,7 @@ RUN yum install -y \
     singlestoredb-toolbox-${TOOLBOX_VERSION} \
  && yum clean all
 
-RUN mkdir /home/memsql && chown memsql:memsql /home/memsql
+RUN mkdir -p /home/memsql && chown memsql:memsql /home/memsql
 ADD ciab-assets/studio.hcl /var/lib/singlestoredb-studio/studio.hcl
 RUN chown memsql:memsql /var/lib/singlestoredb-studio/studio.hcl
 
