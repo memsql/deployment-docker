@@ -104,13 +104,6 @@ build-base:
 		-t s2-base:${VARIANT} \
 		-f Dockerfile-base .
 
-.PHONY: build-base-python
-build-base-python: build-base
-	docker build \
-		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
-		-t s2-base-python:${VARIANT} \
-		-f Dockerfile-base-python .
-
 .PHONY: build-base-dev
 build-base-dev:
 	docker build \
@@ -120,9 +113,9 @@ build-base-dev:
 		-f Dockerfile-base .
 
 .PHONY: build-tools
-build-tools: build-base-python
+build-tools: build-base
 	docker build \
-		--build-arg BASE_IMAGE=s2-base-python:${VARIANT} \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
 		--build-arg TOOLBOX_VERSION=${TOOLBOX_VERSION} \
 		--build-arg KUBE_CLIENT_VERSION=${KUBE_CLIENT_VERSION} \
 		-t singlestore/tools:${TOOLS_TAG} \
@@ -384,9 +377,9 @@ publish-dynamic-node:
 	docker push memsql/dynamic-node:latest
 
 .PHONY: build-ciab
-build-ciab: build-base-python
+build-ciab: build-base
 	docker build \
-		--build-arg BASE_IMAGE=s2-base-python:${VARIANT} \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg STUDIO_VERSION=${STUDIO_VERSION} \
