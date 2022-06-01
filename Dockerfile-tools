@@ -30,3 +30,4 @@ RUN /usr/bin/pip3 install pymysql boto3; if [ $? -ne 0 ]; then \
 fi
 
 ADD assets/report /report
+ADD assets/backup /backup
