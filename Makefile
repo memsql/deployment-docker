@@ -13,11 +13,16 @@ KUBE_CLIENT_VERSION=v1.11.6
 REVISION=$(shell git describe --dirty=-dirty --always --long --abbrev=40 --match='')
 
 VARIANT ?= alma
+BASE_IMAGE_REGISTRY ?= gcr.io/internal_freya
 
 ifeq (${VARIANT},redhat)
-BASE_IMAGE=registry.access.redhat.com/ubi7/ubi:7.7-358
+	BASE_IMAGE=registry.access.redhat.com/ubi7/ubi:7.7-358
 else
-BASE_IMAGE=almalinux:8.5
+	ifeq (${BASE_IMAGE_REGISTRY},)
+		BASE_IMAGE=almalinux:8.5
+	else
+		BASE_IMAGE=${BASE_IMAGE_REGISTRY}/almalinux:8.5
+	endif
 endif
 
 NODE_TAG=${VARIANT}-${SERVER_VERSION}
