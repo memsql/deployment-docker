@@ -149,6 +149,10 @@ add-leaf() {
     local master=${1}
     local leaf=${2}
     echo "adding leaf ${leaf} to ${master}"
+
+    # Running ADD LEAF query against the engine directly instead of using the ctl add leaf
+    # command to work around PLAT-6235 (ctl add leaf failing due to the node already
+    # having role LEAF).
     memsqlctl ${master} query -e "ADD LEAF 'root':'${ROOT_PASSWORD}'@'$(docker-ip ${leaf})':3306"
 }
 
