@@ -149,7 +149,7 @@ add-leaf() {
     local master=${1}
     local leaf=${2}
     echo "adding leaf ${leaf} to ${master}"
-    memsql --host $(docker-ip ${master}) -p ${ROOT_PASSWORD} -e "ADD LEAF 'root':'${ROOT_PASSWORD}'@'$(docker-ip ${leaf})':3306"
+    memsqlctl ${master} query -e "ADD LEAF 'root':'${ROOT_PASSWORD}'@'$(docker-ip ${leaf})':3306"
 }
 
 remove-leaf() {
