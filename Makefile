@@ -389,9 +389,9 @@ publish-dynamic-node:
 	docker push memsql/dynamic-node:latest
 
 .PHONY: build-ciab
-build-ciab: build-base-python
+build-ciab: build-base
 	docker build \
-		--build-arg BASE_IMAGE=s2-base-python:${VARIANT} \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg STUDIO_VERSION=${STUDIO_VERSION} \

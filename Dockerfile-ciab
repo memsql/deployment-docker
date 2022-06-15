@@ -35,7 +35,6 @@ EXPOSE 3307/tcp
 EXPOSE 8080/tcp
 USER memsql
 WORKDIR "/home/memsql"
-ENV PYTHONUNBUFFERED=1
 
 ADD ciab-assets/startup /startup
-CMD ["/startup"]
+CMD ["bash", "/startup"]
