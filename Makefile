@@ -19,9 +19,9 @@ ifeq (${VARIANT},redhat)
 	BASE_IMAGE=registry.access.redhat.com/ubi7/ubi:7.7-358
 else
 	ifeq (${BASE_IMAGE_REGISTRY},)
-		BASE_IMAGE=almalinux:8.5
+		BASE_IMAGE=almalinux:8.6
 	else
-		BASE_IMAGE=${BASE_IMAGE_REGISTRY}/almalinux:8.5
+		BASE_IMAGE=${BASE_IMAGE_REGISTRY}/almalinux:8.6
 	endif
 endif
 
