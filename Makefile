@@ -14,14 +14,13 @@ REVISION=$(shell git describe --dirty=-dirty --always --long --abbrev=40 --match
 
 VARIANT ?= alma
 BASE_IMAGE_REGISTRY ?= gcr.io/internal_freya
+BASE_IMAGE ?= almalinux:8.6
 
 ifeq (${VARIANT},redhat)
 	BASE_IMAGE=registry.access.redhat.com/ubi7/ubi:7.7-358
 else
-	ifeq (${BASE_IMAGE_REGISTRY},)
-		BASE_IMAGE=almalinux:8.6
-	else
-		BASE_IMAGE=${BASE_IMAGE_REGISTRY}/almalinux:8.6
+	ifneq (${BASE_IMAGE_REGISTRY},)
+		BASE_IMAGE:=${BASE_IMAGE_REGISTRY}/${BASE_IMAGE}
 	endif
 endif
 
