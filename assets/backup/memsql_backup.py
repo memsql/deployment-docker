@@ -155,7 +155,7 @@ def main():
     if backup_endpoint is not None:
         backup_endpoint = checkBackupEndpoint(csp_type, backup_endpoint)
 
-    logger.info("backup_endpoint:", backup_endpoint)
+    logging.info("backup_endpoint:", backup_endpoint)
 
     backup_region = getenv("MEMSQL_BACKUP_REGION")
     if backup_region is not None:
