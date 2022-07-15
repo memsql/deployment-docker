@@ -25,8 +25,9 @@ RUN /usr/bin/pip3 install awscli; if [ $? -ne 0 ]; then \
     ./aws/install; \
 fi
 
-RUN /usr/bin/pip3 install pymysql boto3; if [ $? -ne 0 ]; then \
+RUN /usr/bin/pip3 install pymysql boto3 azure-storage-blob; if [ $? -ne 0 ]; then \
  /usr/bin/python3 -m pip install boto3;\
+ /usr/bin/python3 -m pip install azure-storage-blob;\
 fi
 
 ADD assets/report /report
