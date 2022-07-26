@@ -73,33 +73,12 @@ test:
 	# node-7-6
 	${MAKE} build-node-7-6
 	${MAKE} test-node-7-6
-	# node-redhat
-	${MAKE} build-node VARIANT=redhat
-	${MAKE} test-node VARIANT=redhat
-	# node-7-0-redhat
-	${MAKE} build-node-7-0 VARIANT=redhat
-	${MAKE} test-node-7-0 VARIANT=redhat
-	# node-7-1-redhat
-	${MAKE} build-node-7-1 VARIANT=redhat
-	${MAKE} test-node-7-1 VARIANT=redhat
-	# node-7-3-redhat
-	${MAKE} build-node-7-3 VARIANT=redhat
-	${MAKE} test-node-7-3 VARIANT=redhat
-	# node-7-5-redhat
-	${MAKE} build-node-7-5 VARIANT=redhat
-	${MAKE} test-node-7-5 VARIANT=redhat
-	# node-7-6-redhat
-	${MAKE} build-node-7-6 VARIANT=redhat
-	${MAKE} test-node-7-6 VARIANT=redhat
 	# dynamic node
 	${MAKE} build-dynamic-node
 	${MAKE} test-dynamic-node
 	# cluster-in-a-box (ciab)
 	${MAKE} build-ciab
 	${MAKE} test-ciab
-	# cluster-in-a-box (ciab) redhat
-	${MAKE} build-ciab VARIANT=redhat
-	${MAKE} test-ciab VARIANT=redhat
 
 .PHONY: build-base
 build-base:
