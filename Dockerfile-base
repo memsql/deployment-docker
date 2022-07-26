@@ -17,7 +17,8 @@ RUN yum-config-manager --save --setopt=skip_missing_names_on_install=0
 
 # updates and basic utilities
 ARG RELEASE_CHANNEL=production
-RUN yum -y update-minimal --setopt=tsflags=nodocs \
+# currently yum update-minimal fails on curl, so we need to update curl before
+RUN yum update curl -y && yum -y update-minimal --setopt=tsflags=nodocs \
       --security --sec-severity=Important --sec-severity=Critical \
  && yum install -y yum-utils wget procps
 
@@ -26,7 +27,8 @@ RUN yum-config-manager --add-repo https://release.memsql.com/${RELEASE_CHANNEL}/
 
 RUN dnf --enablerepo=* clean all && dnf update -y; exit 0
 
-RUN yum remove vim-minimal platform-python-pip.noarch -y && yum update curl expat libxml2 libgcrypt -y
+# address vulnarabilities found by `grype --only-fixed` command
+RUN yum remove vim-minimal platform-python-pip.noarch -y && yum update expat libxml2 libgcrypt -y
 
 # jq 1.6
 ENV JQ_VERSION='1.6'
