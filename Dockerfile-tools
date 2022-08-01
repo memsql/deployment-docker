@@ -16,19 +16,10 @@ RUN yum install -y \
  && yum clean all
 
 RUN yum update -y \
- && yum clean all
+ && yum clean all && yum remove python3-pip-wheel.noarc -y
 
-RUN /usr/bin/pip3 install awscli; if [ $? -ne 0 ]; then \
-    yum install -y unzip scl-utils && \
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install; \
-fi
-
-RUN /usr/bin/pip3 install pymysql boto3 azure-storage-blob; if [ $? -ne 0 ]; then \
- /usr/bin/python3 -m pip install boto3;\
- /usr/bin/python3 -m pip install azure-storage-blob;\
-fi
+RUN yum install python3.9 -y && pip3 install boto3 azure-storage-blob awscli pymysql
 
 ADD assets/report /report
 ADD assets/backup /backup
+
