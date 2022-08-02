@@ -17,7 +17,7 @@ BASE_IMAGE_REGISTRY ?= gcr.io/internal_freya
 BASE_IMAGE ?= almalinux:8.6
 
 ifeq (${VARIANT},redhat)
-	BASE_IMAGE=registry.access.redhat.com/ubi7/ubi:7.7-358
+	BASE_IMAGE=registry.access.redhat.com/ubi8/ubi:8.6-903
 else
 	ifneq (${BASE_IMAGE_REGISTRY},)
 		BASE_IMAGE:=${BASE_IMAGE_REGISTRY}/${BASE_IMAGE}
