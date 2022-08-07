@@ -52,12 +52,7 @@ jobs:
             - run: make build-<<parameters.package>> publish-<<parameters.package>>
 
     ubi-gcr-internal:
-        parameters:
-            package:
-                type: string
-        machine:
-            # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/
-            image: ubuntu-2004:202201-02
+        machine: true
         steps:
             - setup_environment
             - checkout
