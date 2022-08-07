@@ -404,6 +404,13 @@ redhat-verify-ciab:
 	docker push scan.connect.redhat.com/ospid-6b69e5e1-d98a-4d75-a591-e300d4820ecb/cluster-in-a-box:${CIAB_TAG}
 	@echo "View results + publish: https://connect.redhat.com/project/923891/view"
 
+# This is used to publish an UBI-based (known as redhat) node image to GCR.io.
+.PHONY: redhat-verify-ubi-gcr-internal-node
+redhat-verify-ubi-gcr-internal-node:
+	docker tag singlestore/node:${NODE_TAG} gcr.io/internal-freya/memsql/node:${NODE_TAG}
+	docker push gcr.io/internal-freya/memsql/node:${NODE_TAG}
+	@echo "View results + publish: https://console.cloud.google.com/gcr/images/internal-freya/global/memsql/node"
+
 .PHONY: test-destroy
 test-destroy:
 	@-docker rm -f memsql-node-ma memsql-node-leaf memsql-ciab

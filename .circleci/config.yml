@@ -51,6 +51,17 @@ jobs:
             - run: docker login -u ${DOCKER_HUB_USER} --password ${DOCKER_HUB_KEY}
             - run: make build-<<parameters.package>> publish-<<parameters.package>>
 
+    ubi-gcr-internal:
+        machine: true
+        steps:
+            - setup_environment
+            - checkout
+            # We can't use Bash variables in CircleCI so we just duplicate the ""./dockerconfig.json"
+            # string here.
+            - run: echo "${GCLOUD_SERVICE_ACCOUNT_INTERNAL}" | base64 -d >./dockerconfig.json
+            - run: cat ./dockerconfig.json | docker login -u _json_key --password-stdin https://gcr.io
+            - run: make build-node redhat-verify-ubi-gcr-internal-node VARIANT=redhat
+
 workflows:
     test_publish:
         jobs:
@@ -144,3 +155,14 @@ workflows:
                   name: redhat-ciab
                   requires:
                       - publish-redhat-ciab
+
+            - publish-ubi-gcr-internal:
+                  name: publish-ubi-gcr-internal
+                  type: approval
+                  requires:
+                      - test
+
+            - ubi-gcr-internal:
+                  name: ubi-gcr-internal
+                  requires:
+                      - publish-ubi-gcr-internal
