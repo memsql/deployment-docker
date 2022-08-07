@@ -66,9 +66,6 @@ workflows:
         jobs:
             - test
 
-            - publish-gcr-internal:
-                  name: publish-gcr-internal-<< matrix.package >>
-
             - publish-dockerhub:
                   name: publish-dockerhub-<< matrix.package >>
                   type: approval
