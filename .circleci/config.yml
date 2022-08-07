@@ -58,7 +58,7 @@ jobs:
             - setup_environment
             - checkout
             - run: export GOOGLE_APPLICATION_CREDENTIALS=dockerconfig.json
-            - run: echo "${GCLOUD_SERVICE_ACCOUNT_INTERNAL}" | base64 -d >${GOOGLE_APPLICATION_CREDENTIALS}
+            - run: echo "${GCLOUD_SERVICE_ACCOUNT_INTERNAL}" | base64 -d >"${GOOGLE_APPLICATION_CREDENTIALS}"
             - run: cat $GOOGLE_APPLICATION_CREDENTIALS | docker login -u _json_key --password-stdin https://gcr.io
             - run: make build-node redhat-verify-ubi-gcr-internal-node VARIANT=redhat
 
