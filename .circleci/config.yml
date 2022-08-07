@@ -51,10 +51,28 @@ jobs:
             - run: docker login -u ${DOCKER_HUB_USER} --password ${DOCKER_HUB_KEY}
             - run: make build-<<parameters.package>> publish-<<parameters.package>>
 
+    ubi-gcr-internal:
+        parameters:
+            package:
+                type: string
+        machine:
+            # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/
+            image: ubuntu-2004:202201-02
+        steps:
+            - setup_environment
+            - checkout
+            - run: export GOOGLE_APPLICATION_CREDENTIALS=dockerconfig.json
+            - run: echo $GCLOUD_SERVICE_ACCOUNT_INTERNAL | base64 -d >${GOOGLE_APPLICATION_CREDENTIALS}
+            - run: cat $GOOGLE_APPLICATION_CREDENTIALS | docker login -u _json_key --password-stdin https://gcr.io
+            - run: make build-node redhat-verify-ubi-gcr-internal-node VARIANT=redhat
+
 workflows:
     test_publish:
         jobs:
             - test
+
+            - publish-gcr-internal:
+                  name: publish-gcr-internal-<< matrix.package >>
 
             - publish-dockerhub:
                   name: publish-dockerhub-<< matrix.package >>
@@ -144,3 +162,14 @@ workflows:
                   name: redhat-ciab
                   requires:
                       - publish-redhat-ciab
+
+            - publish-ubi-gcr-internal:
+                  name: publish-ubi-gcr-internal
+                  type: approval
+                  requires:
+                      - test
+
+            - ubi-gcr-internal:
+                  name: ubi-gcr-internal
+                  requires:
+                      - publish-ubi-gcr-internal
