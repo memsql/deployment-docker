@@ -28,7 +28,7 @@ RUN yum-config-manager --add-repo https://release.memsql.com/${RELEASE_CHANNEL}/
 RUN dnf --enablerepo=* clean all && dnf update -y; exit 0
 
 # address vulnarabilities found by `grype --only-fixed` command
-RUN yum remove vim-minimal platform-python-pip.noarch -y && yum update expat libxml2 libgcrypt -y
+RUN yum remove vim-minimal platform-python-pip.noarch -y && yum update expat libxml2 libgcrypt openssl-libs pcre2 -y
 
 # jq 1.6
 ENV JQ_VERSION='1.6'
