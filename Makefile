@@ -407,9 +407,9 @@ redhat-verify-ciab:
 # This is used to publish an UBI-based (known as redhat) node image to GCR.io.
 .PHONY: redhat-verify-ubi-gcr-internal-node
 redhat-verify-ubi-gcr-internal-node:
-	docker tag singlestore/node:${NODE_TAG} gcr.io/internal-freya/memsql/node:${NODE_TAG}
-	docker push gcr.io/internal-freya/memsql/node:${NODE_TAG}
-	@echo "View results + publish: https://console.cloud.google.com/gcr/images/internal-freya/global/memsql/node"
+	docker tag singlestore/node:${NODE_TAG} gcr.io/singlestore-public/memsql/node:${NODE_TAG}
+	docker push gcr.io/singlestore-public/memsql/node:${NODE_TAG}
+	@echo "View results + publish: https://console.cloud.google.com/gcr/images/singlestore-public/global/memsql/node"
 
 .PHONY: test-destroy
 test-destroy:
