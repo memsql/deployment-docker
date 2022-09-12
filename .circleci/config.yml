@@ -58,7 +58,7 @@ jobs:
             - checkout
             # We can't use Bash variables in CircleCI so we just duplicate the ""./dockerconfig.json"
             # string here.
-            - run: echo "${GCLOUD_SERVICE_ACCOUNT_INTERNAL}" | base64 -d >./dockerconfig.json
+            - run: echo "${GCLOUD_SERVICE_ACCOUNT_SINGLESTORE_PUBLIC}" | base64 -d >./dockerconfig.json
             - run: cat ./dockerconfig.json | docker login -u _json_key --password-stdin https://gcr.io
             - run: make build-node redhat-verify-ubi-gcr-internal-node VARIANT=redhat
 
