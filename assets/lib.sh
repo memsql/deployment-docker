@@ -78,8 +78,7 @@ waitStart() {
     local ctl=${1}
     while true; do
         local CONNECTABLE=$(memsqlctl describe-node --property IsConnectable || echo false)
-        local RECOVERY=$(memsqlctl describe-node --property RecoveryState || echo Offline)
-        if [[ ${CONNECTABLE} == "true" && ${RECOVERY} == "Online" ]]; then
+        if [[ ${CONNECTABLE} == "true" ]]; then
             break
         fi
         sleep 0.2
