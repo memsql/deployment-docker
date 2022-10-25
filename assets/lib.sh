@@ -90,7 +90,7 @@ startSingleStore() {
     local memsqldPath=${installDir}/memsqld
     local memsqldSafePath=${installDir}/memsqld_safe
 
-    ${memsqldSafePath} \
+    env -u ROOT_PASSWORD ${memsqldSafePath} \
         --auto-restart disable \
         --defaults-file $(memsqlctl describe-node --property MemsqlConfig) \
         --memsqld ${memsqldPath} \
