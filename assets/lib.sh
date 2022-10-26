@@ -75,13 +75,21 @@ enableSSL() {
 }
 
 waitStart() {
-    local ctl=${1}
     while true; do
         local CONNECTABLE=$(memsqlctl describe-node --property IsConnectable || echo false)
         if [[ ${CONNECTABLE} == "true" ]]; then
             break
         fi
-        sleep 0.2
+
+        if kill -0 $PID; then
+            # memsqld still running, retry
+            sleep 0.2
+        else
+            # memsdl is gone
+            log "memsqld exited"
+            exit 1
+        fi
+        
     done
 }
 
