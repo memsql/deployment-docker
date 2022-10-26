@@ -39,7 +39,7 @@ trap 'log "Stopping singlestore ($PID)..."; kill $PID; wait $PID; exit 0' SIGTER
 
 # start SingleStore DB in the background
 startSingleStore; PID=$!
-waitStart
+waitStart $PID
 log "Started singlestore ($PID)"
 
 
