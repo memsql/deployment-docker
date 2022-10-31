@@ -1,5 +1,5 @@
 INIT_FLAG=/.initialized
-CHANNELS=(production dev)
+CHANNELS=(production dev cloud)
 
 log() { (>&2 echo "${@}") }
 

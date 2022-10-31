@@ -1,4 +1,5 @@
 SERVER_VERSION=7.8.17-69cee1f1a3
+SERVER_VERSION_CLOUD=7.9.12-e4cc3c1015
 SERVER_VERSION_PREVIEW=7.9.8-325fd05545
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
 SERVER_VERSION_7_0=7.0.26-8999f1390b
@@ -24,6 +25,7 @@ else
 	endif
 endif
 
+NODE_TAG_CLOUD=${VARIANT}-${SERVER_VERSION_CLOUD}
 NODE_TAG=${VARIANT}-${SERVER_VERSION}
 NODE_TAG_PREVIEW=${VARIANT}-${SERVER_VERSION_PREVIEW}-preview
 NODE_TAG_6_8=${VARIANT}-${SERVER_VERSION_6_8}
@@ -73,6 +75,11 @@ test:
 	# node-7-6
 	${MAKE} build-node-7-6
 	${MAKE} test-node-7-6
+
+	# node-cloud
+	${MAKE} build-node-cloud
+	${MAKE} test-node-cloud
+
 	# dynamic node
 	${MAKE} build-dynamic-node
 	${MAKE} test-dynamic-node
@@ -84,6 +91,15 @@ test:
 build-base:
 	docker build \
 		--build-arg BASE_IMAGE=${BASE_IMAGE} \
+		--build-arg RELEASE_CHANNEL=production \
+		-t s2-base:${VARIANT} \
+		-f Dockerfile-base .
+
+.PHONY: build-base-cloud
+build-base-cloud:
+	docker build \
+		--build-arg BASE_IMAGE=${BASE_IMAGE} \
+		--build-arg RELEASE_CHANNEL=cloud \
 		-t s2-base:${VARIANT} \
 		-f Dockerfile-base .
 
@@ -118,6 +134,21 @@ build-node: build-base
 	docker tag singlestore/node:${NODE_TAG} singlestore/node:latest
 	docker tag singlestore/node:${NODE_TAG} memsql/node:${NODE_TAG}
 	docker tag singlestore/node:${NODE_TAG} memsql/node:latest
+
+
+.PHONY: build-node-cloud
+build-node-cloud: build-base-cloud
+	docker build \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_CLOUD} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		-t singlestore/node:${NODE_TAG_CLOUD} \
+		-f Dockerfile-node .
+	docker tag singlestore/node:${NODE_TAG_CLOUD} gcr.io/singlestore-public/memsql/node:${NODE_TAG_CLOUD}
+	docker tag singlestore/node:${NODE_TAG_CLOUD} memsql/node:${NODE_TAG_CLOUD}
+	docker tag singlestore/node:${NODE_TAG_CLOUD} gcr.io/singlestore-public/memsql/node:latest
+	docker tag singlestore/node:${NODE_TAG_CLOUD} memsql/node:latest
+	docker tag singlestore/node:${NODE_TAG_CLOUD} singlestore/node:latest 
 
 .PHONY: build-node-custom
 build-node-custom: build-base
@@ -232,6 +263,10 @@ test-node-7-5: test-destroy
 test-node-7-6: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_7_6} ./test/node
 
+.PHONY: test-node-cloud
+test-node-cloud: test-destroy
+	IMAGE=singlestore/node:${NODE_TAG_CLOUD} ./test/node
+
 .PHONY: test-node-ssl
 test-node-ssl: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG} ./test/node-ssl
@@ -246,6 +281,11 @@ publish-node:
 	docker push memsql/node:${NODE_TAG}
 	docker push singlestore/node:latest
 	docker push memsql/node:latest
+
+.PHONY: publish-node-cloud
+publish-node-cloud:
+	docker push gcr.io/singlestore-public/memsql/node:${NODE_TAG_CLOUD}
+	docker push gcr.io/singlestore-public/memsql/node:latest
 
 .PHONY: publish-node-custom
 publish-node-custom:

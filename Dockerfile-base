@@ -16,7 +16,7 @@ RUN yum install yum-utils -y
 RUN yum-config-manager --save --setopt=skip_missing_names_on_install=0
 
 # updates and basic utilities
-ARG RELEASE_CHANNEL=production
+ARG RELEASE_CHANNEL
 # currently yum update-minimal fails on curl, so we need to update curl before
 RUN yum update curl -y && yum -y update-minimal --setopt=tsflags=nodocs \
       --security --sec-severity=Important --sec-severity=Critical \
