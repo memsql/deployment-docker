@@ -105,7 +105,6 @@ workflows:
                                   "node-7-3",
                                   "node-7-5",
                                   "node-7-6",
-                                  "node-cloud",
                               ]
                   requires:
                       - test
@@ -150,7 +149,6 @@ workflows:
                                   "node-7-3",
                                   "node-7-5",
                                   "node-7-6",
-                                  "node-cloud",
                                   
                               ]
                   requires:
@@ -171,3 +169,28 @@ workflows:
                   name: ubi-gcr-internal
                   requires:
                       - publish-ubi-gcr-internal
+
+            - publish-gcr-public:
+                  name: publish-gcr-public-<< matrix.package >>
+                  type: approval
+                  matrix:
+                      parameters:
+                          # Must match line 71.
+                          package:
+                              [
+                                  "node-cloud",
+                              ]
+                  requires:
+                      - test
+
+            - gcr-public:
+                name: gcr-public-<< matrix.package >>
+                matrix:
+                    parameters:
+                        package:
+                            [
+                                "node-cloud",
+                            ]
+                requires:
+                    - publish-gcr-public-<< matrix.package >>
+
