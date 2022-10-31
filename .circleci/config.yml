@@ -51,6 +51,19 @@ jobs:
             - run: docker login -u ${DOCKER_HUB_USER} --password ${DOCKER_HUB_KEY}
             - run: make build-<<parameters.package>> publish-<<parameters.package>>
 
+    gcr-public:
+        parameters:
+            package:
+                type: string
+        machine:
+            # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/
+            image: ubuntu-2004:202201-02
+        steps:
+            - setup_environment
+            - checkout
+            - run: docker login -u ${DOCKER_HUB_USER} --password ${DOCKER_HUB_KEY}
+            - run: make build-<<parameters.package>> publish-<<parameters.package>>
+
     ubi-gcr-internal:
         machine: true
         steps:
@@ -103,7 +116,7 @@ workflows:
                                   "node-7-1",
                                   "node-7-3",
                                   "node-7-5",
-                                  "node-7-6"
+                                  "node-7-6",
                               ]
                   requires:
                       - test
@@ -146,7 +159,8 @@ workflows:
                                   "node-7-1",
                                   "node-7-3",
                                   "node-7-5",
-                                  "node-7-6"
+                                  "node-7-6",
+                                  
                               ]
                   requires:
                       - publish-redhat-<< matrix.package >>
@@ -166,3 +180,28 @@ workflows:
                   name: ubi-gcr-internal
                   requires:
                       - publish-ubi-gcr-internal
+
+            - publish-gcr-public:
+                  name: publish-gcr-public-<< matrix.package >>
+                  type: approval
+                  matrix:
+                      parameters:
+                          # Must match line 71.
+                          package:
+                              [
+                                  "node-cloud",
+                              ]
+                  requires:
+                      - test
+
+            - gcr-public:
+                name: gcr-public-<< matrix.package >>
+                matrix:
+                    parameters:
+                        package:
+                            [
+                                "node-cloud",
+                            ]
+                requires:
+                    - publish-gcr-public-<< matrix.package >>
+
