@@ -129,6 +129,7 @@ workflows:
                                   "node-7-1",
                                   "node-7-3",
                                   "node-7-5",
+                                  "node-7-6",
                                   "node-cloud",
                                   "dynamic-node",
                                   "ciab",
