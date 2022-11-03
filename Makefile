@@ -282,6 +282,13 @@ publish-node:
 	docker push singlestore/node:latest
 	docker push memsql/node:latest
 
+.PHONY: publish-node-gcr
+publish-node-gcr:
+	docker tag memsql/node:${NODE_TAG} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG}
+	docker tag memsql/node:${NODE_TAG} gcr.io/singlestore-public/mirror/docker.io/memsql/node:latest
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:latest
+	
 .PHONY: publish-node-cloud
 publish-node-cloud:
 	docker push gcr.io/singlestore-public/memsql/node:${NODE_TAG_CLOUD}
@@ -314,32 +321,62 @@ stage-node-preview:
 .PHONY: publish-node-6-8
 publish-node-6-8:
 	docker push singlestore/node:${NODE_TAG_6_8}
-	docker push memsql/node:${NODE_TAG_6_8}
+	docker push memsql/node:${NODE_TAG_6_8}\
+
+.PHONY: publish-gcr-node-6-8
+publish-gcr-node-6-8:
+	docker tag memsql/node:${NODE_TAG_6_8} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_6_8}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_6_8}
 
 .PHONY: publish-node-7-0
 publish-node-7-0:
 	docker push singlestore/node:${NODE_TAG_7_0}
 	docker push memsql/node:${NODE_TAG_7_0}
 
+.PHONY: publish-gcr-node-7-0
+publish-gcr-node-7-0:
+	docker tag memsql/node:${NODE_TAG_7_0} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_0}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_0}
+
 .PHONY: publish-node-7-1
 publish-node-7-1:
 	docker push singlestore/node:${NODE_TAG_7_1}
 	docker push memsql/node:${NODE_TAG_7_1}
+
+.PHONY: publish-gcr-node-7-1
+publish-gcr-node-7-1:
+	docker tag memsql/node:${NODE_TAG_7_1} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_1}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_1}
 
 .PHONY: publish-node-7-3
 publish-node-7-3:
 	docker push singlestore/node:${NODE_TAG_7_3}
 	docker push memsql/node:${NODE_TAG_7_3}
 
+.PHONY: publish-gcr-node-7-3
+publish-gcr-node-7-3:
+	docker tag memsql/node:${NODE_TAG_7_3} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_3}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_3}
+
 .PHONY: publish-node-7-5
 publish-node-7-5:
 	docker push singlestore/node:${NODE_TAG_7_5}
 	docker push memsql/node:${NODE_TAG_7_5}
 
+.PHONY: publish-gcr-node-7-5
+publish-gcr-node-7-5:
+	docker tag memsql/node:${NODE_TAG_7_5} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_5}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_5}
+
 .PHONY: publish-node-7-6
 publish-node-7-6:
 	docker push singlestore/node:${NODE_TAG_7_6}
 	docker push memsql/node:${NODE_TAG_7_6}
+
+.PHONY: publish-gcr-node-7-6
+publish-gcr-node-7-6:
+	docker tag memsql/node:${NODE_TAG_7_6} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_6}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_6}
 
 .PHONY: redhat-verify-node
 redhat-verify-node:
