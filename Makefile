@@ -321,7 +321,7 @@ stage-node-preview:
 .PHONY: publish-node-6-8
 publish-node-6-8:
 	docker push singlestore/node:${NODE_TAG_6_8}
-	docker push memsql/node:${NODE_TAG_6_8}\
+	docker push memsql/node:${NODE_TAG_6_8}
 
 .PHONY: publish-gcr-node-6-8
 publish-gcr-node-6-8:
