@@ -282,7 +282,7 @@ publish-node:
 	docker push singlestore/node:latest
 	docker push memsql/node:latest
 
-.PHONY: publish-node-gcr
+.PHONY: publish-gcr-node
 publish-node-gcr:
 	docker tag memsql/node:${NODE_TAG} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG}
 	docker tag memsql/node:${NODE_TAG} gcr.io/singlestore-public/mirror/docker.io/memsql/node:latest
