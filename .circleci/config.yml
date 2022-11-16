@@ -50,12 +50,17 @@ jobs:
             - checkout
             - run: docker login -u ${DOCKER_HUB_USER} --password ${DOCKER_HUB_KEY}
             - run: make build-<<parameters.package>> publish-<<parameters.package>>
-            - run: docker logout
-            - run: echo "${GCLOUD_SERVICE_ACCOUNT_SINGLESTORE_PUBLIC}" | base64 -d >./dockerconfig.json
-            - run: cat ./dockerconfig.json | docker login -u _json_key --password-stdin https://gcr.io
-            - run: make publish-gcr-<<parameters.package>>
-
-
+            - when:
+                condition:
+                    matches:
+                        pattern: "^node(-.+)?$"
+                        value: <<parameters.package>>
+                steps:
+                    - run: docker logout
+                    - run: echo "${GCLOUD_SERVICE_ACCOUNT_SINGLESTORE_PUBLIC}" | base64 -d >./dockerconfig.json
+                    - run: cat ./dockerconfig.json | docker login -u _json_key --password-stdin https://gcr.io
+                    - run: make publish-gcr-<<parameters.package>>
+            
     gcr-public:
         parameters:
             package:
