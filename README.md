@@ -14,6 +14,10 @@ If you are interested in contributing, please read `CONTRIBUTING.md`.
 
 # Running the Cluster in a Box image
 
+> **Warning**
+> The "Cluster in a Box" Docker image is deprecated in favor of the new [SingleStoreDB Dev Image][dev-img] which you can find here:
+> https://github.com/singlestore-labs/singlestoredb-dev-image
+
 To initialize a new cluster in a box:
 
 ```bash
@@ -90,3 +94,4 @@ Add the following flag to your `docker run` command:
 
 [httpapi]: https://docs.singlestore.com/db/latest/en/reference/http-api.html
 [extfunc]: https://docs.singlestore.com/db/latest/en/reference/sql-reference/procedural-sql-reference/create--or-replace--external-function.html
+[dev-img]: https://github.com/singlestore-labs/singlestoredb-dev-image
