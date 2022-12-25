@@ -10,7 +10,7 @@ Q: Aren't the [default SingleStore scripts](https://github.com/memsql/deployment
 A: No, because they don't allow the retention of data after having populated the image with data and committed it.
 Additionally, with the image built by the default scripts, it's impossible to start the image twice (i.e. start the committed image), due to the usage of the `sdb-toolbox` tool in the startup script.
 
-For more information, read [ORIGINAL_README.md].
+For more information, read the [original readme](./ORIGINAL_README.md).
 
 # Differences with source repo
 The main changes made to the repo are:
