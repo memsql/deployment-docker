@@ -56,9 +56,18 @@ else #initialize the cluster
     fi
     echo Done.
 
-    echo Configuring Toolbox...
-    sdb-toolbox-config register-host -y --localhost --host 127.0.0.1
-    echo Done.
+   echo Configuring Toolbox...
+   sdb-toolbox-config register-host -y --localhost --host 127.0.0.1
+
+# CHANGED FROM SOURCE: added configurations to prevent huge docker image size.
+   memsqlctl -y update-config --all --set-global --key DEFAULT_PARTITIONS_PER_LEAF --value 2 
+   memsqlctl -y update-config --all --set-global --key SNAPSHOT_TRIGGER_SIZE --value 268435456 
+   memsqlctl -y update-config --all --set-global --key LOG_FILE_SIZE_PARTITIONS --value 268435456
+   memsqlctl -y update-config --all --set-global --key LOG_FILE_SIZE_REF_DBS --value 67108864
+
+# CHANGED FROM SOURCE: unregistered the host, because it prevents raising the docker twice. 
+   sdb-toolbox-config unregister-host -y --host 127.0.0.1
+   echo Done.
 
     if [ -f /init.sql ]; then
         echo Running /init.sql...

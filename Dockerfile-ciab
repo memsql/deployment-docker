@@ -1,12 +1,16 @@
 # vim: ft=dockerfile
-ARG BASE_IMAGE
+# CHANGED FROM SOURCE: set the base image to fit the LOCALLY BUILT image
+# (which was built using `make`, based on my changes to the Makefile)
+ARG BASE_IMAGE="memsql/cluster-in-a-box"
 FROM ${BASE_IMAGE}
 
 # install SingleStore DB packages and additional dependencies
-ARG CLIENT_VERSION
-ARG SERVER_VERSION
-ARG STUDIO_VERSION
-ARG TOOLBOX_VERSION
+# CHANGED FROM SOURCE: switch to root, add specific versions according to Makefile
+USER root
+ARG CLIENT_VERSION="1.0.5"
+ARG SERVER_VERSION="7.6.13-39da2f5c72"
+ARG STUDIO_VERSION="4.0.7"
+ARG TOOLBOX_VERSION="1.13.9"
 RUN yum install -y \
     singlestore-client-${CLIENT_VERSION} \
     singlestoredb-server${SERVER_VERSION} \
@@ -18,7 +22,11 @@ RUN mkdir -p /home/memsql && chown memsql:memsql /home/memsql
 ADD ciab-assets/studio.hcl /var/lib/singlestoredb-studio/studio.hcl
 RUN chown memsql:memsql /var/lib/singlestoredb-studio/studio.hcl
 
-VOLUME ["/var/lib/memsql"]
+# CHANGED FROM SOURCE: switch back from root
+USER memsql
+
+# CHANGED FROM SOURCE: commented the VOLUME line to enable persisting data in our automation-db-upload job
+#VOLUME ["/var/lib/memsql"]
 
 LABEL name="SingleStore DB Cluster in a Box"
 LABEL vendor="SingleStore"
