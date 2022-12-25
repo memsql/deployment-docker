@@ -62,7 +62,7 @@ job(JOB_NAME) {
     steps {
         shell("""
           make
-          docker build -t kenshoo-docker.jfrog.io/TEMP-FOR-TESTING-ks-db-memsql-76-cluster-in-a-box-base -f Dockerfile-ciab . && echo "Successfully built base image"
+          docker build -t 668139184987.dkr.ecr.us-east-1.amazonaws.com/ks-db-memsql-cluster-in-a-box-base:TEMP-FOR-TESTING76 -f Dockerfile-ciab . && echo "Successfully built base image"
       """)
     }
 
