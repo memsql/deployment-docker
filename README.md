@@ -1,5 +1,5 @@
 # Introduction & motivation 
-This repo is a clone of [memsql/deployment-docker](https://github.com/memsql/deployment-docker), customized for building the Skai KS base MemSQL image that is used for [building the automation image](https://jenkins-prod-search.internalk.com/job/automation-tests-db-upload/) for our local environments and testing environments on Jenkins. This process is comprised of (as of Dec 2022):
+This repo is a fork of [memsql/deployment-docker](https://github.com/memsql/deployment-docker), customized for building the Skai KS base MemSQL image that is used for [building the automation image](https://jenkins-prod-search.internalk.com/job/automation-tests-db-upload/) for our local environments and testing environments on Jenkins. This process is comprised of (as of Dec 2022):
 1. Starting a cluster-in-a-box memsql docker image.
 2. Running several cucumbers to populate it with schemas, tables and data.
 3. Committing the docker state and upload the image to an artifactory.
@@ -25,8 +25,8 @@ The main changes made to the repo are:
 
 # Building the base image
 
-This section will be updated once we have created a jenkins job to do it for us.
-For now, see instructions on how to create the image locally and pushing it to the artifactory in PR https://github.com/kenshoo/memsql-base-automation-image-builder/pull/1.
+Run the release job: https://jenkins-prod-microcosm.internalk.com/job/memsql-base-automation-image-builder-release.
+If you've made changes to the DSL files, you will need to run https://jenkins-prod-microcosm.internalk.com/job/memsql-base-automation-image-builder-main-dsl/ first.
   
 # Recommendations - discovery for next version upgrade
 
