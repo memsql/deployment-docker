@@ -1,4 +1,4 @@
-SERVER_VERSION=7.8.11-f27d515772# CHANGED FROM SOURCE: enforce the specific version that we need for Skai's use-case
+SERVER_VERSION=7.6.13-39da2f5c72# CHANGED FROM SOURCE: enforce the specific version that we need for Skai's use-case
 SERVER_VERSION_PREVIEW=7.9.4-1a8fd43c84
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
 SERVER_VERSION_7_0=7.0.26-8999f1390b

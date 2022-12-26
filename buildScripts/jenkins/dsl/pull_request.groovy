@@ -62,7 +62,7 @@ job(JOB_NAME) {
     steps {
         shell("""
           make
-          docker build -t 668139184987.dkr.ecr.us-east-1.amazonaws.com/ks-db-memsql-cluster-in-a-box-base:7.8.11 -f Dockerfile-ciab . && echo "Successfully built base image"
+          docker build -t 668139184987.dkr.ecr.us-east-1.amazonaws.com/ks-db-memsql-cluster-in-a-box-base:7.6.13 -f Dockerfile-ciab . && echo "Successfully built base image"
       """)
     }
 
