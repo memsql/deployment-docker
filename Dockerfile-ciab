@@ -8,7 +8,7 @@ FROM ${BASE_IMAGE}
 # CHANGED FROM SOURCE: switch to root, add specific versions according to Makefile
 USER root
 ARG CLIENT_VERSION="1.0.5"
-ARG SERVER_VERSION="7.6.13-39da2f5c72"
+ARG SERVER_VERSION="7.8.11-f27d515772"
 ARG STUDIO_VERSION="4.0.7"
 ARG TOOLBOX_VERSION="1.13.9"
 RUN yum install -y \
