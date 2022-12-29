@@ -1,5 +1,5 @@
 def NAME = "memsql-base-automation-image-builder"
-def EMAIL = "_devmicrocosm@kenshoo.com"
+def EMAIL = "shmulik.gutman@skai.io,shaked.nahum@skai.io"
 def JOB_NAME = "${NAME}-release"
 def BRANCH_NAME = "master"
 
