@@ -107,6 +107,7 @@ workflows:
                                   "node-7-3",
                                   "node-7-5",
                                   "node-7-6",
+                                  "node-7-8",
                                   "dynamic-node",
                                   "ciab",
                                   "tools",
@@ -128,6 +129,7 @@ workflows:
                                   "node-7-3",
                                   "node-7-5",
                                   "node-7-6",
+                                  "node-7-8",
                               ]
                   requires:
                       - test
@@ -152,6 +154,7 @@ workflows:
                                   "node-7-3",
                                   "node-7-5",
                                   "node-7-6",
+                                  "node-7-8",
                                   "dynamic-node",
                                   "ciab",
                                   "tools",
@@ -171,6 +174,7 @@ workflows:
                                   "node-7-3",
                                   "node-7-5",
                                   "node-7-6",
+                                  "node-7-8",
                                   
                               ]
                   requires:
