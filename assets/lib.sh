@@ -99,6 +99,14 @@ startSingleStore() {
     local memsqldPath=${installDir}/memsqld
     local memsqldSafePath=${installDir}/memsqld_safe
 
+    # as a sanity check, make sure there isn't an existing process running memsqldSafePath
+    # use || true to not fail due to `set -e` if it does not exist
+    existing_memsql_pid=$(pgrep -f ${memsqldSafePath}) || true
+    if [[ "$existing_memsql_pid" != "" ]]; then
+        log "Error, there is an existing memsql process running '$memsqldSafePath' with PID $existing_memsql_pid"
+        exit 1
+    fi
+
     env -u ROOT_PASSWORD ${memsqldSafePath} \
         --auto-restart disable \
         --defaults-file $(memsqlctl describe-node --property MemsqlConfig) \
