@@ -407,47 +407,6 @@ publish-gcr-node-7-8:
 	docker tag memsql/node:${NODE_TAG_7_8} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_8}
 	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_8}
 
-.PHONY: redhat-verify-node
-redhat-verify-node:
-	docker tag singlestore/node:${NODE_TAG} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
-
-.PHONY: redhat-verify-node-7-0
-redhat-verify-node-7-0:
-	docker tag singlestore/node:${NODE_TAG_7_0} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_0}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_0}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
-
-.PHONY: redhat-verify-node-7-1
-redhat-verify-node-7-1:
-	docker tag singlestore/node:${NODE_TAG_7_1} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_1}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_1}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
-
-.PHONY: redhat-verify-node-7-3
-redhat-verify-node-7-3:
-	docker tag singlestore/node:${NODE_TAG_7_3} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_3}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_3}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
-
-.PHONY: redhat-verify-node-7-5
-redhat-verify-node-7-5:
-	docker tag singlestore/node:${NODE_TAG_7_5} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_5}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_5}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
-
-.PHONY: redhat-verify-node-7-6
-redhat-verify-node-7-6:
-	docker tag singlestore/node:${NODE_TAG_7_6} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_6}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_6}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
-
-.PHONY: redhat-verify-node-7-8
-redhat-verify-node-7-8:
-	docker tag singlestore/node:${NODE_TAG_7_8} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_8}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_8}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
 
 .PHONY: build-dynamic-node
 build-dynamic-node: build-base
@@ -509,12 +468,6 @@ publish-ciab:
 	docker push singlestore/cluster-in-a-box:latest
 	docker push memsql/cluster-in-a-box:${CIAB_TAG}
 	docker push memsql/cluster-in-a-box:latest
-
-.PHONY: redhat-verify-ciab
-redhat-verify-ciab:
-	docker tag singlestore/cluster-in-a-box:${CIAB_TAG} scan.connect.redhat.com/ospid-6b69e5e1-d98a-4d75-a591-e300d4820ecb/cluster-in-a-box:${CIAB_TAG}
-	docker push scan.connect.redhat.com/ospid-6b69e5e1-d98a-4d75-a591-e300d4820ecb/cluster-in-a-box:${CIAB_TAG}
-	@echo "View results + publish: https://connect.redhat.com/project/923891/view"
 
 # This is used to publish an UBI-based (known as redhat) node image to GCR.io.
 .PHONY: redhat-verify-ubi-gcr-internal-node

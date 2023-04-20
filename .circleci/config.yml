@@ -19,25 +19,6 @@ jobs:
             - run: make test
             - run: make test-destroy
 
-    redhat:
-        parameters:
-            package:
-                type: string
-        machine: true
-        steps:
-            - setup_environment
-            - checkout
-            - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_NODE} scan.connect.redhat.com
-            - run: make build-<<parameters.package>> redhat-verify-<<parameters.package>> VARIANT=redhat
-
-    redhat-ciab:
-        machine: true
-        steps:
-            - setup_environment
-            - checkout
-            - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_CIAB} scan.connect.redhat.com
-            - run: make build-ciab redhat-verify-ciab VARIANT=redhat
-
     dockerhub:
         parameters:
             package:
@@ -115,30 +96,6 @@ workflows:
                   requires:
                       - test
 
-            - publish-redhat:
-                  name: publish-redhat-<< matrix.package >>
-                  type: approval
-                  matrix:
-                      parameters:
-                          # Must match line 93.
-                          package:
-                              [
-                                  "node",
-                                  "node-7-0",
-                                  "node-7-1",
-                                  "node-7-3",
-                                  "node-7-5",
-                                  "node-7-6",
-                                  "node-7-8",
-                              ]
-                  requires:
-                      - test
-
-            - publish-redhat-ciab:
-                  name: publish-redhat-ciab
-                  type: approval
-                  requires:
-                      - test
 
             - dockerhub:
                   name: dockerhub-<< matrix.package >>
@@ -161,29 +118,6 @@ workflows:
                               ]
                   requires:
                       - publish-dockerhub-<< matrix.package >>
-
-            - redhat:
-                  name: redhat-<< matrix.package >>
-                  matrix:
-                      parameters:
-                          package:
-                              [
-                                  "node",
-                                  "node-7-0",
-                                  "node-7-1",
-                                  "node-7-3",
-                                  "node-7-5",
-                                  "node-7-6",
-                                  "node-7-8",
-                                  
-                              ]
-                  requires:
-                      - publish-redhat-<< matrix.package >>
-
-            - redhat-ciab:
-                  name: redhat-ciab
-                  requires:
-                      - publish-redhat-ciab
 
             - publish-ubi-gcr-internal:
                   name: publish-ubi-gcr-internal
