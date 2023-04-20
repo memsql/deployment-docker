@@ -6,7 +6,6 @@ If you are interested in contributing, please read `CONTRIBUTING.md`.
 | Image        | SingleStore Packages Installed                                    |
 |--------------|-------------------------------------------------------------------|
 | ciab         | singlestoredb-server, singlestoredb-studio, singlestoredb-toolbox |
-| ciab-redhat  | singlestoredb-server, singlestoredb-studio, singlestoredb-toolbox |
 | dynamic-node | (none)                                                            |
 | node         | singlestoredb-server                                              |
 | node-redhat  | singlestoredb-server                                              |
