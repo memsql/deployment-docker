@@ -1,6 +1,7 @@
+#SERVER_VERSION=8.1.? 	# don't forget to add JRE_PACKAGE (see build-node-preview)
 SERVER_VERSION=8.0.19-f48780d261
 SERVER_VERSION_CLOUD=7.9.20-6af0c6b54c
-SERVER_VERSION_PREVIEW=8.1.0-2f56418074
+SERVER_VERSION_PREVIEW=8.1.0-1573b809f5
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
 SERVER_VERSION_7_0=7.0.26-8999f1390b
 SERVER_VERSION_7_1=7.1.25-af0195880c
@@ -162,6 +163,7 @@ build-node-custom: build-base
 		--build-arg SERVER_VERSION=${SERVER_VERSION_CUSTOM} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg LOCAL_SERVER_RPM=${LOCAL_SERVER_RPM_CUSTOM} \
+		--build-arg JRE_PACKAGE=java-1.8.0-openjdk \
 		-t ${REGISTRY_CUSTOM}/singlestore/node:${NODE_TAG_CUSTOM} \
 		-t ${REGISTRY_CUSTOM}/memsql/node:${NODE_TAG_CUSTOM} \
 		-f Dockerfile-node .
@@ -172,6 +174,7 @@ build-node-preview: build-base-dev
 		--build-arg BASE_IMAGE=s2-base-dev:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION_PREVIEW} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		--build-arg JRE_PACKAGE=java-1.8.0-openjdk \
 		-t singlestore/node:${NODE_TAG_PREVIEW} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_PREVIEW} memsql/node:${NODE_TAG_PREVIEW}
