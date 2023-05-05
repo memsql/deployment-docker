@@ -69,6 +69,6 @@ aws s3 ${ENDPOINT_FLAG} cp "${RESULT_DIR}/metadata.txt" "s3://${S3_REPORT_BUCKET
 if [[ "${REPORT_TYPE}" = "Admin" ]] || [[ "$REPORT_TYPE" = "" ]]; then
     CHECK_REPORT_FILE="${RESULT_DIR}/${CLUSTER_NAME}.txt"
     echo "Internal: Will write check report to ${CHECK_REPORT_FILE}"
-    sdb-report check -i "${RESULT_DIR}/${CLUSTER_NAME}.tar.gz" --exclude swapEnabled,minFreeKbytes | tee "${CHECK_REPORT_FILE}" || echo "WARNING: CHECKS FAILED"
+    sdb-report check -i "${RESULT_DIR}/${CLUSTER_NAME}.tar.gz" --exclude swapEnabled,minFreeKbytes,vmSwappiness | tee "${CHECK_REPORT_FILE}" || echo "WARNING: CHECKS FAILED"
     aws s3 ${ENDPOINT_FLAG} cp "${RESULT_DIR}/${CLUSTER_NAME}.txt" "s3://${S3_REPORT_BUCKET}/${S3_REPORT_PATH}/check.txt"
 fi
