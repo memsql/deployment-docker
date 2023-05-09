@@ -1,5 +1,5 @@
-#SERVER_VERSION=8.1.? 	# don't forget to add JRE_PACKAGE (see build-node-preview)
-SERVER_VERSION=8.0.19-f48780d261
+# don't forget to add JRE_PACKAGE (see build-node-preview)
+SERVER_VERSION=8.1.1-45eec847e2
 SERVER_VERSION_CLOUD=7.9.20-6af0c6b54c
 SERVER_VERSION_PREVIEW=8.1.0-1573b809f5
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
@@ -9,6 +9,7 @@ SERVER_VERSION_7_3=7.3.27-9f2e2f81f1
 SERVER_VERSION_7_5=7.5.24-41d912eba1
 SERVER_VERSION_7_6=7.6.28-949f48e28e
 SERVER_VERSION_7_8=7.8.28-3b9a38fe38
+SERVER_VERSION_8_0=8.0.19-f48780d261
 CLIENT_VERSION=1.0.5
 TOOLBOX_VERSION=1.16.0
 STUDIO_VERSION=4.0.11
@@ -37,6 +38,7 @@ NODE_TAG_7_3=${VARIANT}-${SERVER_VERSION_7_3}
 NODE_TAG_7_5=${VARIANT}-${SERVER_VERSION_7_5}
 NODE_TAG_7_6=${VARIANT}-${SERVER_VERSION_7_6}
 NODE_TAG_7_8=${VARIANT}-${SERVER_VERSION_7_8}
+NODE_TAG_8_0=${VARIANT}-${SERVER_VERSION_8_0}
 DYNAMIC_TAG=${VARIANT}-${REVISION}
 CIAB_TAG=${VARIANT}-${SERVER_VERSION}-${STUDIO_VERSION}-${TOOLBOX_VERSION}
 TOOLS_TAG=${VARIANT}-${KUBE_CLIENT_VERSION}-${TOOLBOX_VERSION}-${REVISION}
@@ -81,6 +83,9 @@ test:
 	# node-7-8
 	${MAKE} build-node-7-8
 	${MAKE} test-node-7-8
+	# node-8-0
+	${MAKE} build-node-8-0
+	${MAKE} test-node-8-0
 
 	# node-cloud
 	${MAKE} build-node-cloud
@@ -249,6 +254,16 @@ build-node-7-8: build-base
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_7_8} memsql/node:${NODE_TAG_7_8}
 
+.PHONY: build-node-8-0
+build-node-8-0: build-base
+	docker build \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_8_)} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		-t singlestore/node:${NODE_TAG_8_)} \
+		-f Dockerfile-node .
+	docker tag singlestore/node:${NODE_TAG_8_)} memsql/node:${NODE_TAG_8_0}
+
 .PHONY: test-node
 test-node: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG} ./test/node
@@ -285,6 +300,10 @@ test-node-7-6: test-destroy
 test-node-7-8: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_7_8} ./test/node
 
+.PHONY: test-node-8-0
+test-node-7-8: test-destroy
+	IMAGE=singlestore/node:${NODE_TAG_8_0} ./test/node
+
 .PHONY: test-node-cloud
 test-node-cloud: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_CLOUD} ./test/node
@@ -310,7 +329,7 @@ publish-gcr-node:
 	docker tag memsql/node:${NODE_TAG} gcr.io/singlestore-public/mirror/docker.io/memsql/node:latest
 	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG}
 	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:latest
-	
+
 .PHONY: publish-node-cloud
 publish-node-cloud:
 	docker push gcr.io/singlestore-public/memsql/node:${NODE_TAG_CLOUD}
@@ -405,11 +424,15 @@ publish-node-7-8:
 	docker push singlestore/node:${NODE_TAG_7_8}
 	docker push memsql/node:${NODE_TAG_7_8}
 
+.PHONY: publish-node-8-0
+publish-node-8-0:
+	docker push singlestore/node:${NODE_TAG_8_)}
+	docker push memsql/node:${NODE_TAG_8_0}
+
 .PHONY: publish-gcr-node-7-8
 publish-gcr-node-7-8:
 	docker tag memsql/node:${NODE_TAG_7_8} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_8}
 	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_8}
-
 
 .PHONY: build-dynamic-node
 build-dynamic-node: build-base
