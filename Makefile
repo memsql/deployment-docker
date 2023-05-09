@@ -258,11 +258,11 @@ build-node-7-8: build-base
 build-node-8-0: build-base
 	docker build \
 		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
-		--build-arg SERVER_VERSION=${SERVER_VERSION_8_0)} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_8_0} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
-		-t singlestore/node:${NODE_TAG_8_0)} \
+		-t singlestore/node:${NODE_TAG_8_0} \
 		-f Dockerfile-node .
-	docker tag singlestore/node:${NODE_TAG_8_0)} memsql/node:${NODE_TAG_8_0}
+	docker tag singlestore/node:${NODE_TAG_8_0} memsql/node:${NODE_TAG_8_0}
 
 .PHONY: test-node
 test-node: test-destroy
