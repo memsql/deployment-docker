@@ -301,7 +301,7 @@ test-node-7-8: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_7_8} ./test/node
 
 .PHONY: test-node-8-0
-test-node-7-8: test-destroy
+test-node-8-0: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_8_0} ./test/node
 
 .PHONY: test-node-cloud
@@ -426,7 +426,7 @@ publish-node-7-8:
 
 .PHONY: publish-node-8-0
 publish-node-8-0:
-	docker push singlestore/node:${NODE_TAG_8_)}
+	docker push singlestore/node:${NODE_TAG_8_0)}
 	docker push memsql/node:${NODE_TAG_8_0}
 
 .PHONY: publish-gcr-node-7-8
