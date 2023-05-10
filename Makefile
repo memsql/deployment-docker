@@ -1,5 +1,7 @@
-# don't forget to add JRE_PACKAGE (see build-node-preview)
+# this is the latest version
 SERVER_VERSION=8.1.1-45eec847e2
+# this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
+# it tags the image differently and pushes to a different repo
 SERVER_VERSION_CLOUD=7.9.20-6af0c6b54c
 SERVER_VERSION_PREVIEW=8.1.0-1573b809f5
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
@@ -140,6 +142,7 @@ build-node: build-base
 		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		--build-arg JRE_PACKAGE=java-1.8.0-openjdk \
 		-t singlestore/node:${NODE_TAG} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG} singlestore/node:latest
