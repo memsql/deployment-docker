@@ -31,4 +31,4 @@ RUN dnf --enablerepo=* clean all && dnf update -y; exit 0
 RUN yum update expat libxml2 gnupg2 libgcrypt openssl-libs pcre2 curl libcurl-minimal systemd platform-python python3-libs gnutls libksba sqlite-libs zlib libcom_err krb5-libs dbus libtasn1 -y
 RUN yum remove vim-minimal platform-python-pip.noarch -y
 
-RUN yum install -y jq-1.6-3.el8
+RUN yum install -y jq-1.6
