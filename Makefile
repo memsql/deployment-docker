@@ -434,7 +434,7 @@ publish-gcr-node-7-8:
 
 .PHONY: publish-node-8-0
 publish-node-8-0:
-	docker push singlestore/node:${NODE_TAG_8_0)}
+	docker push singlestore/node:${NODE_TAG_8_0}
 	docker push memsql/node:${NODE_TAG_8_0}
 
 .PHONY: publish-gcr-node-8-0
