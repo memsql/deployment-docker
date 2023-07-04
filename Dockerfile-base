@@ -28,7 +28,7 @@ RUN yum-config-manager --add-repo https://release.memsql.com/${RELEASE_CHANNEL}/
 RUN dnf --enablerepo=* clean all && dnf update -y; exit 0
 
 # address vulnarabilities found by `grype --only-fixed` command
-RUN yum update expat libxml2 gnupg2 libgcrypt openssl-libs pcre2 curl libcurl-minimal systemd platform-python python3-libs gnutls libksba sqlite-libs zlib libcom_err krb5-libs dbus libtasn1 libarchive unbound-libs tar platform-python-setuptools python3-setuptools-wheel -y
+RUN yum update expat libxml2 gnupg2 libgcrypt openssl-libs pcre2 curl libcurl-minimal systemd platform-python python3-libs gnutls libksba sqlite-libs zlib libcom_err krb5-libs dbus libtasn1 libarchive unbound-libs tar platform-python-setuptools python3-setuptools-wheel sqlite-libs systemd systemd-libs systemd-pam -y
 RUN yum remove vim-minimal platform-python-pip.noarch -y
 
 RUN yum install -y jq-1.6
