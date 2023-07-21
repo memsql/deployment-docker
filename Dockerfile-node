@@ -18,6 +18,7 @@ RUN if [[ -z "${LOCAL_SERVER_RPM}" ]] ; then \
       yum install -y ${JRE_PACKAGE}; \
     fi \
  && yum install -y singlestore-client-${CLIENT_VERSION} \
+ && yum install -y perf \
  && yum clean all
 
 VOLUME ["/var/lib/memsql"]
