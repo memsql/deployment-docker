@@ -1,5 +1,5 @@
 # this is the latest version
-SERVER_VERSION=8.1.19-a02d6edb4f
+SERVER_VERSION=8.1.20-4f3dd4ecc3
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
 SERVER_VERSION_CLOUD=7.9.24-8b25428112
@@ -162,7 +162,7 @@ build-node-cloud: build-base-cloud
 	docker tag singlestore/node:${NODE_TAG_CLOUD} memsql/node:${NODE_TAG_CLOUD}
 	docker tag singlestore/node:${NODE_TAG_CLOUD} gcr.io/singlestore-public/memsql/node:latest
 	docker tag singlestore/node:${NODE_TAG_CLOUD} memsql/node:latest
-	docker tag singlestore/node:${NODE_TAG_CLOUD} singlestore/node:latest 
+	docker tag singlestore/node:${NODE_TAG_CLOUD} singlestore/node:latest
 
 .PHONY: build-node-custom
 build-node-custom: build-base
