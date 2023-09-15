@@ -1,5 +1,5 @@
 # this is the latest version
-SERVER_VERSION=8.1.20-4f3dd4ecc3
+SERVER_VERSION=8.1.21-cbecde60a7
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
 SERVER_VERSION_CLOUD=7.9.24-8b25428112
