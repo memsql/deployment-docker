@@ -1,5 +1,5 @@
 # this is the latest version
-SERVER_VERSION=8.1.24-0830a86124
+SERVER_VERSION=8.1.25-430e7395a4
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
 SERVER_VERSION_CLOUD=7.9.24-8b25428112
@@ -11,7 +11,7 @@ SERVER_VERSION_7_3=7.3.27-9f2e2f81f1
 SERVER_VERSION_7_5=7.5.25-3aa4489895
 SERVER_VERSION_7_6=7.6.31-ef954f265d
 SERVER_VERSION_7_8=7.8.37-84788a4d01
-SERVER_VERSION_8_0=8.0.25-8a4859a5fa
+SERVER_VERSION_8_0=8.0.26-647f87ca12
 CLIENT_VERSION=1.0.5
 TOOLBOX_VERSION=1.17.4
 STUDIO_VERSION=4.0.14
