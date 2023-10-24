@@ -1,5 +1,6 @@
 # this is the latest version
-SERVER_VERSION=8.1.26-810da32787
+SERVER_VERSION=8.1.26-810da32787	# !!! 8.5 IMPORTANT !!! Set JRE_PACKAGE=java-11-openjdk for the 8.5 release
+
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
 SERVER_VERSION_CLOUD=7.9.25-5635578da8
@@ -182,7 +183,7 @@ build-node-preview: build-base-dev
 		--build-arg BASE_IMAGE=s2-base-dev:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION_PREVIEW} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
-		--build-arg JRE_PACKAGE=java-1.8.0-openjdk \
+		--build-arg JRE_PACKAGE=java-11-openjdk \
 		-t singlestore/node:${NODE_TAG_PREVIEW} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_PREVIEW} memsql/node:${NODE_TAG_PREVIEW}
