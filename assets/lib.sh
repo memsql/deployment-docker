@@ -38,12 +38,45 @@ installRelease() {
     return 1
 }
 
+isVersionGE()
+{
+    local arg_major=${1}
+    local arg_minor=${2}
+
+    local version=$(memsqlctl version | sed -n 's/^Version: \(.*\)$/\1/p')
+    local versionParts=($(echo ${version//./ }))
+    local major=${versionParts[0]}
+    local minor=${versionParts[1]}
+    local patch=${versionParts[2]}
+
+    if [[ "${major}" -ne ${arg_major} ]]; then
+        if [[ "${major}" -gt ${arg_major} ]]; then
+            return 0
+        else
+            return 1
+        fi
+    fi
+
+    if [[ "${minor}" -ne ${arg_minor} ]]; then
+        if [[ "${minor}" -gt ${arg_minor} ]]; then
+            return 0
+        else
+            return 1
+        fi
+    fi
+
+    return 0
+}
+
 createNode() {
     log "Initializing SingleStore DB node"
     memsqlctl -y create-node --no-start --base-install-dir /var/lib/memsql/instance
     memsqlctl -y update-config --key minimum_core_count --value 0
     memsqlctl -y update-config --key minimum_memory_mb --value 0
     memsqlctl -y update-config --key skip_host_cache --value on
+    if isVersionGE 8 5; then
+        memsqlctl -y update-config --key java_pipelines_java11_path --value $(which java)
+    fi
 }
 
 setMaximumMemory() {
