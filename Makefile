@@ -5,7 +5,7 @@ SERVER_VERSION=8.1.28-9d40213a5d
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
 SERVER_VERSION_CLOUD=7.9.25-5635578da8
-SERVER_VERSION_PREVIEW=8.5.1-e384850029
+SERVER_VERSION_PREVIEW=8.5.1-417dd55bd4
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
 SERVER_VERSION_7_0=7.0.26-8999f1390b
 SERVER_VERSION_7_1=7.1.25-af0195880c
