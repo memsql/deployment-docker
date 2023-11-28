@@ -1,6 +1,6 @@
 # this is the latest version
 # !!! 8.5 IMPORTANT !!! Set JRE_PACKAGE=java-11-openjdk for the 8.5 release
-SERVER_VERSION=8.1.29-63f8276778
+SERVER_VERSION=8.1.30-e0a67e68e5
 
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
@@ -12,7 +12,7 @@ SERVER_VERSION_7_1=7.1.25-af0195880c
 SERVER_VERSION_7_3=7.3.27-9f2e2f81f1
 SERVER_VERSION_7_5=7.5.25-3aa4489895
 SERVER_VERSION_7_6=7.6.33-c59b12bc70
-SERVER_VERSION_7_8=7.8.38-c1b9a3c816
+SERVER_VERSION_7_8=7.8.39-d55ccb73e3
 SERVER_VERSION_8_0=8.0.28-2013fb26e0
 CLIENT_VERSION=1.0.5
 TOOLBOX_VERSION=1.17.6
