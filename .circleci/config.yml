@@ -9,6 +9,15 @@ commands:
                   sudo apt install -y make bash git jq docker
 
 jobs:
+    test-engine-extra-metadata:
+        machine:
+            # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/
+            image: ubuntu-2004:202201-02
+        steps:
+            - setup_environment
+            - checkout
+            - run: make test-engine-extra-metadata
+
     test:
         machine:
             # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/

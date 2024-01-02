@@ -565,3 +565,11 @@ requires-license:
 ifndef LICENSE_KEY
 	$(error LICENSE_KEY is required)
 endif
+
+.PHONY: test-engine-extra-metadata
+test-engine-extra-metadata:
+	MEMSQL_SERVER_VERSION=${SERVER_VERSION_PREVIEW} \
+	RELEASE_CHANNEL=dev \
+	RELEASE_METADATA_BUCKET=helios-infra-engine-releases-metadata \
+	RELEASE_METADATA_BUCKET_REGION=us-east-1 \
+	./assets/release-metadata/release-metadata.py
