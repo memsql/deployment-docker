@@ -81,6 +81,12 @@ workflows:
         jobs:
             - test
 
+            - test-engine-extra-metadata:
+                  name: test-engine-extra-metadata
+                  type: approval
+                  requires:
+                      - test
+
             - publish-dockerhub:
                   name: publish-dockerhub-<< matrix.package >>
                   type: approval
