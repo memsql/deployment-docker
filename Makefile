@@ -1,6 +1,6 @@
 # this is the latest version
 # !!! 8.5 IMPORTANT !!! Set JRE_PACKAGE=java-11-openjdk for the 8.5 release
-SERVER_VERSION=8.1.31-d5850b922e
+SERVER_VERSION=8.1.32-e3d3cde6da
 
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
