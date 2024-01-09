@@ -1,6 +1,5 @@
 # this is the latest version
-# !!! 8.5 IMPORTANT !!! Set JRE_PACKAGE=java-11-openjdk for the 8.5 release
-SERVER_VERSION=8.1.32-e3d3cde6da
+SERVER_VERSION=8.5.1-39d19295bd
 
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
@@ -14,6 +13,7 @@ SERVER_VERSION_7_5=7.5.25-3aa4489895
 SERVER_VERSION_7_6=7.6.33-c59b12bc70
 SERVER_VERSION_7_8=7.8.40-bbe69163a2
 SERVER_VERSION_8_0=8.0.29-e1e57a787a
+SERVER_VERSION_8_1=8.1.32-e3d3cde6da
 CLIENT_VERSION=1.0.5
 TOOLBOX_VERSION=1.17.6
 STUDIO_VERSION=4.0.16
@@ -43,6 +43,7 @@ NODE_TAG_7_5=${VARIANT}-${SERVER_VERSION_7_5}
 NODE_TAG_7_6=${VARIANT}-${SERVER_VERSION_7_6}
 NODE_TAG_7_8=${VARIANT}-${SERVER_VERSION_7_8}
 NODE_TAG_8_0=${VARIANT}-${SERVER_VERSION_8_0}
+NODE_TAG_8_1=${VARIANT}-${SERVER_VERSION_8_1}
 DYNAMIC_TAG=${VARIANT}-${REVISION}
 CIAB_TAG=${VARIANT}-${SERVER_VERSION}-${STUDIO_VERSION}-${TOOLBOX_VERSION}
 TOOLS_TAG=${VARIANT}-${KUBE_CLIENT_VERSION}-${TOOLBOX_VERSION}-${REVISION}
@@ -90,6 +91,9 @@ test:
 	# node-8-0
 	${MAKE} build-node-8-0
 	${MAKE} test-node-8-0
+	# node-8-1
+	${MAKE} build-node-8-1
+	${MAKE} test-node-8-1
 
 	# node-cloud
 	${MAKE} build-node-cloud
@@ -144,7 +148,7 @@ build-node: build-base
 		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
-		--build-arg JRE_PACKAGE=java-1.8.0-openjdk \
+		--build-arg JRE_PACKAGE=java-11-openjdk \
 		-t singlestore/node:${NODE_TAG} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG} singlestore/node:latest
@@ -269,6 +273,17 @@ build-node-8-0: build-base
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_8_0} memsql/node:${NODE_TAG_8_0}
 
+.PHONY: build-node-8-1
+build-node-8-1: build-base
+	docker build \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_8_1} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		--build-arg JRE_PACKAGE=java-1.8.0-openjdk \
+		-t singlestore/node:${NODE_TAG_8_1} \
+		-f Dockerfile-node .
+	docker tag singlestore/node:${NODE_TAG_8_1} memsql/node:${NODE_TAG_8_1}
+
 .PHONY: test-node
 test-node: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG} ./test/node
@@ -308,6 +323,10 @@ test-node-7-8: test-destroy
 .PHONY: test-node-8-0
 test-node-8-0: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_8_0} ./test/node
+
+.PHONY: test-node-8-1
+test-node-8-1: test-destroy
+	IMAGE=singlestore/node:${NODE_TAG_8_1} ./test/node
 
 .PHONY: test-node-cloud
 test-node-cloud: test-destroy
@@ -443,6 +462,16 @@ publish-node-8-0:
 publish-gcr-node-8-0:
 	docker tag memsql/node:${NODE_TAG_8_0} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_0}
 	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_0}
+
+.PHONY: publish-node-8-1
+publish-node-8-1:
+	docker push singlestore/node:${NODE_TAG_8_1}
+	docker push memsql/node:${NODE_TAG_8_1}
+
+.PHONY: publish-gcr-node-8-1
+publish-gcr-node-8-1:
+	docker tag memsql/node:${NODE_TAG_8_1} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_1}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_1}
 
 .PHONY: build-dynamic-node
 build-dynamic-node: build-base
