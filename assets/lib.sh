@@ -74,9 +74,6 @@ createNode() {
     memsqlctl -y update-config --key minimum_core_count --value 0
     memsqlctl -y update-config --key minimum_memory_mb --value 0
     memsqlctl -y update-config --key skip_host_cache --value on
-    if isVersionGE 8 5; then
-        memsqlctl -y update-config --key java_pipelines_java11_path --value $(which java)
-    fi
 }
 
 setMaximumMemory() {
@@ -84,6 +81,12 @@ setMaximumMemory() {
     if [ -n "${memory}" ]; then
         log "Setting maximum_memory to ${memory}"
         memsqlctl -y update-config --key maximum_memory --value "${memory}"
+    fi
+}
+
+setJava11Path() {
+    if isVersionGE 8 5; then
+        memsqlctl -y update-config --key java_pipelines_java11_path --value $(which java)
     fi
 }
 
