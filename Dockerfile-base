@@ -17,6 +17,8 @@ RUN yum-config-manager --save --setopt=skip_missing_names_on_install=0
 
 # updates and basic utilities
 ARG RELEASE_CHANNEL
+RUN rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
+
 # currently yum update-minimal fails on curl, so we need to update curl before
 RUN yum update curl -y && yum -y update-minimal --setopt=tsflags=nodocs \
       --security --sec-severity=Important --sec-severity=Critical --nobest \
@@ -32,3 +34,4 @@ RUN yum update expat libxml2 gnupg2 libgcrypt openssl-libs pcre2 curl libcurl-mi
 RUN yum remove vim-minimal platform-python-pip.noarch -y
 
 RUN yum install -y jq-1.6
+RUN yum install -y which
