@@ -41,7 +41,7 @@ jobs:
                     - run: echo "${GCLOUD_SERVICE_ACCOUNT_SINGLESTORE_PUBLIC}" | base64 -d >./dockerconfig.json
                     - run: cat ./dockerconfig.json | docker login -u _json_key --password-stdin https://gcr.io
                     - run: make publish-gcr-<<parameters.package>>
-            
+
     gcr-public:
         parameters:
             package:
@@ -90,6 +90,7 @@ workflows:
                                   "node-7-6",
                                   "node-7-8",
                                   "node-8-0",
+                                  "node-8-1",
                                   "dynamic-node",
                                   "ciab",
                                   "tools",
@@ -114,6 +115,7 @@ workflows:
                                   "node-7-6",
                                   "node-7-8",
                                   "node-8-0",
+                                  "node-8-1",
                                   "dynamic-node",
                                   "ciab",
                                   "tools",
