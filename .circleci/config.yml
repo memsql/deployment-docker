@@ -83,7 +83,6 @@ workflows:
 
             - test-engine-extra-metadata:
                   name: test-engine-extra-metadata
-                  type: approval
                   requires:
                       - test
 

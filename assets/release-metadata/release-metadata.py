@@ -8,6 +8,7 @@ import requests
 import os
 
 def _must_get_env(var, redact_log=False):
+    logging.info("Extracting environment variable {}".format(var))
     val = os.getenv(var)
     if val is None:
         logging.error("Missing required environment variable {}".format(var))
@@ -16,6 +17,8 @@ def _must_get_env(var, redact_log=False):
     return val
 
 def download_bottle_version(ref, githubToken):
+    logging.info("Downloading BOTTLE_VERSION file from GitHub"
+                 )
     headers = {
         'Authorization': 'token ' + githubToken.strip(),
     }
@@ -32,13 +35,15 @@ def download_bottle_version(ref, githubToken):
         raise
 
 def generate_release_metadata_file(file_name, data):
+    logging.info("Generating release metadata file %s" % file_name)
     with open(file_name, 'w') as f:
         json.dump(data, f)
 
 def upload_release_metadata_file(bucket, region, accessKeyID, accessKeySecret, file_name, release):
-    s3 = boto3.client('s3')
     key = "memsqlserver/%s/%s" % (release, file_name)
-    s3.upload_file(file_name, bucket, key)
+    logging.info("Uploading release metadata file '%s' to S3" % key)
+    s3 = boto3.resource('s3', aws_access_key_id=accessKeyID, aws_secret_access_key=accessKeySecret, region_name=region)
+    s3.meta.client.upload_file(file_name, bucket, key)
 
 if __name__ == "__main__":
     try:
@@ -60,9 +65,9 @@ if __name__ == "__main__":
         releaseMetadataContents = {
             'bottleVersion': '%s.%s.%s' % (bottleVersionMajorStr, bottleVersionMinorStr, bottleVersionPatchStr),
         }
-        releaseMetadataFile = "%s_%s_%s.json" % (bottleVersionMajorStr, bottleVersionMinorStr, bottleVersionPatchStr)
+        releaseMetadataFile = "%s.json" % memsqlServerVersion
         generate_release_metadata_file(releaseMetadataFile, releaseMetadataContents)
-        upload_release_metadata_file(releaseMetadataS3Bucket, releaseMetadataBucketRegion, releaseMetadataAWSAccessKeyID, releaseMetadataAWSAccessKeySecret, releaseMetadataFile, memsqlServerVersion)
+        upload_release_metadata_file(releaseMetadataS3Bucket, releaseMetadataBucketRegion, releaseMetadataAWSAccessKeyID, releaseMetadataAWSAccessKeySecret, releaseMetadataFile, memsqlReleaseChannel)
     finally:
         if os.path.exists(releaseMetadataFile):
             os.remove(releaseMetadataFile)
