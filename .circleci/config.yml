@@ -19,9 +19,11 @@ jobs:
             - setup_environment
             - checkout
             - run: |
-                  RELEASE_METADATA_AWS_ACCESS_KEY_ID=${RELEASE_METADATA_AWS_ACCESS_KEY_ID} \
-                  RELEASE_METADATA_AWS_ACCESS_KEY_SCERET=${RELEASE_METADATA_AWS_ACCESS_KEY_SCERET} \
-                  make test-engine-extra-metadata
+                  MEMSQL_SERVER_VERSION=1.0.0 \
+                  RELEASE_CHANNEL=dev \
+                  RELEASE_METADATA_BUCKET=helios-infra-engine-releases-metadata \
+                  RELEASE_METADATA_BUCKET_REGION=us-east-1 \
+                  ./assets/release-metadata/release-metadata.py
 
     test:
         machine:
