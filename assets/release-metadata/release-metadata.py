@@ -46,7 +46,7 @@ def upload_release_metadata_file(bucket, region, accessKeyID, accessKeySecret, f
     logging.info("Uploading release metadata file '%s' to S3" % key)
     print ("Uploading release metadata file '%s' to S3" % key)
     s3 = boto3.resource('s3', aws_access_key_id=accessKeyID, aws_secret_access_key=accessKeySecret, region_name=region)
-    s3.meta.client.upload_file(fileName, bucket, key, extra_args={'ServerSideEncryption': "AES256"})
+    s3.meta.client.upload_file(fileName, bucket, key, ExtraArgs={'ServerSideEncryption': "AES256"})
 
 if __name__ == "__main__":
     try:
