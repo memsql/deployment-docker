@@ -14,11 +14,12 @@ def _must_get_env(var, redact_log=False):
         logging.error("Missing required environment variable {}".format(var))
         raise Exception("Environment variable {} is required".format(var))
     logging.info("Got {} = {}".format(var, val if not redact_log else "<redacted>"))
+    print ("Got {} = {}".format(var, val if not redact_log else "<redacted>"))
     return val
 
 def download_bottle_version(ref, githubToken):
-    logging.info("Downloading BOTTLE_VERSION file from GitHub"
-                 )
+    logging.info("Downloading BOTTLE_VERSION file from GitHub")
+    print ("Downloading BOTTLE_VERSION file from GitHub")
     headers = {
         'Authorization': 'token ' + githubToken.strip(),
     }
@@ -36,12 +37,14 @@ def download_bottle_version(ref, githubToken):
 
 def generate_release_metadata_file(fileName, data):
     logging.info("Generating release metadata file %s" % fileName)
+    print ("Generating release metadata file %s" % fileName)
     with open(fileName, 'w') as f:
         json.dump(data, f)
 
 def upload_release_metadata_file(bucket, region, accessKeyID, accessKeySecret, fileName, release):
     key = "memsqlserver/%s/%s" % (release, fileName)
     logging.info("Uploading release metadata file '%s' to S3" % key)
+    print ("Uploading release metadata file '%s' to S3" % key)
     s3 = boto3.resource('s3', aws_access_key_id=accessKeyID, aws_secret_access_key=accessKeySecret, region_name=region)
     s3.meta.client.upload_file(fileName, bucket, key)
 
@@ -66,6 +69,8 @@ if __name__ == "__main__":
             'bottleVersion': '%s.%s.%s' % (bottleVersionMajorStr, bottleVersionMinorStr, bottleVersionPatchStr),
         }
         releaseMetadataFile = "%s.json" % memsqlServerVersion
+        print ("releaseMetadataFile: %s" % releaseMetadataFile)
+        print ("releaseMetadataContents: %s" % releaseMetadataContents)
         generate_release_metadata_file(releaseMetadataFile, releaseMetadataContents)
         upload_release_metadata_file(releaseMetadataS3Bucket, releaseMetadataBucketRegion, releaseMetadataAWSAccessKeyID, releaseMetadataAWSAccessKeySecret, releaseMetadataFile, memsqlReleaseChannel)
     finally:
