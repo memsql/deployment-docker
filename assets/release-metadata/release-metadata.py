@@ -56,10 +56,10 @@ if __name__ == "__main__":
         githubToken = _must_get_env("GITHUB_TOKEN", redact_log=True)
         bottleVersion = download_bottle_version("origin/master", githubToken)
         config = configparser.ConfigParser()
-        config.read_string(bottleVersion)
-        bottleVersionMajorStr = config['DEFAULT']['BOTTLE_VERSION_MAJOR']
-        bottleVersionMinorStr = config['DEFAULT']['BOTTLE_VERSION_MINOR']
-        bottleVersionPatchStr = config['DEFAULT']['BOTTLE_VERSION_PATCH']
+        config.read_string('[default]\n' + bottleVersion)
+        bottleVersionMajorStr = config['default']['BOTTLE_VERSION_MAJOR']
+        bottleVersionMinorStr = config['default']['BOTTLE_VERSION_MINOR']
+        bottleVersionPatchStr = config['default']['BOTTLE_VERSION_PATCH']
         if not bottleVersionMajorStr.isdigit() or not bottleVersionMinorStr.isdigit() or not bottleVersionPatchStr.isdigit():
             raise Exception("BOTTLE_VERSION file contents are invalid: %s" % bottleVersion)
         releaseMetadataContents = {
