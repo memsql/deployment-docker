@@ -39,7 +39,7 @@ def generate_release_metadata_file(fileName, data):
     logging.info("Generating release metadata file %s" % fileName)
     print ("Generating release metadata file %s" % fileName)
     with open(fileName, 'w') as f:
-        json.dump(data, f)
+        f.write(json.dumps(data, indent=2).encode('utf-8'))
 
 def upload_release_metadata_file(bucket, region, accessKeyID, accessKeySecret, fileName, release):
     key = "memsqlserver/%s/%s" % (release, fileName)
