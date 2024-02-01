@@ -34,16 +34,16 @@ def download_bottle_version(ref, githubToken):
         print('failed to download BOTTLE_VERSION file: %s' % err)
         raise
 
-def generate_release_metadata_file(file_name, data):
-    logging.info("Generating release metadata file %s" % file_name)
-    with open(file_name, 'w') as f:
+def generate_release_metadata_file(fileName, data):
+    logging.info("Generating release metadata file %s" % fileName)
+    with open(fileName, 'w') as f:
         json.dump(data, f)
 
-def upload_release_metadata_file(bucket, region, accessKeyID, accessKeySecret, file_name, release):
-    key = "memsqlserver/%s/%s" % (release, file_name)
+def upload_release_metadata_file(bucket, region, accessKeyID, accessKeySecret, fileName, release):
+    key = "memsqlserver/%s/%s" % (release, fileName)
     logging.info("Uploading release metadata file '%s' to S3" % key)
     s3 = boto3.resource('s3', aws_access_key_id=accessKeyID, aws_secret_access_key=accessKeySecret, region_name=region)
-    s3.meta.client.upload_file(file_name, bucket, key)
+    s3.meta.client.upload_file(fileName, bucket, key)
 
 if __name__ == "__main__":
     try:
