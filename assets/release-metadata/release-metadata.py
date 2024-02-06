@@ -49,13 +49,12 @@ if __name__ == "__main__":
         logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
         memsqlServerVersion = _must_get_env("MEMSQL_SERVER_VERSION")
         memsqlReleaseChannel = _must_get_env("RELEASE_CHANNEL")
-        releaseMetadataS3Bucket = _must_get_env("RELEASE_METADATA_BUCKET")
-        releaseMetadataBucketRegion = _must_get_env("RELEASE_METADATA_BUCKET_REGION")
+        releaseMetadataS3Bucket = _must_get_env("RELEASE_METADATA_AWS_BUCKET_NAME")
+        releaseMetadataBucketRegion = _must_get_env("RELEASE_METADATA_AWS_REGION")
         releaseMetadataAWSAccessKeyID = _must_get_env("RELEASE_METADATA_AWS_ACCESS_KEY_ID", redact_log=True)
-        releaseMetadataAWSAccessKeySecret = _must_get_env("RELEASE_METADATA_AWS_ACCESS_KEY_SECRET", redact_log=True)
+        releaseMetadataAWSAccessKeySecret = _must_get_env("RELEASE_METADATA_AWS_SECRET_ACCESS_KEY", redact_log=True)
         githubToken = _must_get_env("GITHUB_TOKEN", redact_log=True)
         bottleVersion = download_bottle_version("origin/master", githubToken)
-        # bottleVersion = 'BOTTLE_VERSION_MAJOR=2\nBOTTLE_VERSION_MINOR=0\nBOTTLE_VERSION_PATCH=0\n'
         config = configparser.ConfigParser()
         config.read_string('[default]\n' + bottleVersion)
         bottleVersionMajorStr = config['default']['BOTTLE_VERSION_MAJOR']

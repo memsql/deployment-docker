@@ -19,12 +19,8 @@ jobs:
             - setup_environment
             - checkout
             - run: |
-                  RELEASE_METADATA_AWS_ACCESS_KEY_ID=$(echo "${RELEASE_METADATA_AWS_ACCESS_KEY_ID}" | base64 -d) \
-                  RELEASE_METADATA_AWS_ACCESS_KEY_SECRET=$(echo "${RELEASE_METADATA_AWS_ACCESS_KEY_SECRET}" | base64 -d) \
                   MEMSQL_SERVER_VERSION=1_0_0 \
                   RELEASE_CHANNEL=dev \
-                  RELEASE_METADATA_BUCKET=helios-infra-engine-releases-metadata \
-                  RELEASE_METADATA_BUCKET_REGION=us-east-1 \
                   ./assets/release-metadata/release-metadata.py
 
     test:
