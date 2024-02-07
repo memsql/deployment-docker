@@ -1,5 +1,6 @@
 # this is the latest version
 SERVER_VERSION=8.5.5-b2d331cacf
+SERVER_RELEASE_BRANCH=origin/qtpie-8.5
 
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
@@ -353,6 +354,9 @@ publish-gcr-node:
 	docker tag memsql/node:${NODE_TAG} gcr.io/singlestore-public/mirror/docker.io/memsql/node:latest
 	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG}
 	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:latest
+# publish the bottle-version dependency of the engine release to Helios control-plane.
+	MEMSQL_SERVER_VERSION=${SERVER_VERSION} RELEASE_CHANNEL=dev RELEASE_BRANCH=${SERVER_RELEASE_BRANCH} ./assets/release-metadata/release-metadata.py
+	MEMSQL_SERVER_VERSION=${SERVER_VERSION} RELEASE_CHANNEL=prod RELEASE_BRANCH=${SERVER_RELEASE_BRANCH} ./assets/release-metadata/release-metadata.py
 
 .PHONY: publish-node-cloud
 publish-node-cloud:
@@ -566,10 +570,3 @@ ifndef LICENSE_KEY
 	$(error LICENSE_KEY is required)
 endif
 
-.PHONY: test-engine-extra-metadata
-test-engine-extra-metadata:
-	MEMSQL_SERVER_VERSION=${SERVER_VERSION_PREVIEW} \
-	RELEASE_CHANNEL=dev \
-	RELEASE_METADATA_BUCKET=helios-infra-engine-releases-metadata \
-	RELEASE_METADATA_BUCKET_REGION=us-east-1 \
-	./assets/release-metadata/release-metadata.py

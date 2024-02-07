@@ -11,18 +11,6 @@ commands:
                   sudo pip3 install boto3
 
 jobs:
-    test-engine-extra-metadata:
-        machine:
-            # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/
-            image: ubuntu-2004:202201-02
-        steps:
-            - setup_environment
-            - checkout
-            - run: |
-                  MEMSQL_SERVER_VERSION=1_0_0 \
-                  RELEASE_CHANNEL=dev \
-                  ./assets/release-metadata/release-metadata.py
-
     test:
         machine:
             # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/
@@ -85,11 +73,6 @@ workflows:
     test_publish:
         jobs:
             - test
-
-            - test-engine-extra-metadata:
-                  name: test-engine-extra-metadata
-                  requires:
-                      - test
 
             - publish-dockerhub:
                   name: publish-dockerhub-<< matrix.package >>
