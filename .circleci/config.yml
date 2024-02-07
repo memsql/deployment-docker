@@ -7,6 +7,8 @@ commands:
             - run: |
                   sudo apt update
                   sudo apt install -y make bash git jq docker
+                  sudo python3 -m pip install --upgrade pip
+                  sudo pip3 install boto3
 
 jobs:
     test:
