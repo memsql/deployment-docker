@@ -25,6 +25,7 @@ fi
 setMaximumMemory "${MAXIMUM_MEMORY}"
 
 setJava11Path
+setJava21Path
 
 # if a pre-start script is defined in the environment, and the file exists + is
 # executable, run the file before starting SingleStore DB

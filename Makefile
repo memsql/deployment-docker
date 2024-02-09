@@ -5,7 +5,7 @@ SERVER_RELEASE_BRANCH=origin/qtpie-8.5
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
 SERVER_VERSION_CLOUD=7.9.25-5635578da8
-SERVER_VERSION_PREVIEW=8.5.1-417dd55bd4
+SERVER_VERSION_PREVIEW=8.7.1-a4ba56b7ef
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
 SERVER_VERSION_7_0=7.0.26-8999f1390b
 SERVER_VERSION_7_1=7.1.25-af0195880c
@@ -149,7 +149,7 @@ build-node: build-base
 		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
-		--build-arg JRE_PACKAGE=java-11-openjdk \
+		--build-arg JRE_PACKAGES="java-11-openjdk java-21-openjdk" \
 		-t singlestore/node:${NODE_TAG} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG} singlestore/node:latest
@@ -178,7 +178,7 @@ build-node-custom: build-base
 		--build-arg SERVER_VERSION=${SERVER_VERSION_CUSTOM} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg LOCAL_SERVER_RPM=${LOCAL_SERVER_RPM_CUSTOM} \
-		--build-arg JRE_PACKAGE=java-1.8.0-openjdk \
+		--build-arg JRE_PACKAGES=java-1.8.0-openjdk \
 		-t ${REGISTRY_CUSTOM}/singlestore/node:${NODE_TAG_CUSTOM} \
 		-t ${REGISTRY_CUSTOM}/memsql/node:${NODE_TAG_CUSTOM} \
 		-f Dockerfile-node .
@@ -189,7 +189,7 @@ build-node-preview: build-base-dev
 		--build-arg BASE_IMAGE=s2-base-dev:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION_PREVIEW} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
-		--build-arg JRE_PACKAGE=java-11-openjdk \
+		--build-arg JRE_PACKAGES="java-11-openjdk java-21-openjdk" \
 		-t singlestore/node:${NODE_TAG_PREVIEW} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_PREVIEW} memsql/node:${NODE_TAG_PREVIEW}
@@ -280,7 +280,7 @@ build-node-8-1: build-base
 		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION_8_1} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
-		--build-arg JRE_PACKAGE=java-1.8.0-openjdk \
+		--build-arg JRE_PACKAGES=java-1.8.0-openjdk \
 		-t singlestore/node:${NODE_TAG_8_1} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_8_1} memsql/node:${NODE_TAG_8_1}

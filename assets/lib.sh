@@ -90,6 +90,18 @@ setJava11Path() {
     fi
 }
 
+setJava21Path() {
+    if isVersionGE 8 7; then
+        # Look up the installation path in the alternatives list.  If we don't
+        # find one, do nothing.
+        local java21Path=$(update-alternatives --list | grep '^jre_21\b' | cut -f 3 2>/dev/null)
+        if [ -n "${java21Path}" ] ; then
+            memsqlctl -y update-config --key fts2_java_path --value "${java21Path}/bin/java"
+            memsqlctl -y update-config --key fts2_java_home --value "${java21Path}"
+        fi
+    fi
+}
+
 checkSSL() {
     local code=0
     if [ ! -r /etc/memsql/ssl/server-cert.pem ]; then

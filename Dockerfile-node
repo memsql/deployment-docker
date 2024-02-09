@@ -6,7 +6,7 @@ FROM ${BASE_IMAGE}
 ARG CLIENT_VERSION
 ARG SERVER_VERSION
 ARG LOCAL_SERVER_RPM
-ARG JRE_PACKAGE
+ARG JRE_PACKAGES
 ADD assets /assets
 
 RUN if [[ -z "${LOCAL_SERVER_RPM}" ]] ; then \
@@ -14,9 +14,9 @@ RUN if [[ -z "${LOCAL_SERVER_RPM}" ]] ; then \
     else \
       rpm -i /assets/${LOCAL_SERVER_RPM}; \
     fi \
- && if [[ -n "${JRE_PACKAGE}" ]] ; then \
-      yum install -y ${JRE_PACKAGE}; \
-    fi \
+ && for pkg in ${JRE_PACKAGES} ; do \
+      yum install -y ${pkg}; \
+    done \
  && yum install -y singlestore-client-${CLIENT_VERSION} \
  && yum clean all
 
