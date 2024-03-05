@@ -503,6 +503,7 @@ publish-dynamic-node:
 build-ciab: build-base
 	docker build \
 		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_PACKAGE=singlestoredb-server \
 		--build-arg SERVER_VERSION=${SERVER_VERSION} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg STUDIO_VERSION=${STUDIO_VERSION} \
@@ -517,6 +518,7 @@ build-ciab: build-base
 build-ciab-dev: build-base-dev
 	docker build \
 		--build-arg BASE_IMAGE=s2-base-dev:${VARIANT} \
+		--build-arg SERVER_PACKAGE=memsql-server \
 		--build-arg SERVER_VERSION=${SERVER_VERSION} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg STUDIO_VERSION=${STUDIO_VERSION} \
