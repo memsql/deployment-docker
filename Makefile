@@ -477,6 +477,11 @@ publish-gcr-node-8-1:
 	docker tag memsql/node:${NODE_TAG_8_1} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_1}
 	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_1}
 
+.PHONY: publish-gcr-node-preview
+publish-gcr-node-preview:
+	docker tag memsql/node:${NODE_TAG_PREVIEW} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_PREVIEW}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_PREVIEW}
+
 .PHONY: build-dynamic-node
 build-dynamic-node: build-base
 	docker build \
