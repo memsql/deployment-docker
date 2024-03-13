@@ -1,5 +1,5 @@
 # this is the latest version
-SERVER_VERSION=8.5.10-7593c2b784
+SERVER_VERSION=8.5.11-b906f298a2
 SERVER_RELEASE_BRANCH=origin/qtpie-8.5
 
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
