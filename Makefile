@@ -1,14 +1,23 @@
-SERVER_VERSION=7.6.13-39da2f5c72# CHANGED FROM SOURCE: enforce the specific version that we need for Skai's use-case
-SERVER_VERSION_PREVIEW=7.9.4-1a8fd43c84
+# this is the latest version
+SERVER_VERSION=8.1.35-bb13b781af # CHANGED FROM SOURCE: enforce the specific version that we need for Skai's use-case
+SERVER_RELEASE_BRANCH=origin/qtpie-8.5
+
+# this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
+# it tags the image differently and pushes to a different repo
+SERVER_VERSION_CLOUD=7.9.25-5635578da8
+SERVER_VERSION_PREVIEW=8.7.1-a4ba56b7ef
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
 SERVER_VERSION_7_0=7.0.26-8999f1390b
 SERVER_VERSION_7_1=7.1.25-af0195880c
-SERVER_VERSION_7_3=7.3.26-edbc115410
-SERVER_VERSION_7_5=7.5.20-f604d8a71d
-SERVER_VERSION_7_6=7.6.18-29f3f6ac6e
-CLIENT_VERSION=1.0.5
-TOOLBOX_VERSION=1.13.9
-STUDIO_VERSION=4.0.7
+SERVER_VERSION_7_3=7.3.27-9f2e2f81f1
+SERVER_VERSION_7_5=7.5.25-3aa4489895
+SERVER_VERSION_7_6=7.6.33-c59b12bc70
+SERVER_VERSION_7_8=7.8.42-1a507bf140
+SERVER_VERSION_8_0=8.0.32-4959d03ded
+SERVER_VERSION_8_1=8.1.38-61bcb26831
+CLIENT_VERSION=1.0.7
+TOOLBOX_VERSION=1.17.6
+STUDIO_VERSION=4.0.17
 KUBE_CLIENT_VERSION=v1.11.6
 REVISION=$(shell git describe --dirty=-dirty --always --long --abbrev=40 --match='')
 
@@ -24,6 +33,7 @@ else
 	endif
 endif
 
+NODE_TAG_CLOUD=${VARIANT}-${SERVER_VERSION_CLOUD}
 NODE_TAG=${VARIANT}-${SERVER_VERSION}
 NODE_TAG_PREVIEW=${VARIANT}-${SERVER_VERSION_PREVIEW}-preview
 NODE_TAG_6_8=${VARIANT}-${SERVER_VERSION_6_8}
@@ -32,6 +42,9 @@ NODE_TAG_7_1=${VARIANT}-${SERVER_VERSION_7_1}
 NODE_TAG_7_3=${VARIANT}-${SERVER_VERSION_7_3}
 NODE_TAG_7_5=${VARIANT}-${SERVER_VERSION_7_5}
 NODE_TAG_7_6=${VARIANT}-${SERVER_VERSION_7_6}
+NODE_TAG_7_8=${VARIANT}-${SERVER_VERSION_7_8}
+NODE_TAG_8_0=${VARIANT}-${SERVER_VERSION_8_0}
+NODE_TAG_8_1=${VARIANT}-${SERVER_VERSION_8_1}
 DYNAMIC_TAG=${VARIANT}-${REVISION}
 CIAB_TAG=${VARIANT}-${SERVER_VERSION}-${STUDIO_VERSION}-${TOOLBOX_VERSION}
 TOOLS_TAG=${VARIANT}-${KUBE_CLIENT_VERSION}-${TOOLBOX_VERSION}-${REVISION}
@@ -73,6 +86,20 @@ test:
 	# node-7-6
 	${MAKE} build-node-7-6
 	${MAKE} test-node-7-6
+	# node-7-8
+	${MAKE} build-node-7-8
+	${MAKE} test-node-7-8
+	# node-8-0
+	${MAKE} build-node-8-0
+	${MAKE} test-node-8-0
+	# node-8-1
+	${MAKE} build-node-8-1
+	${MAKE} test-node-8-1
+
+	# node-cloud
+	${MAKE} build-node-cloud
+	${MAKE} test-node-cloud
+
 	# dynamic node
 	${MAKE} build-dynamic-node
 	${MAKE} test-dynamic-node
@@ -84,6 +111,15 @@ test:
 build-base:
 	docker build \
 		--build-arg BASE_IMAGE=${BASE_IMAGE} \
+		--build-arg RELEASE_CHANNEL=production \
+		-t s2-base:${VARIANT} \
+		-f Dockerfile-base .
+
+.PHONY: build-base-cloud
+build-base-cloud:
+	docker build \
+		--build-arg BASE_IMAGE=${BASE_IMAGE} \
+		--build-arg RELEASE_CHANNEL=cloud \
 		-t s2-base:${VARIANT} \
 		-f Dockerfile-base .
 
@@ -113,11 +149,27 @@ build-node: build-base
 		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		--build-arg JRE_PACKAGES="java-11-openjdk java-21-openjdk" \
 		-t singlestore/node:${NODE_TAG} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG} singlestore/node:latest
 	docker tag singlestore/node:${NODE_TAG} memsql/node:${NODE_TAG}
 	docker tag singlestore/node:${NODE_TAG} memsql/node:latest
+
+
+.PHONY: build-node-cloud
+build-node-cloud: build-base-cloud
+	docker build \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_CLOUD} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		-t singlestore/node:${NODE_TAG_CLOUD} \
+		-f Dockerfile-node .
+	docker tag singlestore/node:${NODE_TAG_CLOUD} gcr.io/singlestore-public/memsql/node:${NODE_TAG_CLOUD}
+	docker tag singlestore/node:${NODE_TAG_CLOUD} memsql/node:${NODE_TAG_CLOUD}
+	docker tag singlestore/node:${NODE_TAG_CLOUD} gcr.io/singlestore-public/memsql/node:latest
+	docker tag singlestore/node:${NODE_TAG_CLOUD} memsql/node:latest
+	docker tag singlestore/node:${NODE_TAG_CLOUD} singlestore/node:latest
 
 .PHONY: build-node-custom
 build-node-custom: build-base
@@ -126,6 +178,7 @@ build-node-custom: build-base
 		--build-arg SERVER_VERSION=${SERVER_VERSION_CUSTOM} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg LOCAL_SERVER_RPM=${LOCAL_SERVER_RPM_CUSTOM} \
+		--build-arg JRE_PACKAGES=java-1.8.0-openjdk \
 		-t ${REGISTRY_CUSTOM}/singlestore/node:${NODE_TAG_CUSTOM} \
 		-t ${REGISTRY_CUSTOM}/memsql/node:${NODE_TAG_CUSTOM} \
 		-f Dockerfile-node .
@@ -136,6 +189,7 @@ build-node-preview: build-base-dev
 		--build-arg BASE_IMAGE=s2-base-dev:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION_PREVIEW} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		--build-arg JRE_PACKAGES="java-11-openjdk java-21-openjdk" \
 		-t singlestore/node:${NODE_TAG_PREVIEW} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_PREVIEW} memsql/node:${NODE_TAG_PREVIEW}
@@ -200,6 +254,37 @@ build-node-7-6: build-base
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_7_6} memsql/node:${NODE_TAG_7_6}
 
+.PHONY: build-node-7-8
+build-node-7-8: build-base
+	docker build \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_7_8} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		-t singlestore/node:${NODE_TAG_7_8} \
+		-f Dockerfile-node .
+	docker tag singlestore/node:${NODE_TAG_7_8} memsql/node:${NODE_TAG_7_8}
+
+.PHONY: build-node-8-0
+build-node-8-0: build-base
+	docker build \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_8_0} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		-t singlestore/node:${NODE_TAG_8_0} \
+		-f Dockerfile-node .
+	docker tag singlestore/node:${NODE_TAG_8_0} memsql/node:${NODE_TAG_8_0}
+
+.PHONY: build-node-8-1
+build-node-8-1: build-base
+	docker build \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_8_1} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		--build-arg JRE_PACKAGES=java-1.8.0-openjdk \
+		-t singlestore/node:${NODE_TAG_8_1} \
+		-f Dockerfile-node .
+	docker tag singlestore/node:${NODE_TAG_8_1} memsql/node:${NODE_TAG_8_1}
+
 .PHONY: test-node
 test-node: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG} ./test/node
@@ -232,6 +317,22 @@ test-node-7-5: test-destroy
 test-node-7-6: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_7_6} ./test/node
 
+.PHONY: test-node-7-8
+test-node-7-8: test-destroy
+	IMAGE=singlestore/node:${NODE_TAG_7_8} ./test/node
+
+.PHONY: test-node-8-0
+test-node-8-0: test-destroy
+	IMAGE=singlestore/node:${NODE_TAG_8_0} ./test/node
+
+.PHONY: test-node-8-1
+test-node-8-1: test-destroy
+	IMAGE=singlestore/node:${NODE_TAG_8_1} ./test/node
+
+.PHONY: test-node-cloud
+test-node-cloud: test-destroy
+	IMAGE=singlestore/node:${NODE_TAG_CLOUD} ./test/node
+
 .PHONY: test-node-ssl
 test-node-ssl: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG} ./test/node-ssl
@@ -246,6 +347,21 @@ publish-node:
 	docker push memsql/node:${NODE_TAG}
 	docker push singlestore/node:latest
 	docker push memsql/node:latest
+
+.PHONY: publish-gcr-node
+publish-gcr-node:
+	docker tag memsql/node:${NODE_TAG} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG}
+	docker tag memsql/node:${NODE_TAG} gcr.io/singlestore-public/mirror/docker.io/memsql/node:latest
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:latest
+# publish the bottle-version dependency of the engine release to Helios control-plane.
+	MEMSQL_SERVER_VERSION=${SERVER_VERSION} RELEASE_CHANNEL=dev RELEASE_BRANCH=${SERVER_RELEASE_BRANCH} ./assets/release-metadata/release-metadata.py
+	MEMSQL_SERVER_VERSION=${SERVER_VERSION} RELEASE_CHANNEL=prod RELEASE_BRANCH=${SERVER_RELEASE_BRANCH} ./assets/release-metadata/release-metadata.py
+
+.PHONY: publish-node-cloud
+publish-node-cloud:
+	docker push gcr.io/singlestore-public/memsql/node:${NODE_TAG_CLOUD}
+	docker push gcr.io/singlestore-public/memsql/node:latest
 
 .PHONY: publish-node-custom
 publish-node-custom:
@@ -276,66 +392,90 @@ publish-node-6-8:
 	docker push singlestore/node:${NODE_TAG_6_8}
 	docker push memsql/node:${NODE_TAG_6_8}
 
+.PHONY: publish-gcr-node-6-8
+publish-gcr-node-6-8:
+	docker tag memsql/node:${NODE_TAG_6_8} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_6_8}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_6_8}
+
 .PHONY: publish-node-7-0
 publish-node-7-0:
 	docker push singlestore/node:${NODE_TAG_7_0}
 	docker push memsql/node:${NODE_TAG_7_0}
+
+.PHONY: publish-gcr-node-7-0
+publish-gcr-node-7-0:
+	docker tag memsql/node:${NODE_TAG_7_0} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_0}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_0}
 
 .PHONY: publish-node-7-1
 publish-node-7-1:
 	docker push singlestore/node:${NODE_TAG_7_1}
 	docker push memsql/node:${NODE_TAG_7_1}
 
+.PHONY: publish-gcr-node-7-1
+publish-gcr-node-7-1:
+	docker tag memsql/node:${NODE_TAG_7_1} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_1}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_1}
+
 .PHONY: publish-node-7-3
 publish-node-7-3:
 	docker push singlestore/node:${NODE_TAG_7_3}
 	docker push memsql/node:${NODE_TAG_7_3}
+
+.PHONY: publish-gcr-node-7-3
+publish-gcr-node-7-3:
+	docker tag memsql/node:${NODE_TAG_7_3} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_3}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_3}
 
 .PHONY: publish-node-7-5
 publish-node-7-5:
 	docker push singlestore/node:${NODE_TAG_7_5}
 	docker push memsql/node:${NODE_TAG_7_5}
 
+.PHONY: publish-gcr-node-7-5
+publish-gcr-node-7-5:
+	docker tag memsql/node:${NODE_TAG_7_5} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_5}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_5}
+
 .PHONY: publish-node-7-6
 publish-node-7-6:
 	docker push singlestore/node:${NODE_TAG_7_6}
 	docker push memsql/node:${NODE_TAG_7_6}
 
-.PHONY: redhat-verify-node
-redhat-verify-node:
-	docker tag singlestore/node:${NODE_TAG} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
+.PHONY: publish-gcr-node-7-6
+publish-gcr-node-7-6:
+	docker tag memsql/node:${NODE_TAG_7_6} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_6}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_6}
 
-.PHONY: redhat-verify-node-7-0
-redhat-verify-node-7-0:
-	docker tag singlestore/node:${NODE_TAG_7_0} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_0}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_0}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
+.PHONY: publish-node-7-8
+publish-node-7-8:
+	docker push singlestore/node:${NODE_TAG_7_8}
+	docker push memsql/node:${NODE_TAG_7_8}
 
-.PHONY: redhat-verify-node-7-1
-redhat-verify-node-7-1:
-	docker tag singlestore/node:${NODE_TAG_7_1} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_1}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_1}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
+.PHONY: publish-gcr-node-7-8
+publish-gcr-node-7-8:
+	docker tag memsql/node:${NODE_TAG_7_8} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_8}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_7_8}
 
-.PHONY: redhat-verify-node-7-3
-redhat-verify-node-7-3:
-	docker tag singlestore/node:${NODE_TAG_7_3} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_3}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_3}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
+.PHONY: publish-node-8-0
+publish-node-8-0:
+	docker push singlestore/node:${NODE_TAG_8_0}
+	docker push memsql/node:${NODE_TAG_8_0}
 
-.PHONY: redhat-verify-node-7-5
-redhat-verify-node-7-5:
-	docker tag singlestore/node:${NODE_TAG_7_5} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_5}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_5}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
+.PHONY: publish-gcr-node-8-0
+publish-gcr-node-8-0:
+	docker tag memsql/node:${NODE_TAG_8_0} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_0}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_0}
 
-.PHONY: redhat-verify-node-7-6
-redhat-verify-node-7-6:
-	docker tag singlestore/node:${NODE_TAG_7_6} scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_6}
-	docker push scan.connect.redhat.com/ospid-faf4ba09-5344-40d5-b9c5-7c88ea143472/node:${NODE_TAG_7_6}
-	@echo "View results + publish: https://connect.redhat.com/project/1123901/view"
+.PHONY: publish-node-8-1
+publish-node-8-1:
+	docker push singlestore/node:${NODE_TAG_8_1}
+	docker push memsql/node:${NODE_TAG_8_1}
+
+.PHONY: publish-gcr-node-8-1
+publish-gcr-node-8-1:
+	docker tag memsql/node:${NODE_TAG_8_1} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_1}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_1}
 
 .PHONY: build-dynamic-node
 build-dynamic-node: build-base
@@ -363,6 +503,7 @@ publish-dynamic-node:
 build-ciab: build-base
 	docker build \
 		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_PACKAGE=singlestoredb-server \
 		--build-arg SERVER_VERSION=${SERVER_VERSION} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg STUDIO_VERSION=${STUDIO_VERSION} \
@@ -377,6 +518,7 @@ build-ciab: build-base
 build-ciab-dev: build-base-dev
 	docker build \
 		--build-arg BASE_IMAGE=s2-base-dev:${VARIANT} \
+		--build-arg SERVER_PACKAGE=memsql-server \
 		--build-arg SERVER_VERSION=${SERVER_VERSION} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg STUDIO_VERSION=${STUDIO_VERSION} \
@@ -398,18 +540,12 @@ publish-ciab:
 	docker push memsql/cluster-in-a-box:${CIAB_TAG}
 	docker push memsql/cluster-in-a-box:latest
 
-.PHONY: redhat-verify-ciab
-redhat-verify-ciab:
-	docker tag singlestore/cluster-in-a-box:${CIAB_TAG} scan.connect.redhat.com/ospid-6b69e5e1-d98a-4d75-a591-e300d4820ecb/cluster-in-a-box:${CIAB_TAG}
-	docker push scan.connect.redhat.com/ospid-6b69e5e1-d98a-4d75-a591-e300d4820ecb/cluster-in-a-box:${CIAB_TAG}
-	@echo "View results + publish: https://connect.redhat.com/project/923891/view"
-
 # This is used to publish an UBI-based (known as redhat) node image to GCR.io.
 .PHONY: redhat-verify-ubi-gcr-internal-node
 redhat-verify-ubi-gcr-internal-node:
-	docker tag singlestore/node:${NODE_TAG} gcr.io/internal-freya/memsql/node:${NODE_TAG}
-	docker push gcr.io/internal-freya/memsql/node:${NODE_TAG}
-	@echo "View results + publish: https://console.cloud.google.com/gcr/images/internal-freya/global/memsql/node"
+	docker tag singlestore/node:${NODE_TAG} gcr.io/singlestore-public/memsql/node:${NODE_TAG}
+	docker push gcr.io/singlestore-public/memsql/node:${NODE_TAG}
+	@echo "View results + publish: https://console.cloud.google.com/gcr/images/singlestore-public/global/memsql/node"
 
 .PHONY: test-destroy
 test-destroy:

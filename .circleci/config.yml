@@ -7,6 +7,8 @@ commands:
             - run: |
                   sudo apt update
                   sudo apt install -y make bash git jq docker
+                  sudo python3 -m pip install --upgrade pip
+                  sudo pip3 install boto3
 
 jobs:
     test:
@@ -18,25 +20,6 @@ jobs:
             - checkout
             - run: make test
             - run: make test-destroy
-
-    redhat:
-        parameters:
-            package:
-                type: string
-        machine: true
-        steps:
-            - setup_environment
-            - checkout
-            - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_NODE} scan.connect.redhat.com
-            - run: make build-<<parameters.package>> redhat-verify-<<parameters.package>> VARIANT=redhat
-
-    redhat-ciab:
-        machine: true
-        steps:
-            - setup_environment
-            - checkout
-            - run: docker login -u unused --password ${REDHAT_REGISTRY_KEY_CIAB} scan.connect.redhat.com
-            - run: make build-ciab redhat-verify-ciab VARIANT=redhat
 
     dockerhub:
         parameters:
@@ -50,6 +33,30 @@ jobs:
             - checkout
             - run: docker login -u ${DOCKER_HUB_USER} --password ${DOCKER_HUB_KEY}
             - run: make build-<<parameters.package>> publish-<<parameters.package>>
+            - when:
+                condition:
+                    matches:
+                        pattern: "^node(-.+)?$"
+                        value: <<parameters.package>>
+                steps:
+                    - run: docker logout
+                    - run: echo "${GCLOUD_SERVICE_ACCOUNT_SINGLESTORE_PUBLIC}" | base64 -d >./dockerconfig.json
+                    - run: cat ./dockerconfig.json | docker login -u _json_key --password-stdin https://gcr.io
+                    - run: make publish-gcr-<<parameters.package>>
+
+    gcr-public:
+        parameters:
+            package:
+                type: string
+        machine:
+            # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/
+            image: ubuntu-2004:202201-02
+        steps:
+            - setup_environment
+            - checkout
+            - run: echo "${GCLOUD_SERVICE_ACCOUNT_SINGLESTORE_PUBLIC}" | base64 -d >./dockerconfig.json
+            - run: cat ./dockerconfig.json | docker login -u _json_key --password-stdin https://gcr.io
+            - run: make build-<<parameters.package>> publish-<<parameters.package>>
 
     ubi-gcr-internal:
         machine: true
@@ -58,7 +65,7 @@ jobs:
             - checkout
             # We can't use Bash variables in CircleCI so we just duplicate the ""./dockerconfig.json"
             # string here.
-            - run: echo "${GCLOUD_SERVICE_ACCOUNT_INTERNAL}" | base64 -d >./dockerconfig.json
+            - run: echo "${GCLOUD_SERVICE_ACCOUNT_SINGLESTORE_PUBLIC}" | base64 -d >./dockerconfig.json
             - run: cat ./dockerconfig.json | docker login -u _json_key --password-stdin https://gcr.io
             - run: make build-node redhat-verify-ubi-gcr-internal-node VARIANT=redhat
 
@@ -83,6 +90,9 @@ workflows:
                                   "node-7-3",
                                   "node-7-5",
                                   "node-7-6",
+                                  "node-7-8",
+                                  "node-8-0",
+                                  "node-8-1",
                                   "dynamic-node",
                                   "ciab",
                                   "tools",
@@ -90,29 +100,6 @@ workflows:
                   requires:
                       - test
 
-            - publish-redhat:
-                  name: publish-redhat-<< matrix.package >>
-                  type: approval
-                  matrix:
-                      parameters:
-                          # Must match line 93.
-                          package:
-                              [
-                                  "node",
-                                  "node-7-0",
-                                  "node-7-1",
-                                  "node-7-3",
-                                  "node-7-5",
-                                  "node-7-6"
-                              ]
-                  requires:
-                      - test
-
-            - publish-redhat-ciab:
-                  name: publish-redhat-ciab
-                  type: approval
-                  requires:
-                      - test
 
             - dockerhub:
                   name: dockerhub-<< matrix.package >>
@@ -128,33 +115,15 @@ workflows:
                                   "node-7-3",
                                   "node-7-5",
                                   "node-7-6",
+                                  "node-7-8",
+                                  "node-8-0",
+                                  "node-8-1",
                                   "dynamic-node",
                                   "ciab",
                                   "tools",
                               ]
                   requires:
                       - publish-dockerhub-<< matrix.package >>
-
-            - redhat:
-                  name: redhat-<< matrix.package >>
-                  matrix:
-                      parameters:
-                          package:
-                              [
-                                  "node",
-                                  "node-7-0",
-                                  "node-7-1",
-                                  "node-7-3",
-                                  "node-7-5",
-                                  "node-7-6"
-                              ]
-                  requires:
-                      - publish-redhat-<< matrix.package >>
-
-            - redhat-ciab:
-                  name: redhat-ciab
-                  requires:
-                      - publish-redhat-ciab
 
             - publish-ubi-gcr-internal:
                   name: publish-ubi-gcr-internal
@@ -166,3 +135,27 @@ workflows:
                   name: ubi-gcr-internal
                   requires:
                       - publish-ubi-gcr-internal
+
+            - publish-gcr-public:
+                  name: publish-gcr-public-<< matrix.package >>
+                  type: approval
+                  matrix:
+                      parameters:
+                          # Must match line 71.
+                          package:
+                              [
+                                  "node-cloud",
+                              ]
+                  requires:
+                      - test
+
+            - gcr-public:
+                name: gcr-public-<< matrix.package >>
+                matrix:
+                    parameters:
+                        package:
+                            [
+                                "node-cloud",
+                            ]
+                requires:
+                    - publish-gcr-public-<< matrix.package >>

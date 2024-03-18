@@ -104,15 +104,7 @@ singlestoredb-studio --port 8080 1>/dev/null 2>/dev/null &
 studio_pid=$!
 log_files+=("/var/lib/singlestoredb-studio/studio.log")
 
-args_file="/etc/memsql/memsql_exporter_ma.args"
-if [ ! -f $args_file ]; then
-    install_path=$(dirname $(realpath "/usr/bin/memsql_exporter"))
-    args_file=$install_path"/conf/memsql_exporter_ma.args"
-fi
-explog="/var/lib/memsql/memsql_exporter.log"
-memsql_exporter @$args_file 1>$explog 2>$explog &
-exporter_pid=$!
-log_files+=($explog)
+sdb-admin configure-monitoring -y --exporter-port=9104 --exporter-password=$ROOT_PASSWORD &
 
 tail -F $(printf '%s ' "${log_files[@]}") &
 tail_pid=$!
@@ -121,7 +113,6 @@ cleanup() {
     echo Stopping Cluster...
     memsqlctl -y stop-node --all
     kill -15 $studio_pid
-    kill -15 $exporter_pid
     kill -15 $tail_pid
     echo Stopped.
 }

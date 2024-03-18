@@ -1,5 +1,5 @@
 INIT_FLAG=/.initialized
-CHANNELS=(production dev)
+CHANNELS=(production dev cloud)
 
 log() { (>&2 echo "${@}") }
 
@@ -38,6 +38,36 @@ installRelease() {
     return 1
 }
 
+isVersionGE()
+{
+    local arg_major=${1}
+    local arg_minor=${2}
+
+    local version=$(memsqlctl version | sed -n 's/^Version: \(.*\)$/\1/p')
+    local versionParts=($(echo ${version//./ }))
+    local major=${versionParts[0]}
+    local minor=${versionParts[1]}
+    local patch=${versionParts[2]}
+
+    if [[ "${major}" -ne ${arg_major} ]]; then
+        if [[ "${major}" -gt ${arg_major} ]]; then
+            return 0
+        else
+            return 1
+        fi
+    fi
+
+    if [[ "${minor}" -ne ${arg_minor} ]]; then
+        if [[ "${minor}" -gt ${arg_minor} ]]; then
+            return 0
+        else
+            return 1
+        fi
+    fi
+
+    return 0
+}
+
 createNode() {
     log "Initializing SingleStore DB node"
     memsqlctl -y create-node --no-start --base-install-dir /var/lib/memsql/instance
@@ -51,6 +81,24 @@ setMaximumMemory() {
     if [ -n "${memory}" ]; then
         log "Setting maximum_memory to ${memory}"
         memsqlctl -y update-config --key maximum_memory --value "${memory}"
+    fi
+}
+
+setJava11Path() {
+    if isVersionGE 8 5; then
+        memsqlctl -y update-config --key java_pipelines_java11_path --value $(which java)
+    fi
+}
+
+setJava21Path() {
+    if isVersionGE 8 7; then
+        # Look up the installation path in the alternatives list.  If we don't
+        # find one, do nothing.
+        local java21Path=$(update-alternatives --list | grep '^jre_21\b' | cut -f 3 2>/dev/null)
+        if [ -n "${java21Path}" ] ; then
+            memsqlctl -y update-config --key fts2_java_path --value "${java21Path}/bin/java"
+            memsqlctl -y update-config --key fts2_java_home --value "${java21Path}"
+        fi
     fi
 }
 
@@ -75,14 +123,22 @@ enableSSL() {
 }
 
 waitStart() {
-    local ctl=${1}
+    local pid=${1}
     while true; do
         local CONNECTABLE=$(memsqlctl describe-node --property IsConnectable || echo false)
-        local RECOVERY=$(memsqlctl describe-node --property RecoveryState || echo Offline)
-        if [[ ${CONNECTABLE} == "true" && ${RECOVERY} == "Online" ]]; then
+        if [[ ${CONNECTABLE} == "true" ]]; then
             break
         fi
-        sleep 0.2
+
+        if kill -0 $pid; then
+            # memsqld still running, retry
+            sleep 0.2
+        else
+            # memsdl is gone
+            log "memsqld exited"
+            exit 1
+        fi
+
     done
 }
 
@@ -91,7 +147,15 @@ startSingleStore() {
     local memsqldPath=${installDir}/memsqld
     local memsqldSafePath=${installDir}/memsqld_safe
 
-    ${memsqldSafePath} \
+    # as a sanity check, make sure there isn't an existing process running memsqldSafePath
+    # use || true to not fail due to `set -e` if it does not exist
+    existing_memsql_pid=$(pgrep -f ${memsqldSafePath}) || true
+    if [[ "$existing_memsql_pid" != "" ]]; then
+        log "Error, there is an existing memsql process running '$memsqldSafePath' with PID $existing_memsql_pid"
+        exit 1
+    fi
+
+    env -u ROOT_PASSWORD ${memsqldSafePath} \
         --auto-restart disable \
         --defaults-file $(memsqlctl describe-node --property MemsqlConfig) \
         --memsqld ${memsqldPath} \

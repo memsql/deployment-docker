@@ -24,6 +24,9 @@ fi
 # set the nodes' maximum memory if needed
 setMaximumMemory "${MAXIMUM_MEMORY}"
 
+setJava11Path
+setJava21Path
+
 # if a pre-start script is defined in the environment, and the file exists + is
 # executable, run the file before starting SingleStore DB
 if [ -n "${PRE_START_SCRIPT}" ]; then
@@ -39,7 +42,7 @@ trap 'log "Stopping singlestore ($PID)..."; kill $PID; wait $PID; exit 0' SIGTER
 
 # start SingleStore DB in the background
 startSingleStore; PID=$!
-waitStart
+waitStart $PID
 log "Started singlestore ($PID)"
 
 

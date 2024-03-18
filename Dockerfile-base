@@ -16,10 +16,12 @@ RUN yum install yum-utils -y
 RUN yum-config-manager --save --setopt=skip_missing_names_on_install=0
 
 # updates and basic utilities
-ARG RELEASE_CHANNEL=production
+ARG RELEASE_CHANNEL
+RUN rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
+
 # currently yum update-minimal fails on curl, so we need to update curl before
 RUN yum update curl -y && yum -y update-minimal --setopt=tsflags=nodocs \
-      --security --sec-severity=Important --sec-severity=Critical \
+      --security --sec-severity=Important --sec-severity=Critical --nobest \
  && yum install -y yum-utils wget procps
 
 RUN yum-config-manager --add-repo https://release.memsql.com/${RELEASE_CHANNEL}/rpm/x86_64/repodata/memsql.repo \
@@ -28,17 +30,8 @@ RUN yum-config-manager --add-repo https://release.memsql.com/${RELEASE_CHANNEL}/
 RUN dnf --enablerepo=* clean all && dnf update -y; exit 0
 
 # address vulnarabilities found by `grype --only-fixed` command
-RUN yum remove vim-minimal platform-python-pip.noarch -y && yum update expat libxml2 libgcrypt -y
+RUN yum update expat libxml2 gnupg2 libgcrypt openssl-libs pcre2 curl libcurl-minimal systemd platform-python python3-libs gnutls libksba sqlite-libs zlib libcom_err krb5-libs dbus libtasn1 libarchive unbound-libs tar platform-python-setuptools python3-setuptools-wheel sqlite-libs systemd systemd-libs systemd-pam oniguruma gnutls python3-rpm python3-unbound rpm rpm-build-libs rpm-libs rpm-plugin-systemd-inhibit unbound-libs -y
+RUN yum remove vim-minimal platform-python-pip.noarch -y
 
-# jq 1.6
-ENV JQ_VERSION='1.6'
-RUN wget --no-check-certificate https://raw.githubusercontent.com/stedolan/jq/master/sig/jq-release.key -O /tmp/jq-release.key && \
-    wget --no-check-certificate https://raw.githubusercontent.com/stedolan/jq/master/sig/v${JQ_VERSION}/jq-linux64.asc -O /tmp/jq-linux64.asc && \
-    wget --no-check-certificate https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64 -O /tmp/jq-linux64 && \
-    gpg --import /tmp/jq-release.key && \
-    gpg --verify /tmp/jq-linux64.asc /tmp/jq-linux64 && \
-    cp /tmp/jq-linux64 /usr/bin/jq && \
-    chmod +x /usr/bin/jq && \
-    rm -f /tmp/jq-release.key && \
-    rm -f /tmp/jq-linux64.asc && \
-    rm -f /tmp/jq-linux64
+RUN yum install -y jq-1.6
+RUN yum install -y which

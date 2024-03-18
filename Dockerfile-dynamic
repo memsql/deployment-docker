@@ -5,6 +5,7 @@ FROM ${BASE_IMAGE}
 ARG CLIENT_VERSION
 RUN yum install -y \
     singlestore-client-${CLIENT_VERSION} \
+    java-11-openjdk \
  && yum clean all
 
 VOLUME ["/var/lib/memsql"]
