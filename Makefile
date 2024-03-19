@@ -1,5 +1,6 @@
 # this is the latest version
-SERVER_VERSION=8.1.35-bb13b781af # CHANGED FROM SOURCE: enforce the specific version that we need for Skai's use-case
+# CHANGED FROM SOURCE: enforce the specific version that we need for Skai's use-case
+SERVER_VERSION=8.1.31-d5850b922e
 SERVER_RELEASE_BRANCH=origin/qtpie-8.5
 
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
@@ -17,7 +18,7 @@ SERVER_VERSION_8_0=8.0.32-4959d03ded
 SERVER_VERSION_8_1=8.1.38-61bcb26831
 CLIENT_VERSION=1.0.7
 TOOLBOX_VERSION=1.17.6
-STUDIO_VERSION=4.0.17
+STUDIO_VERSION=4.0.16
 KUBE_CLIENT_VERSION=v1.11.6
 REVISION=$(shell git describe --dirty=-dirty --always --long --abbrev=40 --match='')
 
