@@ -2,10 +2,6 @@ export MAXIMUM_MEMORY=2048
 export ROOT_PASSWORD=testing
 export RELEASE_ID=latest
 
-if [[ -z "${LICENSE_KEY}" ]]; then
-    echo "Must specify env variable LICENSE_KEY"
-    exit 1
-fi
 if [[ -z "${IMAGE}" ]]; then
     echo "Must specify env variable IMAGE"
     exit 1
@@ -141,7 +137,9 @@ docker-ip() {
 bootstrap() {
     local name=${1}
     echo "bootstrapping ${name}"
-    memsqlctl ${name} set-license --license "${LICENSE_KEY}"
+    if [[ -n ${LICENSE_KEY} ]]; then
+        memsqlctl ${name} set-license --license "${LICENSE_KEY}"
+    fi
     memsqlctl ${name} bootstrap-aggregator --host $(docker-ip ${name})
 }
 

@@ -565,9 +565,3 @@ stage-tools:
 	docker push singlestore/tools:staging-${TOOLS_TAG}
 	docker tag memsql/tools:${TOOLS_TAG} memsql/tools:staging-${TOOLS_TAG}
 	docker push memsql/tools:staging-${TOOLS_TAG}
-
-.PHONY: requires-license
-requires-license:
-ifndef LICENSE_KEY
-	$(error LICENSE_KEY is required)
-endif

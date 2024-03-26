@@ -17,11 +17,6 @@ if [ "$nodes_count" == "2" ]; then
     memsqlctl start-node --all -yj
 else #initialize the cluster
     echo Initializing SingleStore Cluster in a Box
-    if [ -z "${LICENSE_KEY-}" ]; then
-        echo !!! ERROR !!!
-        echo The LICENSE_KEY environment variable must be specified when creating the Docker container
-        exit 1
-    fi
     if [ -z "${ROOT_PASSWORD-}" ]; then
         echo !!! ERROR !!!
         echo The ROOT_PASSWORD environment variable must be specified when creating the Docker container
@@ -46,7 +41,9 @@ else #initialize the cluster
 
     echo Bootstrapping...
     memsqlctl -y start-node --all
-    memsqlctl -y set-license --memsql-id $master_id --license $LICENSE_KEY
+    if [[ -n ${LICENSE_KEY} ]]; then
+        memsqlctl -y set-license --memsql-id $master_id --license $LICENSE_KEY
+    fi
     memsqlctl -y bootstrap-aggregator --memsql-id $master_id --host 127.0.0.1
     memsqlctl -y add-leaf --host 127.0.0.1 --port 3307
     memsqlctl -y change-root-password --all --password $ROOT_PASSWORD

@@ -4,10 +4,6 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "${DIR}/lib.sh"
 
-if [[ -z "${LICENSE_KEY}" ]]; then
-    echo "The LICENSE_KEY environment variable must be specified"
-    exit 1
-fi
 if [[ -z "${IMAGE}" ]]; then
     echo "The IMAGE environment variable must be specified"
     exit 1
