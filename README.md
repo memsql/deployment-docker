@@ -22,6 +22,15 @@ To initialize a new cluster in a box:
 ```bash
 docker run -i --init \
     --name singlestore-ciab \
+    -e ROOT_PASSWORD=${ROOT_PASSWORD} \
+    -p 3306:3306 -p 8080:8080 \
+    singlestore/cluster-in-a-box
+```
+
+If you want to specify a license key, you can run:
+```bash
+docker run -i --init \
+    --name singlestore-ciab \
     -e LICENSE_KEY=${LICENSE_KEY} \
     -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -p 3306:3306 -p 8080:8080 \
@@ -55,7 +64,6 @@ container, you can mount a SQL file into the Docker container like so:
 ```bash
 docker run -i --init \
     --name singlestore-ciab \
-    -e LICENSE_KEY=${LICENSE_KEY} \
     -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -v /PATH/TO/INIT.SQL:/init.sql \
     -p 3306:3306 -p 8080:8080 \
