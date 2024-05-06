@@ -18,8 +18,9 @@ if [ "$nodes_count" == "2" ]; then
 else #initialize the cluster
     echo Initializing SingleStore Cluster in a Box
     if [ -z "${LICENSE_KEY-}" ]; then
+        exit 1
         # We will use this free license from org 78758e03-2f10-431c-a819-fe8036dad3ef as a default license.
-        LICENSE_KEY="BDBkMTllNTkxYmJlNDRlN2U5ZWYyM2YzZDRmN2YwY2FmAAAAAAAAAAAEAAAAAAAAACgwNQIZALfDACVybqBaHxUHdjHEfTPECqOfdquMVwIYUKDroCKPtLk0qAuwzFHh5L6GxwTw9vDzAA=="
+        # LICENSE_KEY="BDBkMTllNTkxYmJlNDRlN2U5ZWYyM2YzZDRmN2YwY2FmAAAAAAAAAAAEAAAAAAAAACgwNQIZALfDACVybqBaHxUHdjHEfTPECqOfdquMVwIYUKDroCKPtLk0qAuwzFHh5L6GxwTw9vDzAA=="
     fi
     if [ -z "${ROOT_PASSWORD-}" ]; then
         echo !!! ERROR !!!
