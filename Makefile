@@ -106,6 +106,7 @@ test:
 	# cluster-in-a-box (ciab)
 	${MAKE} build-ciab
 	${MAKE} test-ciab
+	${MAKE} test-ciab-no-license
 
 .PHONY: build-base
 build-base:
@@ -536,6 +537,10 @@ build-ciab-dev: build-base-dev
 
 .PHONY: test-ciab
 test-ciab: test-destroy
+	IMAGE=singlestore/cluster-in-a-box:${CIAB_TAG} ./test/ciab ${LICENSE_KEY}
+
+.PHONY: test-ciab-no-license
+test-ciab-no-license: test-destroy
 	IMAGE=singlestore/cluster-in-a-box:${CIAB_TAG} ./test/ciab
 
 .PHONY: publish-ciab
