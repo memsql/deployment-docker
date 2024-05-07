@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
+# The license key is passed in via the first argument ($1).
+
 export ROOT_PASSWORD=testing
 set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "${DIR}/lib.sh"
 
-if [[ -z "${LICENSE_KEY}" ]]; then
-    echo "The LICENSE_KEY environment variable must be specified"
-    exit 1
-fi
 if [[ -z "${IMAGE}" ]]; then
     echo "The IMAGE environment variable must be specified"
     exit 1
@@ -70,7 +68,7 @@ echo "create external function check_api() returns text as remote service 'local
 
 docker run -i --init \
     --name memsql-ciab \
-    -e LICENSE_KEY=${LICENSE_KEY} \
+    -e LICENSE_KEY=${1} \
     -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -e EXTERNAL_FUNCTIONS=ON \
     -e HTTP_API=ON \
@@ -145,7 +143,7 @@ docker rm -f memsql-ciab
 
 docker run -d --init \
     --name memsql-ciab \
-    -e LICENSE_KEY=${LICENSE_KEY} \
+    -e LICENSE_KEY=${1} \
     -e ROOT_PASSWORD=${ROOT_PASSWORD} \
     -v memsql-ciab:/var/lib/memsql \
     -v ${PWD}/init.sql:/init.sql \
