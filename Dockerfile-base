@@ -10,14 +10,14 @@ COPY setup/user-change.sh /
 RUN /user-change.sh
 RUN rm /user-change.sh
 
+# updates and basic utilities
+ARG RELEASE_CHANNEL
+RUN rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
+
 # Tell yum to yell on missing packages.
 # https://serverfault.com/a/923357
 RUN yum install yum-utils -y
 RUN yum-config-manager --save --setopt=skip_missing_names_on_install=0
-
-# updates and basic utilities
-ARG RELEASE_CHANNEL
-RUN rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
 
 # currently yum update-minimal fails on curl, so we need to update curl before
 RUN yum update curl -y && yum -y update-minimal --setopt=tsflags=nodocs \
