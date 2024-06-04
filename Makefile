@@ -1,6 +1,6 @@
 # this is the latest version
-SERVER_VERSION=8.5.22-fe61f40cd1
-SERVER_RELEASE_BRANCH=origin/qtpie-8.5
+SERVER_VERSION=8.7.1-953ff45045
+SERVER_RELEASE_BRANCH=origin/qalm-8.7
 
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
@@ -15,6 +15,7 @@ SERVER_VERSION_7_6=7.6.33-c59b12bc70
 SERVER_VERSION_7_8=7.8.43-855b4c082b
 SERVER_VERSION_8_0=8.0.33-3c14d39373
 SERVER_VERSION_8_1=8.1.44-98c100dce9
+SERVER_VERSION_8_5=8.5.22-fe61f40cd1
 CLIENT_VERSION=1.0.5
 TOOLBOX_VERSION=1.17.11
 STUDIO_VERSION=4.1.0
@@ -45,6 +46,7 @@ NODE_TAG_7_6=${VARIANT}-${SERVER_VERSION_7_6}
 NODE_TAG_7_8=${VARIANT}-${SERVER_VERSION_7_8}
 NODE_TAG_8_0=${VARIANT}-${SERVER_VERSION_8_0}
 NODE_TAG_8_1=${VARIANT}-${SERVER_VERSION_8_1}
+NODE_TAG_8_5=${VARIANT}-${SERVER_VERSION_8_5}
 DYNAMIC_TAG=${VARIANT}-${REVISION}
 CIAB_TAG=${VARIANT}-${SERVER_VERSION}-${STUDIO_VERSION}-${TOOLBOX_VERSION}
 TOOLS_TAG=${VARIANT}-${KUBE_CLIENT_VERSION}-${TOOLBOX_VERSION}-${REVISION}
@@ -95,6 +97,9 @@ test:
 	# node-8-1
 	${MAKE} build-node-8-1
 	${MAKE} test-node-8-1
+	# node-8-5
+	${MAKE} build-node-8-5
+	${MAKE} test-node-8-5
 
 	# node-cloud
 	${MAKE} build-node-cloud
@@ -286,6 +291,17 @@ build-node-8-1: build-base
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_8_1} memsql/node:${NODE_TAG_8_1}
 
+.PHONY: build-node-8-5
+build-node-8-5: build-base
+	docker build \
+		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
+		--build-arg SERVER_VERSION=${SERVER_VERSION_8_5} \
+		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		--build-arg JRE_PACKAGES=java-1.8.0-openjdk \
+		-t singlestore/node:${NODE_TAG_8_5} \
+		-f Dockerfile-node .
+	docker tag singlestore/node:${NODE_TAG_8_5} memsql/node:${NODE_TAG_8_5}
+
 .PHONY: test-node
 test-node: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG} ./test/node
@@ -329,6 +345,10 @@ test-node-8-0: test-destroy
 .PHONY: test-node-8-1
 test-node-8-1: test-destroy
 	IMAGE=singlestore/node:${NODE_TAG_8_1} ./test/node
+
+.PHONY: test-node-8-5
+test-node-8-5: test-destroy
+	IMAGE=singlestore/node:${NODE_TAG_8_5} ./test/node
 
 .PHONY: test-node-cloud
 test-node-cloud: test-destroy
@@ -477,6 +497,16 @@ publish-node-8-1:
 publish-gcr-node-8-1:
 	docker tag memsql/node:${NODE_TAG_8_1} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_1}
 	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_1}
+
+.PHONY: publish-node-8-5
+publish-node-8-5:
+	docker push singlestore/node:${NODE_TAG_8_5}
+	docker push memsql/node:${NODE_TAG_8_5}
+
+.PHONY: publish-gcr-node-8-5
+publish-gcr-node-8-5:
+	docker tag memsql/node:${NODE_TAG_8_5} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_5}
+	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_5}
 
 .PHONY: publish-gcr-node-preview
 publish-gcr-node-preview:
