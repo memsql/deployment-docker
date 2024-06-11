@@ -86,7 +86,10 @@ setMaximumMemory() {
 
 setJava11Path() {
     if isVersionGE 8 5; then
-        memsqlctl -y update-config --key java_pipelines_java11_path --value $(which java)
+        local java11Path=$(update-alternatives --list | grep '^jre_11\b' | cut -f 3 2>/dev/null)
+        if [ -n "${java11Path}" ] ; then
+            memsqlctl -y update-config --key java_pipelines_java11_path --value "${java11Path}/bin/java"
+        fi
     fi
 }
 
