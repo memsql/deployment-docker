@@ -5,7 +5,7 @@ SERVER_RELEASE_BRANCH=origin/qalm-8.7
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
 SERVER_VERSION_CLOUD=7.9.25-5635578da8
-SERVER_VERSION_PREVIEW=8.7.1-27b4b6cc85
+SERVER_VERSION_PREVIEW=8.0.529-062f86fae6
 SERVER_VERSION_6_8=6.8.24-8e110b7bed
 SERVER_VERSION_7_0=7.0.26-8999f1390b
 SERVER_VERSION_7_1=7.1.25-af0195880c
