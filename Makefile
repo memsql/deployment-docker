@@ -1,6 +1,7 @@
 # this is the latest version
 SERVER_VERSION=8.7.1-953ff45045
 SERVER_RELEASE_BRANCH=origin/qalm-8.7
+SERVER_RELEASE_BRANCH_8_5=origin/qtpie-8.5
 
 # this is actually 7.9 which is cloud-only, it's named this way to distingush the fact
 # it tags the image differently and pushes to a different repo
@@ -507,6 +508,9 @@ publish-node-8-5:
 publish-gcr-node-8-5:
 	docker tag memsql/node:${NODE_TAG_8_5} gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_5}
 	docker push gcr.io/singlestore-public/mirror/docker.io/memsql/node:${NODE_TAG_8_5}
+# publish the bottle-version dependency of the engine release to Helios control-plane.
+	MEMSQL_SERVER_VERSION=${SERVER_VERSION_8_5} RELEASE_CHANNEL=dev RELEASE_BRANCH=${SERVER_RELEASE_BRANCH_8_5} ./assets/release-metadata/release-metadata.py
+	MEMSQL_SERVER_VERSION=${SERVER_VERSION_8_5} RELEASE_CHANNEL=prod RELEASE_BRANCH=${SERVER_RELEASE_BRANCH_8_5} ./assets/release-metadata/release-metadata.py
 
 .PHONY: publish-gcr-node-preview
 publish-gcr-node-preview:
