@@ -548,6 +548,7 @@ build-ciab: build-base
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg STUDIO_VERSION=${STUDIO_VERSION} \
 		--build-arg TOOLBOX_VERSION=${TOOLBOX_VERSION} \
+		--build-arg JRE_PACKAGES="java-21-openjdk" \
 		-t singlestore/cluster-in-a-box:${CIAB_TAG} \
 		-f Dockerfile-ciab .
 	docker tag singlestore/cluster-in-a-box:${CIAB_TAG} singlestore/cluster-in-a-box:latest
@@ -563,6 +564,7 @@ build-ciab-dev: build-base-dev
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg STUDIO_VERSION=${STUDIO_VERSION} \
 		--build-arg TOOLBOX_VERSION=${TOOLBOX_VERSION} \
+		--build-arg JRE_PACKAGES="java-21-openjdk" \
 		-t singlestore/cluster-in-a-box-dev:${CIAB_TAG} \
 		-f Dockerfile-ciab .
 	docker tag singlestore/cluster-in-a-box-dev:${CIAB_TAG} singlestore/cluster-in-a-box-dev:latest

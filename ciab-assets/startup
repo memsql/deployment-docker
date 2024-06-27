@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+setJava21Path() {
+    # Look up the installation path in the alternatives list.  If we don't
+    # find one, do nothing.
+    local java21Path=$(update-alternatives --list | grep '^jre_21\b' | cut -f 3 2>/dev/null)
+    if [ -n "${java21Path}" ] ; then
+        memsqlctl -y update-config --all --key "fts2_java_path" --value "${java21Path}/bin/java"
+        memsqlctl -y update-config --all --key "fts2_java_home" --value "${java21Path}"
+    fi
+}
+
 set -euo pipefail
 
 if [ ! -f /var/lib/memsql/nodes.hcl ]; then
@@ -35,6 +45,7 @@ else #initialize the cluster
     echo Configuring...
     memsqlctl -y update-config --all --key minimum_core_count --value 0
     memsqlctl -y update-config --all --key minimum_memory_mb --value 0
+    setJava21Path
 
     if [ -n "${HTTP_API-}" ]; then
         echo Enabling HTTP API on port ${HTTP_API_PORT-9000}

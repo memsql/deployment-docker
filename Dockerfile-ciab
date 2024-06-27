@@ -8,6 +8,7 @@ ARG SERVER_PACKAGE
 ARG SERVER_VERSION
 ARG STUDIO_VERSION
 ARG TOOLBOX_VERSION
+ARG JRE_PACKAGES
 RUN yum install -y \
     singlestore-client-${CLIENT_VERSION} \
     ${SERVER_PACKAGE}${SERVER_VERSION} \
@@ -18,6 +19,11 @@ RUN yum install -y \
 RUN mkdir -p /home/memsql && chown memsql:memsql /home/memsql
 ADD ciab-assets/studio.hcl /var/lib/singlestoredb-studio/studio.hcl
 RUN chown memsql:memsql /var/lib/singlestoredb-studio/studio.hcl
+
+RUN for pkg in ${JRE_PACKAGES} ; do \
+      yum install -y ${pkg}; \
+    done \
+    && yum clean all
 
 VOLUME ["/var/lib/memsql"]
 
