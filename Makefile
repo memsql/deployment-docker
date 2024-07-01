@@ -170,6 +170,7 @@ build-node-cloud: build-base-cloud
 		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION_CLOUD} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
+		--build-arg JRE_PACKAGES="java-11-openjdk java-21-openjdk" \
 		-t singlestore/node:${NODE_TAG_CLOUD} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_CLOUD} gcr.io/singlestore-public/memsql/node:${NODE_TAG_CLOUD}
@@ -185,7 +186,7 @@ build-node-custom: build-base
 		--build-arg SERVER_VERSION=${SERVER_VERSION_CUSTOM} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
 		--build-arg LOCAL_SERVER_RPM=${LOCAL_SERVER_RPM_CUSTOM} \
-		--build-arg JRE_PACKAGES=java-1.8.0-openjdk \
+		--build-arg JRE_PACKAGES="java-11-openjdk java-21-openjdk" \
 		-t ${REGISTRY_CUSTOM}/singlestore/node:${NODE_TAG_CUSTOM} \
 		-t ${REGISTRY_CUSTOM}/memsql/node:${NODE_TAG_CUSTOM} \
 		-f Dockerfile-node .
@@ -298,7 +299,7 @@ build-node-8-5: build-base
 		--build-arg BASE_IMAGE=s2-base:${VARIANT} \
 		--build-arg SERVER_VERSION=${SERVER_VERSION_8_5} \
 		--build-arg CLIENT_VERSION=${CLIENT_VERSION} \
-		--build-arg JRE_PACKAGES=java-1.8.0-openjdk \
+		--build-arg JRE_PACKAGES=java-11-openjdk \
 		-t singlestore/node:${NODE_TAG_8_5} \
 		-f Dockerfile-node .
 	docker tag singlestore/node:${NODE_TAG_8_5} memsql/node:${NODE_TAG_8_5}
