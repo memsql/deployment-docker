@@ -1,5 +1,5 @@
 # this is the latest version
-SERVER_VERSION=8.7.5-6ba1ce0e85
+SERVER_VERSION=8.7.5-cd69bf6aa0
 SERVER_RELEASE_BRANCH=origin/qalm-8.7
 SERVER_RELEASE_BRANCH_8_5=origin/qtpie-8.5
 
@@ -30,6 +30,9 @@ BASE_IMAGE ?= almalinux:8.6
 ifeq (${VARIANT},redhat)
 	BASE_IMAGE=registry.access.redhat.com/ubi8/ubi:8.6-903
 else
+
+
+
 	ifneq (${BASE_IMAGE_REGISTRY},)
 		BASE_IMAGE:=${BASE_IMAGE_REGISTRY}/${BASE_IMAGE}
 	endif
