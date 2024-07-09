@@ -1,5 +1,5 @@
 # this is the latest version
-SERVER_VERSION=8.7.4-5877633a72
+SERVER_VERSION=8.7.5-6ba1ce0e85
 SERVER_RELEASE_BRANCH=origin/qalm-8.7
 SERVER_RELEASE_BRANCH_8_5=origin/qtpie-8.5
 
