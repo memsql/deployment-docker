@@ -9,6 +9,7 @@ COPY licenses /licenses
 COPY setup/user-change.sh /
 RUN /user-change.sh
 RUN rm /user-change.sh
+RUN rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
 
 # Tell yum to yell on missing packages.
 # https://serverfault.com/a/923357
