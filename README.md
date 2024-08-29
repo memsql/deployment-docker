@@ -1,14 +1,14 @@
 # deployment-docker
 
+> **Warning**
+> This repository is deprecated in favor of the internal build system, more details [here](https://memsql.atlassian.net/wiki/spaces/CLOUDINFRA/pages/3205103641/From+Deployment-Docker+to+Freya)
+
 This repository contains our official deployment Docker images for various products.
 If you are interested in contributing, please read `CONTRIBUTING.md`.
 
 | Image        | SingleStore Packages Installed                                    |
 |--------------|-------------------------------------------------------------------|
 | ciab         | singlestoredb-server, singlestoredb-studio, singlestoredb-toolbox |
-| dynamic-node | (none)                                                            |
-| node         | singlestoredb-server                                              |
-| node-redhat  | singlestoredb-server                                              |
 | tools        | singlestoredb-toolbox                                             |
 
 # Running the Cluster in a Box image

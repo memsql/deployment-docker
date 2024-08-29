@@ -33,41 +33,6 @@ jobs:
             - checkout
             - run: docker login -u ${DOCKER_HUB_USER} --password ${DOCKER_HUB_KEY}
             - run: make build-<<parameters.package>> publish-<<parameters.package>>
-            - when:
-                condition:
-                    matches:
-                        pattern: "^node(-.+)?$"
-                        value: <<parameters.package>>
-                steps:
-                    - run: docker logout
-                    - run: echo "${GCLOUD_SERVICE_ACCOUNT_SINGLESTORE_PUBLIC}" | base64 -d >./dockerconfig.json
-                    - run: cat ./dockerconfig.json | docker login -u _json_key --password-stdin https://gcr.io
-                    - run: make publish-gcr-<<parameters.package>>
-
-    gcr-public:
-        parameters:
-            package:
-                type: string
-        machine:
-            # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/
-            image: ubuntu-2004:202201-02
-        steps:
-            - setup_environment
-            - checkout
-            - run: echo "${GCLOUD_SERVICE_ACCOUNT_SINGLESTORE_PUBLIC}" | base64 -d >./dockerconfig.json
-            - run: cat ./dockerconfig.json | docker login -u _json_key --password-stdin https://gcr.io
-            - run: make build-<<parameters.package>> publish-<<parameters.package>>
-
-    ubi-gcr-internal:
-        machine: true
-        steps:
-            - setup_environment
-            - checkout
-            # We can't use Bash variables in CircleCI so we just duplicate the ""./dockerconfig.json"
-            # string here.
-            - run: echo "${GCLOUD_SERVICE_ACCOUNT_SINGLESTORE_PUBLIC}" | base64 -d >./dockerconfig.json
-            - run: cat ./dockerconfig.json | docker login -u _json_key --password-stdin https://gcr.io
-            - run: make build-node redhat-verify-ubi-gcr-internal-node VARIANT=redhat
 
 workflows:
     test_publish:
@@ -82,19 +47,6 @@ workflows:
                           # Must match line 71.
                           package:
                               [
-                                  "node",
-                                  "node-preview",
-                                  "node-6-8",
-                                  "node-7-0",
-                                  "node-7-1",
-                                  "node-7-3",
-                                  "node-7-5",
-                                  "node-7-6",
-                                  "node-7-8",
-                                  "node-8-0",
-                                  "node-8-1",
-                                  "node-8-5",
-                                  "dynamic-node",
                                   "ciab",
                                   "tools",
                               ]
@@ -108,57 +60,8 @@ workflows:
                       parameters:
                           package:
                               [
-                                  "node",
-                                  "node-preview",
-                                  "node-6-8",
-                                  "node-7-0",
-                                  "node-7-1",
-                                  "node-7-3",
-                                  "node-7-5",
-                                  "node-7-6",
-                                  "node-7-8",
-                                  "node-8-0",
-                                  "node-8-1",
-                                  "node-8-5",
-                                  "dynamic-node",
                                   "ciab",
                                   "tools",
                               ]
                   requires:
                       - publish-dockerhub-<< matrix.package >>
-
-            - publish-ubi-gcr-internal:
-                  name: publish-ubi-gcr-internal
-                  type: approval
-                  requires:
-                      - test
-
-            - ubi-gcr-internal:
-                  name: ubi-gcr-internal
-                  requires:
-                      - publish-ubi-gcr-internal
-
-            - publish-gcr-public:
-                  name: publish-gcr-public-<< matrix.package >>
-                  type: approval
-                  matrix:
-                      parameters:
-                          # Must match line 71.
-                          package:
-                              [
-                                  "node-cloud",
-                              ]
-                  requires:
-                      - test
-
-            - gcr-public:
-                name: gcr-public-<< matrix.package >>
-                matrix:
-                    parameters:
-                        package:
-                            [
-                                "node-cloud",
-                            ]
-                requires:
-                    - publish-gcr-public-<< matrix.package >>
-
