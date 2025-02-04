@@ -2,7 +2,7 @@
 SERVER_VERSION=8.7.14-4c3ad9de46
 
 CLIENT_VERSION=1.0.5
-TOOLBOX_VERSION=1.17.18
+TOOLBOX_VERSION=1.17.19
 STUDIO_VERSION=4.1.0
 KUBE_CLIENT_VERSION=v1.11.6
 REVISION=$(shell git describe --dirty=-dirty --always --long --abbrev=40 --match='')
