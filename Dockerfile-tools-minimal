@@ -1,0 +1,6 @@
+# vim: ft=dockerfile
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+ADD assets/report-min /report
+

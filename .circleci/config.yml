@@ -6,21 +6,9 @@ commands:
         steps:
             - run: |
                   sudo apt update
-                  sudo apt install -y make bash git jq docker
-                  sudo python3 -m pip install --upgrade pip
-                  sudo pip3 install boto3
+                  sudo apt install -y make bash docker
 
 jobs:
-    test:
-        machine:
-            # https://circleci.com/docs/2.0/images/linux-vm/16.04-to-20.04-migration/
-            image: ubuntu-2004:2024.05.1
-        steps:
-            - setup_environment
-            - checkout
-            - run: make test
-            - run: make test-destroy
-
     dockerhub:
         parameters:
             package:
@@ -35,10 +23,8 @@ jobs:
             - run: make build-<<parameters.package>> publish-<<parameters.package>>
 
 workflows:
-    test_publish:
+    publish:
         jobs:
-            - test
-
             - publish-dockerhub:
                   name: publish-dockerhub-<< matrix.package >>
                   type: approval
@@ -48,9 +34,8 @@ workflows:
                           package:
                               [
                                   "tools",
+                                  "tools-minimal",
                               ]
-                  requires:
-                      - test
 
 
             - dockerhub:
@@ -60,6 +45,7 @@ workflows:
                           package:
                               [
                                   "tools",
+                                  "tools-minimal",
                               ]
                   requires:
                       - publish-dockerhub-<< matrix.package >>

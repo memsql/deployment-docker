@@ -2,22 +2,6 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-ARG TOOLBOX_VERSION
-ARG KUBE_CLIENT_VERSION
-
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBE_CLIENT_VERSION}/bin/linux/amd64/kubectl && \
-        chmod +x ./kubectl && \
-        mv ./kubectl /usr/local/bin/kubectl
-
-RUN yum install -y \
-    which \
-    singlestoredb-toolbox-${TOOLBOX_VERSION} \
-    epel-release \
- && yum clean all
-
-RUN yum update -y \
- && yum clean all && yum remove python3-pip-wheel.noarc -y
-
 RUN yum install python3.9 -y && pip3 install boto3 azure-storage-blob awscli pymysql
 
 ADD assets/report /report
