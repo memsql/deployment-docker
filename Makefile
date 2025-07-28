@@ -1,11 +1,10 @@
-
-TOOLBOX_VERSION=1.18.3
+TOOLBOX_VERSION=1.18.4
 KUBE_CLIENT_VERSION=v1.11.6
 REVISION=$(shell git describe --dirty=-dirty --always --long --abbrev=40 --match='')
 
 VARIANT ?= alma
 BASE_IMAGE_REGISTRY ?= gcr.io/internal_freya
-BASE_IMAGE ?= almalinux:8.6
+BASE_IMAGE ?= almalinux:8.7
 
 ifneq (${BASE_IMAGE_REGISTRY},)
 	BASE_IMAGE:=${BASE_IMAGE_REGISTRY}/${BASE_IMAGE}

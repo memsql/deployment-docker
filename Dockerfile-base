@@ -13,7 +13,6 @@ RUN rm /user-change.sh
 # updates and basic utilities
 ARG RELEASE_CHANNEL
 RUN rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
-
 # Tell yum to yell on missing packages.
 # https://serverfault.com/a/923357
 RUN yum install yum-utils -y
