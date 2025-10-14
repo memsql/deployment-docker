@@ -1,4 +1,4 @@
-TOOLBOX_VERSION=1.18.5
+TOOLBOX_VERSION=1.18.6
 KUBE_CLIENT_VERSION=v1.11.6
 REVISION=$(shell git describe --dirty=-dirty --always --long --abbrev=40 --match='')
 
