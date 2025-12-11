@@ -2,7 +2,7 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-RUN yum install python3.9 -y && pip3 install boto3 azure-storage-blob awscli pymysql
+RUN yum install python3 -y && yum install python3-pip -y && python3 -m pip install boto3 azure-storage-blob awscli pymysql
 
 ADD assets/report /report
 

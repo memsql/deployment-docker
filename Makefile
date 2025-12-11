@@ -1,10 +1,10 @@
-TOOLBOX_VERSION=1.18.7
+TOOLBOX_VERSION=1.18.8
 KUBE_CLIENT_VERSION=v1.11.6
 REVISION=$(shell git describe --dirty=-dirty --always --long --abbrev=40 --match='')
 
 VARIANT ?= alma
-BASE_IMAGE_REGISTRY ?= gcr.io/internal_freya
-BASE_IMAGE ?= almalinux:8.7
+BASE_IMAGE_REGISTRY ?= us-central1-docker.pkg.dev/singlestore-public/dockerhub-mirror
+BASE_IMAGE ?= almalinux:10
 
 ifneq (${BASE_IMAGE_REGISTRY},)
 	BASE_IMAGE:=${BASE_IMAGE_REGISTRY}/${BASE_IMAGE}
