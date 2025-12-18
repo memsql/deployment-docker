@@ -21,16 +21,11 @@ RUN yum-config-manager --save --setopt=skip_missing_names_on_install=0
 # currently yum update-minimal fails on curl, so we need to update curl before
 RUN yum update curl -y && yum -y update-minimal --setopt=tsflags=nodocs \
       --security --sec-severity=Important --sec-severity=Critical --nobest \
- && yum install -y yum-utils wget procps
+ && yum install -y yum-utils wget procps which
 
 RUN yum-config-manager --add-repo https://release.memsql.com/${RELEASE_CHANNEL}/rpm/x86_64/repodata/memsql.repo \
- && yum clean all
+ && yum clean all && yum clean metadata
 
-RUN dnf --enablerepo=* clean all && dnf update -y
-
-# address vulnarabilities found by `grype --only-fixed` command
-RUN yum update expat libxml2 gnupg2 libgcrypt openssl-libs pcre2 curl libcurl-minimal systemd platform-python python3-libs gnutls libksba sqlite-libs zlib libcom_err krb5-libs dbus libtasn1 libarchive unbound-libs tar platform-python-setuptools python3-setuptools-wheel sqlite-libs systemd systemd-libs systemd-pam oniguruma gnutls python3-rpm python3-unbound rpm rpm-build-libs rpm-libs rpm-plugin-systemd-inhibit unbound-libs -y
-RUN yum remove vim-minimal platform-python-pip.noarch -y
 
 ARG TOOLBOX_VERSION
 ARG KUBE_CLIENT_VERSION
@@ -43,6 +38,3 @@ RUN yum install -y \
     singlestoredb-toolbox-${TOOLBOX_VERSION} \
     epel-release \
  && yum clean all
-
-RUN yum update -y \
- && yum clean all && yum remove python3-pip-wheel.noarc -y

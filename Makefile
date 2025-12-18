@@ -45,16 +45,13 @@ publish-tools:
 build-tools-minimal: build-base
 	docker build \
 		--build-arg BASE_IMAGE=tools-base:${VARIANT} \
-		-t singlestore/tools-min:${TOOLS_TAG} \
+		-t gcr.io/singlestore-public/tools-min:${TOOLS_TAG} \
 		-f Dockerfile-tools-minimal .
-	docker tag singlestore/tools-min:${TOOLS_TAG} singlestore/tools-min:latest
-	docker tag singlestore/tools-min:${TOOLS_TAG} memsql/tools-min:${TOOLS_TAG}
-	docker tag singlestore/tools-min:${TOOLS_TAG} memsql/tools-min:latest
+	docker tag gcr.io/singlestore-public/tools-min:${TOOLS_TAG} gcr.io/singlestore-public/tools-min:latest
 
 
 .PHONY: publish-tools-minimal
 publish-tools-minimal:
-	docker push singlestore/tools-min:${TOOLS_TAG}
-	docker push singlestore/tools-min:latest
-	docker push memsql/tools-min:${TOOLS_TAG}
-	docker push memsql/tools-min:latest
+	gcloud auth login
+	docker push gcr.io/singlestore-public/tools-min:${TOOLS_TAG}
+	docker push gcr.io/singlestore-public/tools-min:latest
