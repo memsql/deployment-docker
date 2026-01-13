@@ -21,7 +21,7 @@ RUN yum-config-manager --save --setopt=skip_missing_names_on_install=0
 # currently yum update-minimal fails on curl, so we need to update curl before
 RUN yum update curl -y && yum -y update-minimal --setopt=tsflags=nodocs \
       --security --sec-severity=Important --sec-severity=Critical --nobest \
- && yum install -y yum-utils wget procps which
+ && yum install -y yum-utils wget procps which tar binutils
 
 RUN yum-config-manager --add-repo https://release.memsql.com/${RELEASE_CHANNEL}/rpm/x86_64/repodata/memsql.repo \
  && yum clean all && yum clean metadata
