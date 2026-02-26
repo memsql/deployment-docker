@@ -26,6 +26,7 @@ RUN yum update curl -y && yum -y update-minimal --setopt=tsflags=nodocs \
 RUN yum-config-manager --add-repo https://release.memsql.com/${RELEASE_CHANNEL}/rpm/x86_64/repodata/memsql.repo \
  && yum clean all && yum clean metadata
 
+RUN yum update openssl-libs openssl-fips-provider python3 python3-libs curl libcurl-minimal glibc glibc-common glibc-minimal-langpack glib2 libblkid libfdisk libmount libsmartcols libuuid util-linux-core -y
 
 ARG TOOLBOX_VERSION
 ARG KUBE_CLIENT_VERSION
